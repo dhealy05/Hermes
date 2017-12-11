@@ -17,3 +17,7 @@ export const checkAuth = () => (dispatch) => {
 }
 
 export const redirectToSignIn = () => blockstack.redirectToSignIn()
+
+export const signOut = () => {
+  blockstack.signUserOut(window.location.origin)
+}
