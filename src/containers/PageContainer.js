@@ -24,10 +24,10 @@ WithAuthChallenge.propTypes = {
 }
 
 const WithData = connect(
-  state => ({ identity: state.blockstack.identity }),
+  state => ({ identity: state.auth.identity }),
   dispatch => ({
-    redirectToSignIn: actions.blockstack.redirectToSignIn,
-    onSignOut: actions.blockstack.signOut
+    redirectToSignIn: actions.auth.redirectToSignIn,
+    onSignOut: actions.auth.signOut
   })
 )
 

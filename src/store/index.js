@@ -8,14 +8,14 @@ import thunk from 'redux-thunk'
 import createHistory from 'history/createBrowserHistory'
 import { createLogger } from 'redux-logger'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
-import * as blockstack from './blockstack'
+import * as auth from './auth'
 
 export const actions = {
-  blockstack: blockstack.actions
+  auth: auth.actions
 }
 
 const reducer = combineReducers({
-  [blockstack.namespace]: blockstack.reducer,
+  [auth.namespace]: auth.reducer,
   router: routerReducer
 })
 

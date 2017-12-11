@@ -7,7 +7,7 @@ import registerServiceWorker from './registerServiceWorker'
 import { store, history, actions } from './store'
 import { Routes } from './routes'
 
-store.dispatch(actions.blockstack.checkAuth())
+store.dispatch(actions.auth.checkAuth())
 
 ReactDOM.render(
   <Provider store={store}>
