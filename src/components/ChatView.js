@@ -36,28 +36,69 @@ const Messaging = styled.div`
   overflow-y: auto;
 `
 
-export const ChatView = ({ onSignOut, messages }) => {
-  const messageEls = messages.map(({ text, sender, ...msg }, i) => (
-    <Message key={i}
-             direction={sender.isCurrentUser ? 'right' : 'left'}
-             sender={sender}
-             paragraphs={[{ text }]}
-             {...msg}/>
-  ))
+export class ChatView extends React.Component {
+  constructor() {
+    super()
 
-  return (
-    <MainLayout>
-      <AppBar onSignOut={onSignOut} />
-      <BodyLayout>
-        <Contacts>
-          this will be a list of contacts probably
-        </Contacts>
-        <Messaging>
-          {messageEls}
-        </Messaging>
-      </BodyLayout>
-    </MainLayout>
-  )
+    this.state = {
+      msgInput: '',
+      ownMessages: []
+    }
+  }
+
+  onMsgInputChange = evt => {
+    this.setState({ msgInput: evt.target.value })
+  }
+
+  onMsgInputKeyUp = evt => {
+    if (evt.keyCode === 13) {
+      this.setState({
+        ownMessages: [...this.state.ownMessages, {
+          sender: {
+            isCurrentUser: true,
+            displayName: 'you',
+            avatar: { url: 'https://lorempixel.com/64/64' }
+          },
+          timestamp: new Date(),
+          text: this.state.msgInput
+        }],
+        msgInput: ''
+      })
+    }
+  }
+
+  render() {
+    const { messages, onSignOut } = this.props
+
+    const messageEls = messages.concat(this.state.ownMessages)
+      .map(({ text, sender, ...msg }, i) => (
+        <Message key={i}
+                 direction={sender.isCurrentUser ? 'right' : 'left'}
+                 sender={sender}
+                 paragraphs={[{ text }]}
+                 {...msg}/>
+      ))
+
+    return (
+      <MainLayout>
+        <AppBar onSignOut={onSignOut} />
+        <BodyLayout>
+          <Contacts>
+            this will be a list of contacts probably
+          </Contacts>
+          <Messaging>
+            {messageEls}
+            <input type="text"
+                   placeholder="type your message"
+                   style={{width: '100%'}}
+                   value={this.state.msgInput}
+                   onChange={this.onMsgInputChange}
+                   onKeyUp={this.onMsgInputKeyUp}/>
+          </Messaging>
+        </BodyLayout>
+      </MainLayout>
+    )
+  }
 }
 ChatView.propTypes = {
   messages: PropTypes.arrayOf(PropTypes.shape({
