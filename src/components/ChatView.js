@@ -41,8 +41,7 @@ export class ChatView extends React.Component {
     super()
 
     this.state = {
-      msgInput: '',
-      ownMessages: []
+      msgInput: ''
     }
   }
 
@@ -52,16 +51,8 @@ export class ChatView extends React.Component {
 
   onMsgInputKeyUp = evt => {
     if (evt.keyCode === 13) {
+      this.props.onSendMessage(this.state.msgInput)
       this.setState({
-        ownMessages: [...this.state.ownMessages, {
-          sender: {
-            isCurrentUser: true,
-            displayName: 'you',
-            avatar: { url: 'https://lorempixel.com/64/64' }
-          },
-          timestamp: new Date(),
-          text: this.state.msgInput
-        }],
         msgInput: ''
       })
     }
@@ -70,14 +61,13 @@ export class ChatView extends React.Component {
   render() {
     const { messages, onSignOut } = this.props
 
-    const messageEls = messages.concat(this.state.ownMessages)
-      .map(({ text, sender, ...msg }, i) => (
-        <Message key={i}
-                 direction={sender.isCurrentUser ? 'right' : 'left'}
-                 sender={sender}
-                 paragraphs={[{ text }]}
-                 {...msg}/>
-      ))
+    const messageEls = messages.map(({ text, sender, ...msg }, i) => (
+      <Message key={i}
+               direction={sender.isCurrentUser ? 'right' : 'left'}
+               sender={sender}
+               paragraphs={[{ text }]}
+               {...msg}/>
+    ))
 
     return (
       <MainLayout>
@@ -110,5 +100,6 @@ ChatView.propTypes = {
     timestamp: PropTypes.instanceOf(Date).isRequired,
     text: PropTypes.string.isRequired
   })),
+  onSendMessage: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired
 }
