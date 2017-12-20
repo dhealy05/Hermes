@@ -1,8 +1,4 @@
 import React from 'react'
-import { PageContainer } from '../containers/PageContainer'
+import { ChatViewContainer } from '../containers/ChatViewContainer'
 
-export const Home = props => (
-  <PageContainer>
-    Hello world
-  </PageContainer>
-)
+export const Home = props => <ChatViewContainer/>
