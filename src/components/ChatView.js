@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Message } from './Message'
+import { AppBar } from './AppBar'
 
 const MainLayout = styled.div`
   position: absolute;
@@ -22,18 +23,6 @@ const BodyLayout = styled.div`
   width: 100%;
 `
 
-const AppBarContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 72px;
-  width: 100%;
-  border-bottom: 1px solid ${colors.border}
-`
-
-const AppBarInner = styled.div`
-  margin: 22px 36px;
-`
-
 const Contacts = styled.div`
   min-width: 16.66%;
   flex-grow: 1;
@@ -47,8 +36,8 @@ const Messaging = styled.div`
   overflow-y: auto;
 `
 
-export const ChatView = props => {
-  const messages = props.messages.map(({ text, sender, ...msg }, i) => (
+export const ChatView = ({ onSignOut, messages }) => {
+  const messageEls = messages.map(({ text, sender, ...msg }, i) => (
     <Message key={i}
              direction={sender.isCurrentUser ? 'right' : 'left'}
              sender={sender}
@@ -58,15 +47,13 @@ export const ChatView = props => {
 
   return (
     <MainLayout>
-      <AppBarContainer>
-        <AppBarInner>dchat</AppBarInner>
-      </AppBarContainer>
+      <AppBar onSignOut={onSignOut} />
       <BodyLayout>
         <Contacts>
           this will be a list of contacts probably
         </Contacts>
         <Messaging>
-          {messages}
+          {messageEls}
         </Messaging>
       </BodyLayout>
     </MainLayout>
@@ -81,5 +68,6 @@ ChatView.propTypes = {
     }).isRequired,
     timestamp: PropTypes.instanceOf(Date).isRequired,
     text: PropTypes.string.isRequired
-  }))
+  })),
+  onSignOut: PropTypes.func.isRequired
 }

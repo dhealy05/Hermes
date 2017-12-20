@@ -10,3 +10,6 @@ storiesOf('Forms/Button', module)
   .add('with emojis', () => (
     <Button onClick={action('clicked')}>Spooky 👻</Button>
   ))
+  .add('link button', () => (
+    <Button onClick={action('clicked')} linkButton>a link button</Button>
+  ))

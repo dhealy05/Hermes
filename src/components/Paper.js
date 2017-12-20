@@ -27,14 +27,26 @@ export const Paper = styled.div`
   ${props => props.circle && css`
     border-radius: 50%;
   `}
+
+  ${props => props.unstyled && css`
+    box-shadow: none;
+    border: none;
+ 
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  `}
 `
 Paper.propTypes = {
   layer: PropTypes.oneOf([1, 2, 3]),
   popOnHover: PropTypes.bool,
-  circle: PropTypes.bool
+  circle: PropTypes.bool,
+  unstyled: PropTypes.bool
 }
 Paper.defaultProps = {
   layer: 1,
-  circle: false
+  circle: false,
+  unstyled: false
 }
 Paper.MAX_LAYER = 3

@@ -8,9 +8,10 @@ export const BaseButton = styled.button`
   font-size: 1em;
   background: white;
   padding: 0.5rem;
-  border: 1px solid #e5e5e5;
+  border: 0;
   min-width: 5em;
   transition: 0.1s all;
+  cursor: pointer;
 
   &:focus {
     outline: none;
@@ -21,14 +22,36 @@ export const BaseButton = styled.button`
   }
 `
 
-export const Button = ({ className, layer, onClick, children }) => (
-  <Paper layer={layer} popOnHover>
-    <BaseButton className={className} onClick={onClick}>
-      {children}
-    </BaseButton>
-  </Paper>
-)
+export const LinkButton = BaseButton.extend`
+  text-decoration: underline;
+
+  &:active {
+    background-color: initial;
+  }
+`
+
+export const Button = ({
+  className,
+  layer,
+  onClick,
+  linkButton,
+  children
+}) => {
+  const ActualButton = linkButton ? LinkButton : BaseButton
+
+  return (
+    <Paper unstyled={linkButton}
+           layer={layer}
+           popOnHover>
+      <ActualButton className={className}
+                    onClick={onClick}>
+        {children}
+      </ActualButton>
+    </Paper>
+  )
+}
 Button.propTypes = {
   onClick: PropTypes.func,
-  layer: PropTypes.number
+  layer: PropTypes.number,
+  linkButton: PropTypes.bool
 }

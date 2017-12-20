@@ -1,6 +1,8 @@
 import React from 'react'
-import { renderComponent } from 'recompose'
+import { compose, withProps } from 'recompose'
+import { connect } from 'react-redux'
 import { ChatView } from '../components/ChatView'
+import { WithAuthChallenge } from './WithAuthChallenge'
 
 const senders = {
   robBoss: {
@@ -64,6 +66,7 @@ const chat = {
   }]
 }
 
-export const ChatViewContainer = () => (
-  <ChatView {...chat}/>
-)
+export const ChatViewContainer = compose(
+  WithAuthChallenge,
+  withProps({ ...chat })
+)(ChatView)
