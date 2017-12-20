@@ -9,13 +9,19 @@ import createHistory from 'history/createBrowserHistory'
 import { createLogger } from 'redux-logger'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import * as auth from './auth'
+import * as chat from './chat'
+import * as contacts from './contacts'
 
 export const actions = {
-  auth: auth.actions
+  auth: auth.actions,
+  chat: chat.actions,
+  contacts: contacts.actions
 }
 
 const reducer = combineReducers({
   [auth.namespace]: auth.reducer,
+  [chat.namespace]: chat.reducer,
+  [contacts.namespace]: contacts.reducer,
   router: routerReducer
 })
 

@@ -34,7 +34,7 @@ Paper.propTypes = {
   circle: PropTypes.bool
 }
 Paper.defaultProps = {
-  layer: 2,
+  layer: 1,
   circle: false
 }
 Paper.MAX_LAYER = 3

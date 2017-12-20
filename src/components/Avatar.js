@@ -14,17 +14,14 @@ export const Circle = styled(Paper).attrs({
   `}
 `
 
-export const Avatar = props => {
-  // TODO proper default image
-  const image = props.image
-
-  return (
-    <Circle layer={3}
-            popOnHover
-            background={image}
-            onClick={props.onClick}/>
-  )
-}
+// TODO default image
+export const Avatar = ({ image, onClick, ...other }) => (
+  <Circle layer={3}
+          popOnHover
+          background={image}
+          onClick={onClick}
+          {...other}/>
+)
 Avatar.propTypes = {
   image: PropTypes.string,
   onClick: PropTypes.func
