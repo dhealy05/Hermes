@@ -9,7 +9,7 @@ export const sendMessage = text => dispatch =>
     sender: {
       isCurrentUser: true,
       displayName: 'you',
-      avatar: { url: 'https://lorempixel.com/64/64' }
+      avatar: { url: 'https://lorempixel.com/65/65' }
     },
     timestamp: moment(new Date()).toISOString(),
     text

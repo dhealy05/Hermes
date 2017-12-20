@@ -12,6 +12,7 @@ export const ChatViewContainer = compose(
       messages: state.chat.messages
     }),
     dispatch => ({
+      onRecvMessage: payload => dispatch(actions.chat.recvMessage(payload)),
       onSendMessage: text => dispatch(actions.chat.sendMessage(text))
     })
   )

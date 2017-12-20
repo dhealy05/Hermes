@@ -1,9 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import moment from 'moment'
+import * as faker from 'faker'
 import * as colors from '../colors'
 import { Message } from './Message'
 import { AppBar } from './AppBar'
+import { Button } from './Button'
 
 const MainLayout = styled.div`
   position: absolute;
@@ -38,12 +41,25 @@ const Messaging = styled.div`
 `
 
 export class ChatView extends React.Component {
-  constructor() {
-    super()
+  state = {
+    msgInput: ''
+  }
 
-    this.state = {
-      msgInput: ''
-    }
+  senderIdx = 1
+
+  recvFakeMessage = () => {
+    this.props.onRecvMessage({
+      sender: {
+        displayName: faker.name.findName(),
+        avatar: {
+          url: `https://lorempixel.com/${65 + this.senderIdx}/${65 + this.senderIdx}`
+        }
+      },
+      timestamp: moment().toISOString(),
+      text: faker.lorem.paragraph()
+    })
+
+    this.senderIdx++
   }
 
   onMsgInputChange = evt => {
@@ -75,7 +91,9 @@ export class ChatView extends React.Component {
         <AppBar onSignOut={onSignOut} />
         <BodyLayout>
           <Contacts>
-            this will be a list of contacts probably
+            <Button linkButton onClick={this.recvFakeMessage}>
+              get mock message
+            </Button>
           </Contacts>
           <Messaging>
             {messageEls}
@@ -101,6 +119,7 @@ ChatView.propTypes = {
     timestamp: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired
   })),
+  onRecvMessage: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired
 }
