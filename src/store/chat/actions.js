@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { payloadAction } from '../util'
 
 export const RECV_MESSAGE = 'RECV_MESSAGE'
@@ -10,6 +11,6 @@ export const sendMessage = text => dispatch =>
       displayName: 'you',
       avatar: { url: 'https://lorempixel.com/64/64' }
     },
-    timestamp: new Date(),
+    timestamp: moment(new Date()).toISOString(),
     text
   }))

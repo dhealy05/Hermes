@@ -1,3 +1,4 @@
+import moment from 'moment'
 import * as _actions from './actions'
 
 const robBoss = {
@@ -13,7 +14,7 @@ const initialState = {
   // TODO messages should be organized by conversation, but this is a start
   messages: [{
     sender: robBoss,
-    timestamp: new Date(),
+    timestamp: moment().toISOString(),
     text: `
       All you need to paint is a few tools, a little instruction, and a vision in
       your mind. This is probably the greatest thing to happen in my life - to be
@@ -24,7 +25,7 @@ const initialState = {
     `
   },{
     sender: robBoss,
-    timestamp: new Date(),
+    timestamp: moment().toISOString(),
     text: `
       Hello? Are you still there?
     `

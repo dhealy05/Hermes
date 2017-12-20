@@ -32,7 +32,8 @@ const Contacts = styled.div`
 
 const Messaging = styled.div`
   flex-grow: 5;
-  margin: 24px;
+  // use padding because margin cuts off shadows at the edge
+  padding: 24px;
   overflow-y: auto;
 `
 
@@ -97,7 +98,7 @@ ChatView.propTypes = {
       avatar: PropTypes.shape({ url: PropTypes.string.isRequired }),
       displayName: PropTypes.string.isRequired
     }).isRequired,
-    timestamp: PropTypes.instanceOf(Date).isRequired,
+    timestamp: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired
   })),
   onSendMessage: PropTypes.func.isRequired,

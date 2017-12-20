@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
+import moment from 'moment'
 import * as colors from '../colors'
 import { Avatar } from './Avatar'
 
@@ -47,17 +48,7 @@ const Paragraph = styled.div`
   text-align: justify;
 `
 
-const formatTime = date => {
-  let hours = date.getHours()
-  const minutes = date.getMinutes()
-  const period = hours >= 12 ? 'pm' : 'am'
-
-  if (hours > 12) {
-    hours -= 12
-  }
-
-  return `${hours}:${minutes}${period}`
-}
+const formatTime = isostring => moment(isostring).format('h:mma')
 
 export const Message = ({ direction = 'left', sender, timestamp, paragraphs }) => {
   const time = formatTime(timestamp)
@@ -84,7 +75,7 @@ Message.propTypes = {
     avatar: PropTypes.shape({ url: PropTypes.string.isRequired }),
     displayName: PropTypes.string.isRequired
   }).isRequired,
-  timestamp: PropTypes.instanceOf(Date).isRequired,
+  timestamp: PropTypes.string.isRequired,
   paragraphs: PropTypes.arrayOf(PropTypes.shape({
     text: PropTypes.string.isRequired
   }))
