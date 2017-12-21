@@ -9,17 +9,21 @@ const OuterContainer = styled.div`
   display: flex;
   margin-bottom: 14px;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   ${props => ((props.direction === 'right') && css`
-flex-direction: row-reverse;
+    flex-direction: row-reverse;
 
-                     & ${SenderAvatar} {
-                       margin-right: 0;
-                       margin-left: 24px;
-                     }
+    & ${SenderAvatar} {
+      margin-right: 0;
+      margin-left: 24px;
+    }
 
-                     & ${SenderDetails} {
-                       text-align: right;
-                     }
+    & ${SenderDetails} {
+      text-align: right;
+    }
 `)}
 `
 

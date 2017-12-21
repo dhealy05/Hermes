@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Paper } from './Paper'
 
 const Input = styled.input.attrs({
@@ -21,6 +21,10 @@ const Outer = styled.div`
 
 const Inner = styled(Paper)`
   padding: 0.5rem;
+
+  ${props => props.fullWidth && css`
+    display: flex;
+  `}
 `
 
 const Label = styled.label`
@@ -29,16 +33,23 @@ const Label = styled.label`
   display: block;
 `
 
-export const TextInput = ({ layer, label, ...other }) => (
-  <Outer>
+export const TextInput = ({
+  className,
+  fullWidth,
+  layer,
+  label,
+  ...other
+}) => (
+  <Outer className={className}>
     { label ? <Label>{label}</Label> : null }
-    <Inner layer={layer}>
+    <Inner layer={layer} fullWidth={fullWidth}>
       <Input {...other}/>
     </Inner>
   </Outer>
 )
 TextInput.propTypes = {
   layer: Paper.propTypes.layer,
+  fullWidth: PropTypes.bool,
   block: PropTypes.bool
 }
 TextInput.defaultProps = {

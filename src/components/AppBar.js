@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Button } from './Button'
+import { Paper } from './Paper'
 
-const OuterContainer = styled.div`
+const OuterContainer = styled(Paper).attrs({
+  layer: 1
+})`
   display: flex;
-  align-items: center;
+  flex-shrink: 0;
   height: 72px;
   width: 100%;
   border-bottom: 1px solid ${colors.border}
@@ -16,6 +19,7 @@ const InnerContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
+  align-items: center;
   margin: 22px 36px;
 `
 

@@ -1,12 +1,15 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import moment from 'moment'
 import * as faker from 'faker'
+import { get } from 'lodash'
 import * as colors from '../colors'
 import { Message } from './Message'
 import { AppBar } from './AppBar'
 import { Button } from './Button'
+import { TextInput } from './TextInput'
 
 const MainLayout = styled.div`
   position: absolute;
@@ -35,9 +38,22 @@ const Contacts = styled.div`
 
 const Messaging = styled.div`
   flex-grow: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+
+const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
   padding: 24px;
   overflow-y: auto;
+`
+
+const MessageInput = styled(TextInput).attrs({
+  layer: 2
+})`
+  margin: 24px;
+  margin-top: 0;
 `
 
 export class ChatView extends React.Component {
@@ -46,6 +62,36 @@ export class ChatView extends React.Component {
   }
 
   senderIdx = 1
+  messagesList = null
+  justReceivedNewMessage = false
+
+  componentWillReceiveProps(next, prev) {
+    if (get(next, 'messages.length', 0) !== get(prev, 'messages.length', 0)) {
+      /*
+         need to scroll to the bottom of the list when a new message is added,
+         but componentWillReceiveProps is called before the new message is
+         actually rendered. Mark a flag here to run the function in
+         componentDidUpdate
+      */
+      this.justReceivedNewMessage = true
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.justReceivedNewMessage) {
+      this.scrollToBottom()
+      this.justReceivedNewMessage = false
+    }
+  }
+
+  scrollToBottom = () => {
+    if (!this.messagesList) {
+      return
+    }
+
+    const node = ReactDOM.findDOMNode(this.messagesList)
+    node.scrollTop = node.scrollHeight
+  }
 
   recvFakeMessage = () => {
     this.props.onRecvMessage({
@@ -75,6 +121,8 @@ export class ChatView extends React.Component {
     }
   }
 
+  setMessagesList = el => this.messagesList = el
+
   render() {
     const { messages, onSignOut } = this.props
 
@@ -96,13 +144,15 @@ export class ChatView extends React.Component {
             </Button>
           </Contacts>
           <Messaging>
-            {messageEls}
-            <input type="text"
-                   placeholder="type your message"
-                   style={{width: '100%'}}
-                   value={this.state.msgInput}
-                   onChange={this.onMsgInputChange}
-                   onKeyUp={this.onMsgInputKeyUp}/>
+            <MessagesContainer ref={this.setMessagesList}>
+              {messageEls}
+            </MessagesContainer>
+            <MessageInput fullWidth
+                          placeholder="type your message"
+                          style={{width: '100%'}}
+                          value={this.state.msgInput}
+                          onChange={this.onMsgInputChange}
+                          onKeyUp={this.onMsgInputKeyUp}/>
           </Messaging>
         </BodyLayout>
       </MainLayout>
