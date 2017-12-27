@@ -45,7 +45,7 @@ const SenderName = styled.span`
 
 const Timestamp = styled.span`
   margin-left: 9px;
-  color: ${colors.border};
+  color: ${colors.greyDark};
 `
 
 const Paragraph = styled.div`

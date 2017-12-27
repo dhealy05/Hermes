@@ -9,10 +9,6 @@ export const brand = {
 
 export const grey = '#DAD5E0'
 export const greyLight = '#EBE9EE'
+export const greyDark = '#A199AB'
 export const white = '#FBFBFC'
 export const black = '#130727'
-
-export const navBar = brand.dark
-export const menuPane = brand.medium
-
-export const border = grey

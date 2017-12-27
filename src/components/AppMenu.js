@@ -9,7 +9,8 @@ const OuterContainer = styled.div`
   flex-grow: 1;
   padding: 18px;
   background-color: ${colors.white};
-  box-shadow: rgba(0, 0, 0, 0.5) 0 0 4px 1px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 0 4px 0;
+  z-index: 1;
 `
 
 const Title = styled.h2`

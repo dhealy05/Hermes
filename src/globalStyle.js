@@ -8,7 +8,7 @@ export function applyGlobalStyles() {
       font-weight: 300;
     }
 
-    input {
+    input, button {
       font-family: 'Oxygen', sans-serif;
     }
   `

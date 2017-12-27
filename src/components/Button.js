@@ -34,6 +34,8 @@ export const BaseButton = styled.button`
 `
 
 export const LinkButton = BaseButton.extend`
+  text-align: inherit;
+  padding: 0;
   color: ${colors.black};
   background-color: initial;
   text-decoration: underline;
