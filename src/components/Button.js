@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import * as colors from '../colors'
+import { Icon } from './Icon'
 import { Paper } from './Paper'
 
 export const BaseButton = styled.button`
   display: inline-block;
   font-size: 1em;
-  background: white;
+  background: ${colors.brand.light};
+  color: ${colors.white};
   padding: 0.5rem;
   border: 0;
   min-width: 5em;
@@ -17,35 +20,46 @@ export const BaseButton = styled.button`
     outline: none;
   }
 
-  &:active {
-    background-color: #fafafa;
+  &:hover {
+    background-color: ${colors.brand.medium};
   }
+
+  &:active {
+    background-color: ${colors.brand.dark};
+  }
+
+  ${props => props.icon && css`
+    min-width: initial;
+  `}
 `
 
 export const LinkButton = BaseButton.extend`
+  color: ${colors.black};
+  background-color: initial;
   text-decoration: underline;
 
-  &:active {
+  &:active, &:hover {
     background-color: initial;
   }
 `
 
 export const Button = ({
-  className,
   layer,
-  onClick,
   linkButton,
-  children
+  children,
+  icon,
+  ...other
 }) => {
   const ActualButton = linkButton ? LinkButton : BaseButton
+  const contents = icon ? <Icon icon={icon}/> : children
 
   return (
     <Paper unstyled={linkButton}
            layer={layer}
            popOnHover>
-      <ActualButton className={className}
-                    onClick={onClick}>
-        {children}
+      <ActualButton icon={icon}
+                    {...other}>
+        {contents}
       </ActualButton>
     </Paper>
   )
@@ -53,5 +67,6 @@ export const Button = ({
 Button.propTypes = {
   onClick: PropTypes.func,
   layer: PropTypes.number,
-  linkButton: PropTypes.bool
+  linkButton: PropTypes.bool,
+  icon: PropTypes.string
 }

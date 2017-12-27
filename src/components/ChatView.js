@@ -8,7 +8,7 @@ import { get } from 'lodash'
 import * as colors from '../colors'
 import { Message } from './Message'
 import { AppBar } from './AppBar'
-import { Button } from './Button'
+import { AppMenu } from './AppMenu'
 import { TextInput } from './TextInput'
 
 const MainLayout = styled.div`
@@ -18,22 +18,9 @@ const MainLayout = styled.div`
   bottom: 0;
   top: 0;
   display: flex;
-  flex-direction: column;
   width: 100%;
   height: 100%;
-`
-
-const BodyLayout = styled.div`
-  display: flex;
-  flex-grow: 1;
-  width: 100%;
-`
-
-const Contacts = styled.div`
-  min-width: 16.66%;
-  flex-grow: 1;
-  padding: 9px;
-  border-right: 1px solid ${colors.border};
+  background-color: ${colors.white};
 `
 
 const Messaging = styled.div`
@@ -137,24 +124,19 @@ export class ChatView extends React.Component {
     return (
       <MainLayout>
         <AppBar onSignOut={onSignOut} />
-        <BodyLayout>
-          <Contacts>
-            <Button linkButton onClick={this.recvFakeMessage}>
-              get mock message
-            </Button>
-          </Contacts>
-          <Messaging>
-            <MessagesContainer ref={this.setMessagesList}>
-              {messageEls}
-            </MessagesContainer>
-            <MessageInput fullWidth
-                          placeholder="type your message"
-                          style={{width: '100%'}}
-                          value={this.state.msgInput}
-                          onChange={this.onMsgInputChange}
-                          onKeyUp={this.onMsgInputKeyUp}/>
-          </Messaging>
-        </BodyLayout>
+        <AppMenu title="conversations"
+                 actions={[{ label: 'rob boss', handler: () => {}, isActive: true }, { label: 'someone else', handler: () => {} }]}/>
+        <Messaging>
+          <MessagesContainer ref={this.setMessagesList}>
+            {messageEls}
+          </MessagesContainer>
+          <MessageInput fullWidth
+                        placeholder="type your message"
+                        style={{width: '100%'}}
+                        value={this.state.msgInput}
+                        onChange={this.onMsgInputChange}
+                        onKeyUp={this.onMsgInputKeyUp}/>
+        </Messaging>
       </MainLayout>
     )
   }

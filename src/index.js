@@ -2,10 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
-import './index.css'
+import { applyGlobalStyles } from './globalStyle'
 import registerServiceWorker from './registerServiceWorker'
-import { store, history, actions } from './store'
 import { Routes } from './routes'
+import { store, history, actions } from './store'
+
+applyGlobalStyles()
 
 store.dispatch(actions.auth.checkAuth())
 

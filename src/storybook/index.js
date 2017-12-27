@@ -1,4 +1,4 @@
-import { applyGlobalStyles } from '../components/GlobalStyle'
+import { applyGlobalStyles } from '../globalStyle'
 
 import './Paper.story'
 

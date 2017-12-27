@@ -3,42 +3,37 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Button } from './Button'
+import { Icon } from './Icon'
 import { Paper } from './Paper'
 
 const OuterContainer = styled(Paper).attrs({
   layer: 1
 })`
-  display: flex;
   flex-shrink: 0;
-  height: 72px;
-  width: 100%;
-  border-bottom: 1px solid ${colors.border}
-`
-
-const InnerContainer = styled.div`
   display: flex;
-  width: 100%;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  margin: 22px 36px;
+  width: 36px;
+  height: calc(100% - (14px + 26px));
+  padding: 14px;
+  padding-top: 26px;
+  overflow: hidden;
+  background-color: ${colors.brand.medium};
+  color: ${colors.white};
+
+  & > *:not(:first-child) {
+    margin-top: 1em;
+  }
 `
 
 const Logo = styled.div`
 `
 
-const RightNav = styled.div`
-`
-
 export const AppBar = ({ onSignOut, className }) => (
-  <OuterContainer>
-    <InnerContainer className={className}>
-      <Logo>dchat</Logo>
-      <RightNav>
-        <Button onClick={onSignOut} linkButton>
-          sign out
-        </Button>
-      </RightNav>
-    </InnerContainer>
+  <OuterContainer className={className}>
+    <Logo>dchat</Logo>
+    <Button onClick={onSignOut} icon="exit_to_app"/>
   </OuterContainer>
 )
 AppBar.propTypes = {
