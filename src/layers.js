@@ -1,2 +1,2 @@
-export const AppMenu = 99
-export const AppBar = 9
+export const Sidebar = 99
+export const TopNav = 9

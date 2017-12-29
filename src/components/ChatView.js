@@ -5,39 +5,14 @@ import styled from 'styled-components'
 import moment from 'moment'
 import * as faker from 'faker'
 import { get } from 'lodash'
-import * as colors from '../colors'
+import { AppView } from './AppView'
 import { Message } from './Message'
-import { AppBar } from './AppBar'
-import { AppMenu } from './AppMenu'
 import { TextInput } from './TextInput'
 
-const AppLayout = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  display: flex;
-  background-color: ${colors.white};
-`
-
-const ViewOutlet = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`
-
-const Messaging = styled.div`
-  flex-grow: 5;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`
-
 const MessagesContainer = styled.div`
-// use padding because margin cuts off shadows at the edge
-padding: 24px;
-overflow-y: auto;
+  // use padding because margin cuts off shadows at the edge
+  padding: 24px;
+  overflow-y: auto;
 `
 
 const MessageInput = styled(TextInput).attrs({
@@ -114,6 +89,14 @@ export class ChatView extends React.Component {
 
   setMessagesList = el => this.messagesList = el
 
+  renderSidebar() {
+    return (
+      <p>
+        hello from the other side
+      </p>
+    )
+  }
+
   render() {
     const { messages, onSignOut } = this.props
 
@@ -126,24 +109,18 @@ export class ChatView extends React.Component {
     ))
 
     return (
-      <AppLayout>
-        <AppMenu title="dchat"
-                 actions={[{ label: 'rob boss', handler: () => {}, isActive: true }, { label: 'someone else', handler: () => {} }]}/>
-        <ViewOutlet>
-          <AppBar onSignOut={onSignOut} />
-          <Messaging>
-            <MessagesContainer ref={this.setMessagesList}>
-              {messageEls}
-            </MessagesContainer>
-            <MessageInput fullWidth
-                          placeholder="type your message"
-                          style={{width: '100%'}}
-                          value={this.state.msgInput}
-                          onChange={this.onMsgInputChange}
-                          onKeyUp={this.onMsgInputKeyUp}/>
-          </Messaging>
-        </ViewOutlet>
-      </AppLayout>
+      <AppView onSignOut={onSignOut}
+               sidebarContent={this.renderSidebar()}>
+        <MessagesContainer ref={this.setMessagesList}>
+          {messageEls}
+        </MessagesContainer>
+        <MessageInput fullWidth
+                      placeholder="type your message"
+                      style={{width: '100%'}}
+                      value={this.state.msgInput}
+                      onChange={this.onMsgInputChange}
+                      onKeyUp={this.onMsgInputKeyUp}/>
+      </AppView>
     )
   }
 }

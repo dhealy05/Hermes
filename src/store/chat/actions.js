@@ -1,5 +1,4 @@
 import moment from 'moment'
-import * as blockstack from 'blockstack'
 import { payloadAction } from '../util'
 import { makeConversations } from './makeConversations'
 import { getThumbnails } from './getConversations'

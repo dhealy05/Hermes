@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import * as colors from '../colors'
 import * as layers from '../layers'
 import { Button } from './Button'
-import { Icon } from './Icon'
 import { Paper } from './Paper'
 
 const OuterContainer = styled(Paper).attrs({
@@ -20,21 +19,18 @@ const OuterContainer = styled(Paper).attrs({
   overflow: hidden;
   background-color: ${colors.white};
   color: ${colors.black};
-  z-index: ${layers.AppBar};
+  z-index: ${layers.TopNav};
   box-shadow: ${colors.border} 0 2px 4px 0;
 `
 
-const Logo = styled.div`
-`
-
-export const AppBar = ({ onSignOut, className }) => (
+export const TopNav = ({ onSignOut, className }) => (
   <OuterContainer className={className}>
     <Button onClick={onSignOut} icon="exit_to_app"/>
   </OuterContainer>
 )
-AppBar.propTypes = {
+TopNav.propTypes = {
   onSignOut: PropTypes.func
 }
-AppBar.defaultProps = {
+TopNav.defaultProps = {
   onSignOut: () => {}
 }

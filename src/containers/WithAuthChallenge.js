@@ -4,7 +4,6 @@ import { compose, branch, renderComponent } from 'recompose'
 import { connect } from 'react-redux'
 import { actions } from '../store'
 import { Button } from '../components/Button'
-import { Page } from '../components/Page'
 
 const SignInButton = props => (
   <Button onClick={props.redirectToSignIn}>
