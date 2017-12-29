@@ -1,6 +1,6 @@
 import * as blockstack from 'blockstack'
 
-export function makeConversations(){
+export function makeConversations() {
   var dummyArray = makeDummyMessageArray()
   var names = ["Mike Raymond", "Sarah Miller", "Jessica Belwick"]
   var blockstackIDs = ["mike", "sarah", "jessica"]
@@ -27,13 +27,10 @@ function makeMessage(content){
   return JSON.stringify(message)
 }
 
-function makeDummyMessageArray(){
-  var messageArray = []
-  var convo1 = ["Hey, we still on for Sunday?", "New phone, who dis?", "Mike!", "Oh cool. Yeah all good", "😅😅😅"]
-  var convo2 = ["Yo bro", "Yo yo yo, bro bro", "Bro bro yo, yo yo?", "Shut your mouth!"]
-  var convo3 = ["Miss you :/", "Miss you too <3", "So excited to see you!", "Likwise."]
-  messageArray.push(convo1)
-  messageArray.push(convo2)
-  messageArray.push(convo3)
-  return messageArray
+function makeDummyMessageArray() {
+  return [
+    ["Hey, we still on for Sunday?", "New phone, who dis?", "Mike!", "Oh cool. Yeah all good", "😅😅😅"],
+    ["Yo bro", "Yo yo yo, bro bro", "Bro bro yo, yo yo?", "Shut your mouth!"],
+    ["Miss you :/", "Miss you too <3", "So excited to see you!", "Likwise."]
+  ]
 }

@@ -27,10 +27,6 @@ export const BaseButton = styled.button`
   &:active {
     background-color: ${colors.brand.dark};
   }
-
-  ${props => props.icon && css`
-    min-width: initial;
-  `}
 `
 
 export const LinkButton = BaseButton.extend`
@@ -39,6 +35,7 @@ export const LinkButton = BaseButton.extend`
   color: ${colors.black};
   background-color: initial;
   text-decoration: underline;
+  min-width: initial;
 
   &:active, &:hover {
     background-color: initial;
@@ -52,15 +49,15 @@ export const Button = ({
   icon,
   ...other
 }) => {
-  const ActualButton = linkButton ? LinkButton : BaseButton
+  const unstyled = !!(linkButton || icon)
+  const ActualButton = unstyled ? LinkButton : BaseButton
   const contents = icon ? <Icon icon={icon}/> : children
 
   return (
-    <Paper unstyled={linkButton}
+    <Paper unstyled={unstyled}
            layer={layer}
            popOnHover>
-      <ActualButton icon={icon}
-                    {...other}>
+      <ActualButton {...other}>
         {contents}
       </ActualButton>
     </Paper>

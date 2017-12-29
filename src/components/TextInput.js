@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
+import * as colors from '../colors'
 import { Paper } from './Paper'
 
 const Input = styled.input.attrs({
@@ -8,6 +9,7 @@ const Input = styled.input.attrs({
 })`
   font-size: 1em;
   border: none;
+  background-color: ${colors.white};
 
   &:focus {
     outline: none;

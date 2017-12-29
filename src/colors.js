@@ -12,3 +12,5 @@ export const greyLight = '#EBE9EE'
 export const greyDark = '#A199AB'
 export const white = '#FBFBFC'
 export const black = '#130727'
+
+export const border = grey;

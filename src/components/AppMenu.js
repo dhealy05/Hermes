@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
+import * as layers from '../layers'
 import { Button } from './Button'
 
 const OuterContainer = styled.div`
@@ -9,8 +10,9 @@ const OuterContainer = styled.div`
   flex-grow: 1;
   padding: 18px;
   background-color: ${colors.white};
-  box-shadow: rgba(0, 0, 0, 0.5) 0 0 4px 0;
-  z-index: 1;
+  //border-right: 1px solid ${colors.border};
+  box-shadow: ${colors.border} 2px 0 4px 0;
+  z-index: ${layers.AppMenu};
 `
 
 const Title = styled.h2`
@@ -29,8 +31,8 @@ const ActionButton = styled(Button).attrs({ linkButton: true })``
 
 export const AppMenu = ({ className, title, actions = [] }) => {
   const actionButtons = actions.map(({ label, handler }, i) => (
-    <ActionListItem>
-      <ActionButton key={i} onClick={handler}>
+    <ActionListItem key={i}>
+      <ActionButton onClick={handler}>
         {label}
       </ActionButton>
     </ActionListItem>

@@ -11,16 +11,20 @@ import { AppBar } from './AppBar'
 import { AppMenu } from './AppMenu'
 import { TextInput } from './TextInput'
 
-const MainLayout = styled.div`
+const AppLayout = styled.div`
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   top: 0;
   display: flex;
-  width: 100%;
-  height: 100%;
   background-color: ${colors.white};
+`
+
+const ViewOutlet = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `
 
 const Messaging = styled.div`
@@ -31,9 +35,9 @@ const Messaging = styled.div`
 `
 
 const MessagesContainer = styled.div`
-  // use padding because margin cuts off shadows at the edge
-  padding: 24px;
-  overflow-y: auto;
+// use padding because margin cuts off shadows at the edge
+padding: 24px;
+overflow-y: auto;
 `
 
 const MessageInput = styled(TextInput).attrs({
@@ -59,7 +63,7 @@ export class ChatView extends React.Component {
          but componentWillReceiveProps is called before the new message is
          actually rendered. Mark a flag here to run the function in
          componentDidUpdate
-      */
+       */
       this.justReceivedNewMessage = true
     }
   }
@@ -122,22 +126,24 @@ export class ChatView extends React.Component {
     ))
 
     return (
-      <MainLayout>
-        <AppBar onSignOut={onSignOut} />
-        <AppMenu title="conversations"
+      <AppLayout>
+        <AppMenu title="dchat"
                  actions={[{ label: 'rob boss', handler: () => {}, isActive: true }, { label: 'someone else', handler: () => {} }]}/>
-        <Messaging>
-          <MessagesContainer ref={this.setMessagesList}>
-            {messageEls}
-          </MessagesContainer>
-          <MessageInput fullWidth
-                        placeholder="type your message"
-                        style={{width: '100%'}}
-                        value={this.state.msgInput}
-                        onChange={this.onMsgInputChange}
-                        onKeyUp={this.onMsgInputKeyUp}/>
-        </Messaging>
-      </MainLayout>
+        <ViewOutlet>
+          <AppBar onSignOut={onSignOut} />
+          <Messaging>
+            <MessagesContainer ref={this.setMessagesList}>
+              {messageEls}
+            </MessagesContainer>
+            <MessageInput fullWidth
+                          placeholder="type your message"
+                          style={{width: '100%'}}
+                          value={this.state.msgInput}
+                          onChange={this.onMsgInputChange}
+                          onKeyUp={this.onMsgInputKeyUp}/>
+          </Messaging>
+        </ViewOutlet>
+      </AppLayout>
     )
   }
 }
