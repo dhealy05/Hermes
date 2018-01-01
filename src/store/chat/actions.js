@@ -1,18 +1,49 @@
 import moment from 'moment'
+import {
+  Conversation
+} from '../../models'
+import {
+  getConversations,
+  getConversationById
+} from '../../services'
 import { payloadAction } from '../util'
-import { makeConversations } from './makeConversations'
-import { getThumbnails } from './getConversations'
-import { getConversation } from './getConversations'
 
 export const RECV_MESSAGE = 'RECV_MESSAGE'
 export const recvMessage = payloadAction(RECV_MESSAGE)
 
-export const sendMessage = text => dispatch => {
-  //Uncomment and run to have dummy conversation data available
-  makeConversations()
-  //Run to retrive thumbnails of dummy conversation data
-  getThumbnails().then(t => console.info(t))
+export const START_LOADING_CONVERSATION_LIST = 'START_LOADING_CONVERSATION_LIST'
+export const startLoadingConversationList = payloadAction(START_LOADING_CONVERSATION_LIST)
 
+export const FINISH_LOADING_CONVERSATION_LIST = 'FINISH_LOADING_CONVERSATION_LIST'
+export const finishLoadingConversationList = payloadAction(FINISH_LOADING_CONVERSATION_LIST)
+
+export const START_LOADING_CONVERSATION_DETAILS = 'START_LOADING_CONVERSATION_DETAILS'
+export const startLoadingConversationDetails = payloadAction(START_LOADING_CONVERSATION_DETAILS)
+
+export const FINISH_LOADING_CONVERSATION_DETAILS = 'FINISH_LOADING_CONVERSATION_DETAILS'
+export const finishLoadingConversationDetails = payloadAction(FINISH_LOADING_CONVERSATION_DETAILS)
+
+export const SET_CONVERSATION = 'SET_CONVERSATION'
+export const setConversation = payloadAction(SET_CONVERSATION)
+
+export const fetchConversationList = () => async dispatch => {
+  dispatch(startLoadingConversationList())
+  const { conversations } = await getConversations()
+  for (const key in conversations) {
+    conversations[key] = new Conversation(conversations[key])
+  }
+  dispatch(finishLoadingConversationList(conversations))
+}
+
+export const fetchConversationDetails = id => async dispatch => {
+  dispatch(startLoadingConversationDetails(id))
+
+  const convo = await getConversationById(id)
+
+  dispatch(finishLoadingConversationDetails(id, convo))
+}
+
+export const sendMessage = text => dispatch => {
   if (text.length === 0) {
     return
   }

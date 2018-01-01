@@ -1,28 +1,21 @@
+import { Contact } from '../../models'
+import { getContacts } from '../../services'
 import { payloadAction } from '../util'
-
-export const START_LOADING_CONTACT = 'START_LOADING_CONTACT'
-export const startLoadingContact = payloadAction(START_LOADING_CONTACT)
-
-export const ERROR_LOADING_CONTACT = 'ERROR_LOADING_CONTACT'
-export const errorLoadingContact = payloadAction(ERROR_LOADING_CONTACT)
-
-export const FINISH_LOADING_CONTACT = 'FINISH_LOADING_CONTACT'
-export const finishLoadingContact = payloadAction(FINISH_LOADING_CONTACT)
 
 export const SET_CONTACT = 'SET_CONTACT'
 export const setContact = payloadAction(SET_CONTACT)
 
-export const loadContact = id => dispatch => {
-  dispatch(startLoadingContact())
+export const START_LOADING_CONTACTS = 'START_LOADING_CONTACTS'
+export const startLoadingContacts = payloadAction(START_LOADING_CONTACTS)
 
-  try {
-    const result = {
-      id: 'abcdef',
-      name: 'Foo Bar',
-      username: 'foobar'
-    }
-    dispatch(finishLoadingContact(result))
-  } catch (e) {
-    dispatch(errorLoadingContact(e))
+export const FINISH_LOADING_CONTACTS = 'FINISH_LOADING_CONTACTS'
+export const finishLoadingContacts = payloadAction(FINISH_LOADING_CONTACTS)
+
+export const fetchContacts = () => async dispatch => {
+  dispatch(startLoadingContacts())
+  const { contacts } = await getContacts()
+  for (const key in contacts) {
+    contacts[key] = new Contact(key)
   }
+  dispatch(finishLoadingContacts(contacts))
 }

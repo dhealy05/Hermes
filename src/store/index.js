@@ -11,8 +11,10 @@ import { routerReducer, routerMiddleware } from 'react-router-redux'
 import * as auth from './auth'
 import * as chat from './chat'
 import * as contacts from './contacts'
+import * as baseActions from './actions'
 
 export const actions = {
+  ...baseActions,
   auth: auth.actions,
   chat: chat.actions,
   contacts: contacts.actions

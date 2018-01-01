@@ -32,7 +32,9 @@ export class ChatView extends React.Component {
   justReceivedNewMessage = false
 
   componentWillReceiveProps(next, prev) {
-    if (get(next, 'messages.length', 0) !== get(prev, 'messages.length', 0)) {
+    const path = 'activeConversation.messages.length'
+
+    if (get(next, path, 0) !== get(prev, path, 0)) {
       /*
          need to scroll to the bottom of the list when a new message is added,
          but componentWillReceiveProps is called before the new message is
@@ -98,15 +100,14 @@ export class ChatView extends React.Component {
   }
 
   render() {
-    const { messages, onSignOut } = this.props
+    const { activeConversation, onSignOut } = this.props
 
-    const messageEls = messages.map(({ text, sender, ...msg }, i) => (
+    const messageEls = [] /*activeConversation.messages.map(({ content, }, i) => (
       <Message key={i}
                direction={sender.isCurrentUser ? 'right' : 'left'}
                sender={sender}
-               paragraphs={[{ text }]}
-               {...msg}/>
-    ))
+               paragraphs={[{ content }]}/>
+    ))*/
 
     return (
       <AppView onSignOut={onSignOut}
@@ -125,15 +126,8 @@ export class ChatView extends React.Component {
   }
 }
 ChatView.propTypes = {
-  messages: PropTypes.arrayOf(PropTypes.shape({
-    sender: PropTypes.shape({
-      isCurrentUser: PropTypes.bool,
-      avatar: PropTypes.shape({ url: PropTypes.string.isRequired }),
-      displayName: PropTypes.string.isRequired
-    }).isRequired,
-    timestamp: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired
-  })),
+  thumbnails: PropTypes.arrayOf(PropTypes.object),
+  activeConversation: PropTypes.object,
   onRecvMessage: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired

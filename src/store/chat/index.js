@@ -1,43 +1,54 @@
-import moment from 'moment'
+import { Conversation } from '../../models'
 import * as _actions from './actions'
-
-const robBoss = {
-  avatar: { url: 'https://lorempixel.com/64/64' },
-  displayName: 'rob boss'
-}
+import * as _selectors from './selectors'
 
 export const namespace = 'chat'
-
 export const actions = _actions
+export const selectors = _selectors
 
 const initialState = {
-  // TODO messages should be organized by conversation, but this is a start
-  messages: [{
-    sender: robBoss,
-    timestamp: moment().toISOString(),
-    text: `
-      All you need to paint is a few tools, a little instruction, and a vision in
-      your mind. This is probably the greatest thing to happen in my life - to be
-      able to share this with you. Let's build an almighty mountain. We'll put
-      some happy little leaves here and there. Maybe he has a little friend that
-      lives right over here. Steve wants reflections, so let's give him
-      reflections.
-    `
-  },{
-    sender: robBoss,
-    timestamp: moment().toISOString(),
-    text: `
-      Hello? Are you still there?
-    `
-  }]
+  loadingConversationMetadata: false,
+  activeConversation: null,
+  conversationMetadata: {},
+  conversationDetails: {}
 }
 
 export const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case actions.RECV_MESSAGE:
+    case actions.START_LOADING_CONVERSATION_LIST:
       return {
         ...state,
-        messages: [...state.messages, action.payload]
+        loadingConversationMetadata: true
+      }
+    case actions.FINISH_LOADING_CONVERSATION_LIST:
+      return {
+        ...state,
+        loadingConversationMetadata: false,
+        conversationMetadata: action.payload
+      }
+    case actions.START_LOADING_CONVERSATION_DETAILS:
+      return {
+        ...state,
+        conversationDetails: {
+          ...state.conversationDetails,
+          [Conversation.getId(action.payload)]: { ...action.payload, loading: true }
+        }
+      }
+    case actions.FINISH_LOADING_CONVERSATION_DETAILS:
+      return {
+        ...state,
+        conversationDetails: {
+          ...state.conversationDetails,
+          [Conversation.getId(action.payload)]: { ...action.payload, loading: false }
+        }
+      }
+    case actions.SET_CONVERSATION:
+      return {
+        ...state,
+        conversations: {
+          ...state.conversations,
+          [Conversation.getId(action.payload)]: action.payload
+        }
       }
     default:
       return state
