@@ -13,8 +13,8 @@ export const setup = () => async dispatch => {
     const conversations = data.conversations.reduce((accm, c) => ({ ...accm, [Conversation.getId(c)]: Conversation.getMetadata(c) }), {})
     const contacts = data.contacts.reduce((accm, c) => ({ ...accm, [c.id]: c }), {})
 
-    dispatch(chatActions.finishLoadingConversationList({ conversations }))
-    dispatch(contactActions.finishLoadingContacts({ contacts }))
+    dispatch(chatActions.finishLoadingConversationList(conversations))
+    dispatch(contactActions.finishLoadingContacts(contacts))
 
     data.conversations.forEach(c => dispatch(chatActions.finishLoadingConversationDetails(c)))
   }, 1000)

@@ -35,8 +35,14 @@ export const reducer = (state = initialState, action) => {
         }
       }
     case actions.FINISH_LOADING_CONVERSATION_DETAILS:
+      let { activeConversation } = state
+      if (!activeConversation) {
+        activeConversation = Conversation.getId(action.payload)
+      }
+
       return {
         ...state,
+        activeConversation,
         conversationDetails: {
           ...state.conversationDetails,
           [Conversation.getId(action.payload)]: { ...action.payload, loading: false }

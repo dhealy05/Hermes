@@ -14,16 +14,16 @@ const OuterContainer = styled.div`
   }
 
   ${props => ((props.direction === 'right') && css`
-    flex-direction: row-reverse;
+flex-direction: row-reverse;
 
-    & ${SenderAvatar} {
-      margin-right: 0;
-      margin-left: 24px;
-    }
+                     & ${SenderAvatar} {
+                       margin-right: 0;
+                       margin-left: 24px;
+                     }
 
-    & ${SenderDetails} {
-      text-align: right;
-    }
+                     & ${SenderDetails} {
+                       text-align: right;
+                     }
 `)}
 `
 
@@ -48,26 +48,24 @@ const Timestamp = styled.span`
   color: ${colors.greyDark};
 `
 
-const Paragraph = styled.div`
+const Content = styled.div`
   text-align: justify;
 `
 
 const formatTime = isostring => moment(isostring).format('h:mma')
 
-export const Message = ({ direction = 'left', sender, timestamp, paragraphs }) => {
+export const Message = ({ direction = 'left', sender, timestamp, content }) => {
   const time = formatTime(timestamp)
 
   return (
     <OuterContainer direction={direction}>
-      <SenderAvatar image={sender.avatar && sender.avatar.url}/>
+      <SenderAvatar image="https://lorempixel.com/64/64"/>
       <MessageText>
         <SenderDetails>
-          <SenderName>{sender.displayName}</SenderName>
+          <SenderName>{sender.name}</SenderName>
           <Timestamp>{time}</Timestamp>
         </SenderDetails>
-        {paragraphs.map((p, i) => (
-          <Paragraph key={i}>{p.text}</Paragraph>
-        ))}
+        <Content>{content}</Content>
       </MessageText>
     </OuterContainer>
   )
@@ -75,14 +73,11 @@ export const Message = ({ direction = 'left', sender, timestamp, paragraphs }) =
 Message.propTypes = {
   direction: PropTypes.oneOf(['left', 'right']),
   sender: PropTypes.shape({
-    isIdentity: PropTypes.bool,
-    avatar: PropTypes.shape({ url: PropTypes.string.isRequired }),
-    displayName: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
   }).isRequired,
   timestamp: PropTypes.string.isRequired,
-  paragraphs: PropTypes.arrayOf(PropTypes.shape({
-    text: PropTypes.string.isRequired
-  }))
+  content: PropTypes.string.isRequired
 }
 Message.defaultProps = {
   direction: 'left'

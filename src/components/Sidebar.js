@@ -6,10 +6,8 @@ import * as layers from '../layers'
 
 const OuterContainer = styled.div`
   min-width: 16.66%;
-  flex-grow: 1;
   padding: 18px;
   background-color: ${colors.white};
-  //border-right: 1px solid ${colors.border};
   box-shadow: ${colors.border} 2px 0 4px 0;
   z-index: ${layers.Sidebar};
 `

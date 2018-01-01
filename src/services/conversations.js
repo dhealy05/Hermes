@@ -1,7 +1,4 @@
-import {
-  ConversationListFile,
-  Conversation
-} from '../models'
+import { Conversation } from '../models'
 import { getJson, saveJson } from './blockstack'
 
 export async function getConversations() {

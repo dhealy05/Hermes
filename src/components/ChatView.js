@@ -100,14 +100,14 @@ export class ChatView extends React.Component {
   }
 
   render() {
-    const { activeConversation, onSignOut } = this.props
+    const { conversation, contacts, onSignOut } = this.props
 
-    const messageEls = [] /*activeConversation.messages.map(({ content, }, i) => (
+    const messageEls = conversation.messages.map(({ sender, content }, i) => (
       <Message key={i}
-               direction={sender.isCurrentUser ? 'right' : 'left'}
-               sender={sender}
-               paragraphs={[{ content }]}/>
-    ))*/
+               direction={'left'}
+               sender={contacts[sender]}
+               content={content}/>
+    ))
 
     return (
       <AppView onSignOut={onSignOut}
