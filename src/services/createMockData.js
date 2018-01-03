@@ -79,8 +79,15 @@ export const data = {
 }
 
 export async function createMockData() {
-  await Promise.all([
-    ...data.contacts.map(c => saveContactById(c.id, c)),
-    ...data.conversations.map(c => saveConversationById(Conversation.getId(c), c))
-  ])
+  // you'd think that sending these requests simultaneously would be a good
+  // idea, but apparently that causes blockstack hub to return 503s. is that a
+  // bug or a design decision??
+
+  for (const c of data.contacts) {
+    await saveContactById(c.id, c)
+  }
+
+  for (const c of data.conversations) {
+    await saveConversationById(Conversation.getId(c), c)
+  }
 }

@@ -15,7 +15,9 @@ export const fetchContacts = () => async dispatch => {
   dispatch(startLoadingContacts())
   const { contacts } = await getContacts()
   for (const key in contacts) {
-    contacts[key] = new Contact(key)
+    contacts[key] = new Contact(contacts[key])
   }
+  // TODO just here for demo purposes
+  contacts['you'] = new Contact({ id: 'you', name: 'You' })
   dispatch(finishLoadingContacts(contacts))
 }

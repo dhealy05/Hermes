@@ -1,4 +1,4 @@
-import { Conversation } from '../models'
+import { Conversation, Message } from '../models'
 import { getJson, saveJson } from './blockstack'
 
 export async function getConversations() {
@@ -26,6 +26,16 @@ export async function saveConversationById(id, convo) {
   await saveJson(filenameFromId(id), convo)
 
   return convo
+}
+
+export async function sendMessage(convoId, message) {
+  if (!(message instanceof Message)) {
+    throw new TypeError('must pass Message instance to sendMessage')
+  }
+
+  const convo = await getConversationById(convoId)
+  convo.messages.push(message)
+  return saveConversationById(convoId, convo)
 }
 
 const filenameFromId = id => `conversation_${id}.json`

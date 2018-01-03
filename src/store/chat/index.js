@@ -15,6 +15,11 @@ const initialState = {
 
 export const reducer = (state = initialState, action) => {
   switch(action.type) {
+    case actions.SET_ACTIVE_CONVERSATION:
+      return {
+        ...state,
+        activeConversation: action.payload
+      }
     case actions.START_LOADING_CONVERSATION_LIST:
       return {
         ...state,
@@ -31,7 +36,7 @@ export const reducer = (state = initialState, action) => {
         ...state,
         conversationDetails: {
           ...state.conversationDetails,
-          [Conversation.getId(action.payload)]: { ...action.payload, loading: true }
+          [action.payload]: { loading: true }
         }
       }
     case actions.FINISH_LOADING_CONVERSATION_DETAILS:
@@ -48,11 +53,11 @@ export const reducer = (state = initialState, action) => {
           [Conversation.getId(action.payload)]: { ...action.payload, loading: false }
         }
       }
-    case actions.SET_CONVERSATION:
+    case actions.SET_CONVERSATION_DETAILS:
       return {
         ...state,
-        conversations: {
-          ...state.conversations,
+        conversationDetails: {
+          ...state.conversationDetails,
           [Conversation.getId(action.payload)]: action.payload
         }
       }

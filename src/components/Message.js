@@ -76,7 +76,11 @@ Message.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  timestamp: PropTypes.string.isRequired,
+  timestamp: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(Date),
+    PropTypes.instanceOf(moment)
+  ]).isRequired,
   content: PropTypes.string.isRequired
 }
 Message.defaultProps = {

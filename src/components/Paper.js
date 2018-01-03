@@ -10,7 +10,7 @@ const layersToBlurSize = {
 
 export const Paper = styled.div`
   display: inline-block;
-  transition: 0.2s all;
+  transition: 0.2s transform;
 
   ${props => props.layer && css`
     box-shadow: rgba(0, 0, 0, 0.4) 0 1px ${layersToBlurSize[props.layer]}px 0;

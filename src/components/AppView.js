@@ -30,13 +30,11 @@ const MainOutlet = styled.div`
 
 export const AppView = ({
   onSignOut,
-  sidebarContent,
+  sidebar,
   children
 }) => (
   <Layout>
-    <Sidebar title="dchat">
-      {sidebarContent ? sidebarContent : null}
-    </Sidebar>
+    {sidebar ? sidebar : <Sidebar title="dchat"/>}
     <MainOutletContainer>
       <TopNav onSignOut={onSignOut}/>
       <MainOutlet>
@@ -47,6 +45,6 @@ export const AppView = ({
 )
 
 AppView.propTypes = {
-  renderSidebar: PropTypes.func,
+  sidebar: PropTypes.element,
   onSignOut: PropTypes.func
 }

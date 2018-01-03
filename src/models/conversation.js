@@ -4,6 +4,12 @@ export const ContentTypes = {
   Text: 1
 }
 
+export const ConversationMetadata = Model('ConversationMetadata', {
+  id: '',
+  contacts: [],
+  thumbnail: {}
+})
+
 export const Conversation = Model('Conversation', {
   /**
    * List of IDs of contacts involved in the conversation
@@ -38,7 +44,7 @@ Conversation.getThumbnail = convo => {
   }
 }
 
-Conversation.getMetadata = convo => ({
+Conversation.getMetadata = convo => new ConversationMetadata({
   id: Conversation.getId(convo),
   thumbnail: Conversation.getThumbnail(convo),
   contacts: convo.contacts

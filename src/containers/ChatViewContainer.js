@@ -1,8 +1,16 @@
-import { compose, lifecycle, branch, renderNothing } from 'recompose'
+import React from 'react'
+import {
+  compose,
+  lifecycle,
+  branch,
+  renderNothing,
+  withProps
+} from 'recompose'
 import { connect } from 'react-redux'
 import { ChatView } from '../components/ChatView'
-import { WithAuthChallenge } from './WithAuthChallenge'
 import { actions } from '../store'
+import { WithAuthChallenge } from './WithAuthChallenge'
+import { ChatSidebarContainer } from './ChatSidebarContainer'
 
 const WithRedux = connect(
   state => {
@@ -25,15 +33,16 @@ const WithRedux = connect(
   dispatch => ({
     loadInitialData: async () => {
       await dispatch(actions.setup())
-
-      // TODO right now actions.setup() directly inserts fake data into the redux store because blockstack is 503ing
-      //dispatch(actions.contacts.fetchContacts())
-      //dispatch(actions.chat.fetchConversationList())
+      dispatch(actions.contacts.fetchContacts())
+      dispatch(actions.chat.fetchConversationList())
     },
-    onRecvMessage: payload => dispatch(actions.chat.recvMessage(payload)),
     onSendMessage: text => dispatch(actions.chat.sendMessage(text))
   })
 )
+
+const WithSidebar = withProps({
+  sidebar: <ChatSidebarContainer/>
+})
 
 const WithLoader = branch(
   props => props.loading,
@@ -49,6 +58,7 @@ const WithDataOnLoad = lifecycle({
 export const ChatViewContainer = compose(
   WithAuthChallenge,
   WithRedux,
+  WithSidebar,
   WithDataOnLoad,
   WithLoader
 )(ChatView)

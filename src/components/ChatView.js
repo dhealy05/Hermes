@@ -61,21 +61,6 @@ export class ChatView extends React.Component {
     node.scrollTop = node.scrollHeight
   }
 
-  recvFakeMessage = () => {
-    this.props.onRecvMessage({
-      sender: {
-        displayName: faker.name.findName(),
-        avatar: {
-          url: `https://lorempixel.com/${65 + this.senderIdx}/${65 + this.senderIdx}`
-        }
-      },
-      timestamp: moment().toISOString(),
-      text: faker.lorem.paragraph()
-    })
-
-    this.senderIdx++
-  }
-
   onMsgInputChange = evt => {
     this.setState({ msgInput: evt.target.value })
   }
@@ -91,27 +76,21 @@ export class ChatView extends React.Component {
 
   setMessagesList = el => this.messagesList = el
 
-  renderSidebar() {
-    return (
-      <p>
-        hello from the other side
-      </p>
-    )
-  }
-
   render() {
-    const { conversation, contacts, onSignOut } = this.props
+    const { conversation, contacts, onSignOut, sidebar } = this.props
 
-    const messageEls = conversation.messages.map(({ sender, content }, i) => (
+    const messageEls = conversation.messages.map(({ sender, content, sentAt }, i) => (
+      // TODO figure out proper way to tell if the sender is the current user
       <Message key={i}
-               direction={'left'}
+               direction={sender === 'you' ? 'right' : 'left'}
                sender={contacts[sender]}
+               timestamp={sentAt}
                content={content}/>
     ))
 
     return (
       <AppView onSignOut={onSignOut}
-               sidebarContent={this.renderSidebar()}>
+               sidebar={sidebar}>
         <MessagesContainer ref={this.setMessagesList}>
           {messageEls}
         </MessagesContainer>
@@ -128,7 +107,7 @@ export class ChatView extends React.Component {
 ChatView.propTypes = {
   thumbnails: PropTypes.arrayOf(PropTypes.object),
   activeConversation: PropTypes.object,
-  onRecvMessage: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
-  onSignOut: PropTypes.func.isRequired
+  onSignOut: PropTypes.func.isRequired,
+  sidebar: PropTypes.element.isRequired
 }

@@ -10,6 +10,8 @@ export async function ensureFilesExist() {
     await saveJson('contacts.json', { contacts: {} })
   }
 
-  // uncomment to hydrate your datastore
-  // await createMockData()
+  // change to true to hydrate your datastore with MOCK DATA
+  if (false) {
+    await createMockData()
+  }
 }
