@@ -1,4 +1,4 @@
-import { getJson, saveJson } from './blockstack'
+import { getJson, saveJson, queryLocalNode } from './blockstack'
 import { createMockData } from './createMockData'
 
 export async function ensureFilesExist() {
@@ -11,7 +11,8 @@ export async function ensureFilesExist() {
   }
 
   // change to true to hydrate your datastore with MOCK DATA
-  if (false) {
-    await createMockData()
+  if (true) {
+    //await createMockData()
+    await queryLocalNode("x")
   }
 }
