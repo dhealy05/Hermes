@@ -1,8 +1,8 @@
-#Dchat—Decentralized, Serverless Chat using Blockstack
+**Dchat—Decentralized, Serverless Chat using Blockstack**
 
 There are countless examples of governments, corporations and other actors monitoring, surveilling and restricting communications channels. Dchat makes direct peer to peer communications possible, using no external servers or central points of failure, using Blockstack’s Atlas and Gaia routing and storage architecture, with the Bitcoin blockchain as the source of truth. Users own their own data, sharing only with whom they choose, thereby solving the problem of surveillance.
 
-#Discovery
+**Discovery**
 
 With Blockstack.js, it is possible to query a Blockstack ID for a given app and see any publicly readable file associated with this ID. It is also possible to query the local Blockstack Core Node for a list of all Blockstack IDs on the Bitcoin blockchain. From these two simple components, server less communications are possible.
 
@@ -16,7 +16,7 @@ How does Dan receive the response? In addition to polling the blockchain for new
 
 Now that they are communicating, Dan deletes his message to Lea from Introductions.json.
 
-#Potential Concerns
+**Potential Concerns**
 
 It’s not clear to me how much of the conversation should be publicly available. Since each party to the conversation will need to store their own copy anyways, it may be that the mutually-publicly readable conversation should have only the most recent 25 messages or something, in case of some kind of attack.
 
