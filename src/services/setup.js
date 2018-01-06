@@ -1,5 +1,7 @@
-import { getJson, saveJson, queryLocalNode } from './blockstack'
+import { getJson, saveJson } from './blockstack'
 import { createMockData } from './createMockData'
+import { queryLocalNode } from './discovery'
+import { testSecret } from './keys'
 
 export async function ensureFilesExist() {
   if (!(await getJson('conversations.json'))) {
@@ -13,6 +15,7 @@ export async function ensureFilesExist() {
   // change to true to hydrate your datastore with MOCK DATA
   if (true) {
     //await createMockData()
-    await queryLocalNode("x")
+    //await queryLocalNode("x")
+    testSecret()
   }
 }
