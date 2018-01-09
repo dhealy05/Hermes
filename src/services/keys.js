@@ -13,7 +13,7 @@ export function createKeys(){
   return dh
 }
 
-export function newMessage(blockstackID, text){
+/*export function newMessage(blockstackID, text){
   //getDiscoveryFile from blockstackID
   var discoverThem = getPublicJson(blockstackID, "discovery.json")
   var me = getJson("keys.json")
@@ -29,9 +29,9 @@ export function newMessage(blockstackID, text){
   var discoverMe = getJson("discovery.json")
   discoverMe.introductions.push(json)
   savePublicJson(discoverMe, "discovery.json")
-}
+}*/
 
-export function discoverConversation(blockstackID){
+/*export function discoverConversation(blockstackID){
   var discoverThem = getPublicJson(blockstackID, "discovery.json")
   if(discoverThem == 404){
     return;
@@ -46,10 +46,10 @@ export function discoverConversation(blockstackID){
       }
     }
   }
-}
+}*/
 
 export function updateConversations(convoID, blockstackID, text){
-  
+
 }
 
 export function computeSharedSecret(publicKey){
@@ -64,20 +64,39 @@ export function computeSharedSecret(publicKey){
 
 export function enableDiscovery(){
   var dh = createKeys()
-  var pk = dh.getPublicKey()
-  //saveJson("keys.json", dh) //Save Private Keys, Privately
-  //saveJson("discovery.json", pk) //This will be public--
+  console.log(dh)
+  var pubkey = dh.getPublicKey()
+  var privkey = dh.getPrivateKey()
+  var prime = dh.getPrime()
+  var keys = {
+    pubkey: pubkey,
+    privkey: privkey,
+    prime: prime
+  }
+  saveJson("keys.json", keys) //Save Private Keys, Privately
+  saveJson("discovery.json", pubkey) //This will be public--
   //first, the key, then an array of objects with the secret
   //and the identifier
   //var keys = getJson("keys.json")
   //console.log(keys)
 }
 
-export function testSecret(){
-  var me = createKeys()
-  var myKey = me.getPublicKey()
+export async function getMyKeys(){
+  var json = await getJson("keys.json")
+  var dh = crypto.createDiffieHellman(json.prime)
+  dh.setPublicKey(json.pubkey)
+  dh.setPrivateKey(json.privkey)
+  return dh
+}
+
+export async function testSecret(){
+  var me = await getMyKeys()
+  console.log(me)
+  var myKeyObject = await getJson("discovery.json")
+  var myKey = myKeyObject.data
 
   var otherPerson = createKeys()
+  console.log(otherPerson)
   var theirKey = otherPerson.getPublicKey()
 
   var mySecret = me.computeSecret(theirKey, null, "hex")
@@ -87,13 +106,18 @@ export function testSecret(){
   var evePublicKey = eve.getPublicKey()
   var eveSecret = eve.computeSecret(myKey, null, "hex")
 
-  console.log(theirSecret === mySecret)
-  console.log(eveSecret === mySecret)
+  console.log(mySecret)
+  console.log(theirSecret)
+  console.log(eveSecret)
+  console.log(theirSecret.equals(mySecret))
+  console.log(eveSecret.equals(mySecret))
 
-  var cypherTextObject = createCypherText(mySecret, "Go Bills!")
-  console.log(cypherTextObject.cypherText)
-  var decodedCypher = decodeCypherText(cypherTextObject, theirSecret)
+  var cypherTextObject = encodeText(mySecret, "Go Bills!")
+  console.log(cypherTextObject.encodedText)
+  var decodedCypher = decodeText(cypherTextObject, theirSecret)
+  var decodedCypher1 = decodeText(cypherTextObject, eveSecret)
   console.log(decodedCypher)
+  console.log(decodedCypher1)
 }
 
 export function makeCypher(secret){
@@ -121,3 +145,6 @@ export function decodeText(object, secret){
    var plainText = cypher.update(object.encodedText, null, "utf8");
    return plainText
 }
+
+//enableDiscovery()
+//testSecret()
