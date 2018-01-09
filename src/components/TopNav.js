@@ -21,6 +21,10 @@ const OuterContainer = styled(Paper).attrs({
   color: ${colors.black};
   z-index: ${layers.TopNav};
   box-shadow: ${colors.border} 0 2px 4px 0;
+
+  &:hover {
+    box-shadow: ${colors.border} 0 2px 4px 0;
+  }
 `
 
 export const TopNav = ({ onSignOut, className }) => (

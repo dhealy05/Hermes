@@ -6,8 +6,10 @@ import { Paper } from './Paper'
 export const Circle = styled(Paper).attrs({
   circle: true
 })`
-  width: 64px;
-  height: 64px;
+  ${props => css`
+    width: ${props.size}px;
+    height: ${props.size}px;
+  `}
 
   ${props => props.background && css`
     background-image: url('${props.background}');
@@ -24,8 +26,10 @@ export const Avatar = ({ image, onClick, ...other }) => (
 )
 Avatar.propTypes = {
   image: PropTypes.string,
+  size: PropTypes.number,
   onClick: PropTypes.func
 }
 Avatar.defaultProps = {
+  size: 64,
   onClick: () => {}
 }

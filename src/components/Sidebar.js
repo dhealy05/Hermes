@@ -6,13 +6,14 @@ import * as layers from '../layers'
 
 const OuterContainer = styled.div`
   min-width: 16.66%;
-  padding: 18px;
+  max-width: 20%;
   background-color: ${colors.white};
   box-shadow: ${colors.border} 2px 0 4px 0;
   z-index: ${layers.Sidebar};
 `
 
 const Title = styled.h2`
+  padding: 18px;
   margin-top: 0;
 `
 

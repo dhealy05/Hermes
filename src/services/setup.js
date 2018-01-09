@@ -13,9 +13,9 @@ export async function ensureFilesExist() {
   }
 
   // change to true to hydrate your datastore with MOCK DATA
-  if (true) {
-    //await createMockData()
-    //await queryLocalNode("x")
+  if (false) {
+    await createMockData()
+    await queryLocalNode("x")
     testSecret()
   }
 }

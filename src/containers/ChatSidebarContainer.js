@@ -1,36 +1,43 @@
 import React from 'react'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { map } from 'lodash'
 import { Button } from '../components/Button'
 import { Sidebar } from '../components/Sidebar'
-import { Conversation } from '../models'
+import { ThumbnailsList } from '../components/ThumbnailsList'
 import { actions } from '../store'
+import { Conversation } from '../models'
 
 const WithRedux = connect(
   state => ({
-    conversations: map(state.chat.conversationMetadata)
+    conversationsById: state.chat.conversationMetadata,
+    contactsById: state.contacts.contactsById
   }),
   dispatch => ({
-    selectActiveConversation: id => () => dispatch(actions.chat.setActiveConversation(id))
+    selectActiveConversation: id => dispatch(actions.chat.setActiveConversation(id))
   })
 )
 
-export const ChatSidebar = ({ conversations, selectActiveConversation }) => {
-  const convos = conversations.map(c => {
-    const id = Conversation.getId(c)
+export const ChatSidebar = ({ conversationsById, contactsById, selectActiveConversation }) => {
+  const thumbnails = map(conversationsById, c => {
+    const contacts = c.contacts.map(id => contactsById[id])
+    const title = contacts.map(c => c.name).join(', ')
 
-    return (
-      <Button key={id}
-              onClick={selectActiveConversation(id)}>
-        {c.contacts.join(', ')}
-      </Button>
-    )
+    return {
+      ...Conversation.getDefaultThumbnail(),
+
+      id: Conversation.getId(c),
+      title,
+
+      ...c.thumbnail
+    }
   })
 
   return (
     <Sidebar title="dchat">
-      {convos}
+      <ThumbnailsList thumbnails={thumbnails}
+                      onSelectConversation={selectActiveConversation}/>
     </Sidebar>
   )
 }

@@ -1,5 +1,7 @@
 import { Model } from './model'
 
+export const CURRENT_THUMBNAIL_VERSION = 1
+
 export const ContentTypes = {
   Text: 1
 }
@@ -24,23 +26,36 @@ export const Conversation = Model('Conversation', {
 
 Conversation.getId = ({ contacts }) => contacts.sort().join('-')
 
+Conversation.getDefaultThumbnail = () => ({
+  id: null,
+  version: CURRENT_THUMBNAIL_VERSION,
+  contentType: ContentTypes.Text,
+  content: '',
+  timestamp: new Date().toISOString()
+})
+
 Conversation.getThumbnail = convo => {
+  const id = Conversation.getId(convo)
+  const version = CURRENT_THUMBNAIL_VERSION
   const [firstMessage] = convo.messages
+
+  const base = Conversation.getDefaultThumbnail()
 
   if (!firstMessage) {
     return {
-      name: convo.name,
-      contentType: 1,
-      content: '',
-      time: new Date().toISOString()
+      ...base,
+      id,
+      version
     }
   }
 
   return {
-    name: convo.name,
+    ...base,
+    id,
+    version,
     contentType: firstMessage.type,
     content: firstMessage.content,
-    time: firstMessage.time
+    timestamp: firstMessage.time
   }
 }
 

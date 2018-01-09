@@ -2,6 +2,11 @@ import { getJson, saveJson } from './blockstack'
 const crypto = require('crypto');
 const group = "modp5";
 
+function getPublicJson() {}
+function savePublicJson() {}
+function createCypherText() {}
+function decodeCypherText() {}
+
 export function createKeys(){
   var dh = crypto.getDiffieHellman(group);
   dh.generateKeys();
@@ -68,7 +73,7 @@ export function enableDiscovery(){
   //console.log(keys)
 }
 
-function testSecret(){
+export function testSecret(){
   var me = createKeys()
   var myKey = me.getPublicKey()
 
@@ -116,5 +121,3 @@ export function decodeText(object, secret){
    var plainText = cypher.update(object.encodedText, null, "utf8");
    return plainText
 }
-
-testSecret()
