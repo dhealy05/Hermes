@@ -77,8 +77,6 @@ export function enableDiscovery(){
   saveJson("discovery.json", pubkey) //This will be public--
   //first, the key, then an array of objects with the secret
   //and the identifier
-  //var keys = getJson("keys.json")
-  //console.log(keys)
 }
 
 export async function getMyKeys(){
