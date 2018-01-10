@@ -5,8 +5,7 @@ import * as colors from '../colors'
 import * as layers from '../layers'
 
 const OuterContainer = styled.div`
-  min-width: 16.66%;
-  max-width: 20%;
+  width: 25%;
   background-color: ${colors.white};
   box-shadow: ${colors.border} 2px 0 4px 0;
   z-index: ${layers.Sidebar};

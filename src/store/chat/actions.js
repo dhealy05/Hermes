@@ -46,10 +46,7 @@ export const setConversationDetails = payloadAction(SET_CONVERSATION_DETAILS)
 
 export const fetchConversationList = () => async (dispatch, getState) => {
   dispatch(startLoadingConversationList())
-  const { conversations } = await getConversations()
-  for (const key in conversations) {
-    conversations[key] = new ConversationMetadata(conversations[key])
-  }
+  const conversations = await loadConversationMetadata()
 
   const { chat: { activeConversation, conversationDetails } } = getState()
 
@@ -84,4 +81,13 @@ export const sendMessage = text => async (dispatch, getState) => {
   })
 
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
+  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+}
+
+const loadConversationMetadata = async () => {
+  const { conversations } = await getConversations()
+  for (const key in conversations) {
+    conversations[key] = new ConversationMetadata(conversations[key])
+  }
+  return conversations
 }

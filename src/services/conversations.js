@@ -33,8 +33,10 @@ export async function sendMessage(convoId, message) {
     throw new TypeError('must pass Message instance to sendMessage')
   }
 
+  message.sentAt = new Date().toISOString()
+
   const convo = await getConversationById(convoId)
-  convo.messages.push(message)
+  convo.messages.unshift(message)
   return saveConversationById(convoId, convo)
 }
 

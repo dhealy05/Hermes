@@ -55,7 +55,8 @@ Conversation.getThumbnail = convo => {
     version,
     contentType: firstMessage.type,
     content: firstMessage.content,
-    timestamp: firstMessage.time
+    lastSender: firstMessage.sender,
+    timestamp: firstMessage.sentAt
   }
 }
 

@@ -23,12 +23,15 @@ export const ChatSidebar = ({ conversationsById, contactsById, selectActiveConve
   const thumbnails = map(conversationsById, c => {
     const contacts = c.contacts.map(id => contactsById[id])
     const title = contacts.map(c => c.name).join(', ')
+    const lastSender = contactsById[c.thumbnail.lastSender]
+    const lastSenderName = (lastSender && lastSender.name) || 'anon'
 
     return {
       ...Conversation.getDefaultThumbnail(),
 
       id: Conversation.getId(c),
       title,
+      lastSenderName,
 
       ...c.thumbnail
     }

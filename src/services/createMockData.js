@@ -40,8 +40,8 @@ export const data = {
       messages: [
         new Message({
           sender: 'sarah',
-          content: 'hi',
-          sentAt: new Date('1970-01-01T00:00:00')
+          content: 'general kenobi!',
+          sentAt: new Date('1970-01-03T00:00:00')
         }),
         new Message({
           sender: 'you',
@@ -50,8 +50,8 @@ export const data = {
         }),
         new Message({
           sender: 'sarah',
-          content: 'general kenobi!',
-          sentAt: new Date('1970-01-03T00:00:00')
+          content: 'hi',
+          sentAt: new Date('1970-01-01T00:00:00')
         })
       ]
     }),
@@ -59,9 +59,9 @@ export const data = {
       contacts: ['sarah', 'jessica'],
       messages: [
         new Message({
-          sender: 'sarah',
-          content: 'here come',
-          sentAt: new Date('1970-01-01T00:00:00')
+          sender: 'jessica',
+          content: 'boi',
+          sentAt: new Date('1970-01-03T00:00:00')
         }),
         new Message({
           sender: 'you',
@@ -69,9 +69,9 @@ export const data = {
           sentAt: new Date('1970-01-02T00:00:00')
         }),
         new Message({
-          sender: 'jessica',
-          content: 'boi',
-          sentAt: new Date('1970-01-03T00:00:00')
+          sender: 'sarah',
+          content: 'here come',
+          sentAt: new Date('1970-01-01T00:00:00')
         })
       ]
     })

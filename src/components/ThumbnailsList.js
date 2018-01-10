@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Conversation, ContentTypes } from '../models'
+import { formatTime } from '../services/formatTime'
 import { Avatar } from './Avatar'
 
 const List = styled.ul`
@@ -51,27 +51,15 @@ const Date = styled.div`
 
 const TextPreview = styled.div`
   color: ${colors.greyDark};
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `
-
-const fmtTime = iso => {
-  const now = moment()
-  const m = moment(iso)
-
-  if (now.isSame(m, 'day')) {
-    return m.format('h:mma')
-  }
-
-  if (now.subtract(7, 'days') < m) {
-    return m.format('ddd')
-  }
-
-  return m.format('MMM Mo')
-}
 
 export const ThumbnailsList = props => {
   const items = props.thumbnails.map(t => {
     const preview = t.contentType === ContentTypes.Text
-                  ? <TextPreview>{t.content}</TextPreview>
+                  ? <TextPreview>{t.lastSenderName}: {t.content}</TextPreview>
                   : null
 
     return (
@@ -82,7 +70,7 @@ export const ThumbnailsList = props => {
         <TextContainer>
           <TitleContainer>
             <Title>{t.title}</Title>
-            <Date>{fmtTime(t.timestamp)}</Date>
+            <Date>{formatTime(t.timestamp)}</Date>
           </TitleContainer>
           {preview}
         </TextContainer>
@@ -102,6 +90,7 @@ ThumbnailsList.propTypes = {
     title: PropTypes.string.isRequired,
     contentType: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
+    lastSenderName: PropTypes.string.isRequired,
     timestamp: PropTypes.string.isRequired
   })).isRequired,
   onSelectConversation: PropTypes.func.isRequired
