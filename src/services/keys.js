@@ -1,6 +1,8 @@
 import {getJson} from './blockstack'
 const crypto = require('crypto');
 const group = "modp5";
+const cypherType = "aes-256-ctr";
+const hash = "sha256";
 
 export function createKeys(){
   var dh = crypto.getDiffieHellman(group);
@@ -17,8 +19,6 @@ export async function getMyKeys(){
 }
 
 export function makeCypher(secret){
-  var cypherType = "aes-256-ctr";
-  var hash = "sha256";
   var initializationVector = crypto.randomBytes(128);
   var hashedSecret = crypto.createHash(hash).update(secret).digest("binary");
   var cypher = crypto.createCipher(cypherType, hashedSecret, initializationVector);
@@ -28,17 +28,13 @@ export function makeCypher(secret){
 export function encodeText(secret, text){
   var cypher = makeCypher(secret)
   var encodedText = cypher.update(text)
-  return {
-    cypherType: "aes-256-ctr",
-    hash: "sha256",
-    encodedText: encodedText
-  }
+  return encodedText
 }
 
-export function decodeText(object, secret){
-   var hashedSecret = crypto.createHash(object.hash).update(secret).digest("binary");
-   var cypher = crypto.createDecipher(object.cypherType, hashedSecret)
-   var plainText = cypher.update(object.encodedText, null, "utf8");
+export function decodeText(encodedText, secret){
+   var hashedSecret = crypto.createHash(hash).update(secret).digest("binary");
+   var cypher = crypto.createDecipher(cypherType, hashedSecret)
+   var plainText = cypher.update(encodedText, null, "utf8");
    return plainText
 }
 

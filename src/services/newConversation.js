@@ -1,9 +1,11 @@
 import {saveJson, getJson} from './blockstack'
 import {getMyKeys, encodeText} from './keys'
+const crypto = require('crypto');
 
 export async function getPublicKey(blockstackID){
   var discovery = await getJson("discovery.json", blockstackID)
-  return discovery.data.pubkey
+  if(discovery==null){return null}
+  return discovery.pubkey.data
 }
 
 export async function getSharedSecret(pubkey){
@@ -11,30 +13,29 @@ export async function getSharedSecret(pubkey){
   return me.computeSecret(pubkey, null, "hex")
 }
 
-async function getMyDiscovery(){
-  return await getJson("discovery.json")
-}
-
-export function newConversation(text, blockstackID){
+export async function newConversation(text, blockstackID){
   var pubkey = await getPublicKey(blockstackID)
+  if(pubkey==null){return null}
   var secret = await getSharedSecret(pubkey)
   var encodedText = encodeText(secret, text)
-  var discovery = await getMyDiscovery()
+  var discovery = await getJson("discovery.json")
   var convoID = crypto.randomBytes(128);
   var secretConvoID = encodeText(secret, convoID)
+  var secretSecret = encodeText(secret, secret)
   var json = {
     convoID: secretConvoID,
-    secret: secret,
+    secret: secretSecret,
     text: encodedText
   }
   discovery.introductions.push(json)
-  saveJson(discovery, "discovery.json", false)
-  addConversation(convoID, blockstackID, text, secret)
+  console.log(discovery)
+  saveJson(discovery, "discovery.json", true)
+  //addConversation(convoID, blockstackID, text, secret)
 }
 
-async function addConversation(convoID, blockstackID, text, sharedSecret){
+/*async function addConversation(convoID, blockstackID, text, sharedSecret){
   var myConversations = await getJson("conversations.json")
   var newConvo = new Conversation(convoID, blockstackID, text, sharedSecret)
   myConversations.conversations.push(newConvo)
   saveJson("conversations.json", myConversations)
-}
+}*/

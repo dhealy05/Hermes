@@ -22,15 +22,18 @@ export function enableDiscovery(){
 
 export async function discoverConversation(blockstackID){
   var discoverThem = await getJson("discovery.json", blockstackID)
-  console.log(discoverThem)
   if(discoverThem == null){
     return;
   } else {
     var me = await getMyKeys()
-    var sharedSecret = me.computeSecret(discoverThem.publicKey, null, "hex")
+    var sharedSecret = me.computeSecret(discoverThem.pubkey.data, null, "hex")
     for(var i = 0; i < discoverThem.introductions.length; i++){
-      if(sharedSecret === discoverThem.introductions[i].secret){ //winner!
-        var textObject = decodeText(discoverThem.introductions[i].textObject, sharedSecret)
+      var theirSecret = decodeText(discoverThem.introductions[i].secret, sharedSecret)
+      if(sharedSecret === theirSecret){ //winner!
+        var text = decodeText(discoverThem.introductions[i].text, sharedSecret)
+        var convoID = decodeText(discoverThem.introductions[i].convoID, sharedSecret)
+        console.log(text)
+        console.log(convoID)
         //newConversation(convoID, blockstackID, text, sharedSecret)
       }
     }

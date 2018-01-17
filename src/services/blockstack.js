@@ -17,7 +17,7 @@ export const getJson = async (filename, { username = null } = {}) => {
 export const saveJson = (filename, json, { isPublic = false } = {}) => {
   if (isPublic) {
     console.debug(`saving to ${filename} [PUBLIC FILE]:`, json)
-    return blockstack.putFile(filename, JSON.stringify(json), { decrypt: false })
+    return blockstack.putFile(filename, JSON.stringify(json), { encrypt: false })
   }
 
   return blockstack.putFile(filename, JSON.stringify(json), { encrypt: true })
