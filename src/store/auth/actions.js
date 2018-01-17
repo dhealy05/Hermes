@@ -16,7 +16,10 @@ export const checkAuth = () => (dispatch) => {
   }
 }
 
-export const redirectToSignIn = () => blockstack.redirectToSignIn()
+export const redirectToSignIn = () => {
+  const origin = window.location.origin
+  blockstack.redirectToSignIn(origin, origin + '/manifest.json', ['store_write', 'publish_data'])
+}
 
 export const signOut = () => {
   blockstack.signUserOut(window.location.origin)

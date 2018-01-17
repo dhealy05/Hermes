@@ -1,6 +1,7 @@
 import { Contact } from '../../models'
 import { getContacts } from '../../services'
 import { payloadAction } from '../util'
+import { getJson } from '../../services/blockstack.js'
 
 export const SET_CONTACT = 'SET_CONTACT'
 export const setContact = payloadAction(SET_CONTACT)
@@ -13,7 +14,8 @@ export const finishLoadingContacts = payloadAction(FINISH_LOADING_CONTACTS)
 
 export const fetchContacts = () => async dispatch => {
   dispatch(startLoadingContacts())
-  const { contacts } = await getContacts()
+  var contacts = await getJson('contacts.json')
+  //const { contacts } = await getContacts()
   for (const key in contacts) {
     contacts[key] = new Contact(contacts[key])
   }

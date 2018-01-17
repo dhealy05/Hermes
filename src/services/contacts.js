@@ -1,7 +1,7 @@
 import { getJson, saveJson } from './blockstack'
 
 export async function getContacts() {
-  return getJson('contacts.json')
+  return await getJson('contacts.json')
 }
 
 export async function saveContactById(id, contact) {

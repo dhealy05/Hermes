@@ -3,6 +3,7 @@ import { createMockData } from './createMockData'
 import { queryLocalNode } from './discovery'
 import { testSecret } from './keys'
 import { appIndex } from './search'
+import { getConversations } from './conversations'
 
 export async function ensureFilesExist() {
   if (!(await getJson('conversations.json'))) {
