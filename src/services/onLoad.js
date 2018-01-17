@@ -4,7 +4,7 @@ import {enableDiscovery} from './discovery'
 async function checkDiscovery(){
   var discovery = localStorage.getItem("discovery");
   if(discovery == true){return;}
-  var discoveryJson = await getJson("discovery.json")
+  var discoveryJson = await getJson("public_index.json")
   if(discoveryJson !== null){return;}
   enableDiscovery()
 }

@@ -16,12 +16,12 @@ export async function enableDiscovery(){
   var discovery = {}
   discovery.pubkey = pubkey
   discovery.introductions = []
-  await saveJson("discovery.json", discovery, { isPublic: true })
+  await saveJson('public_index.json', discovery, { isPublic: true })
   localStorage.setItem("discovery", true);
 }
 
 export async function discoverConversation(blockstackID){
-  var discoverThem = await getJson("discovery.json", blockstackID)
+  var discoverThem = await getJson('public_index.json', { username: blockstackID })
   if(discoverThem == null){
     return;
   } else {

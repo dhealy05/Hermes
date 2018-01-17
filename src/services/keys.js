@@ -41,7 +41,7 @@ export function decodeText(encodedText, secret){
 /*export async function testSecret(){
   var me = await getMyKeys()
   console.log(me)
-  var myKeyObject = await getJson("discovery.json")
+  var myKeyObject = await getJson('public_index.json')
   var myKey = myKeyObject.data
 
   var otherPerson = createKeys()
