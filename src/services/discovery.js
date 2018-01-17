@@ -1,5 +1,5 @@
 import {saveJson, getJson} from './blockstack'
-import {createKeys} from './keys'
+import {getMyKeys, decodeText, createKeys} from './keys'
 
 export function enableDiscovery(){
   var dh = createKeys()
@@ -13,39 +13,44 @@ export function enableDiscovery(){
   }
   saveJson("keys.json", keys)
   saveJson("discovery.json", pubkey, true)
+  localStorage.setItem("discovery", true);
 }
 
-/*export function newMessage(blockstackID, text){
-  //getDiscoveryFile from blockstackID
-  var discoverThem = getPublicJson(blockstackID, "discovery.json")
-  var me = getJson("keys.json")
-  var sharedSecret = me.computeSecret(discoverThem.publicKey, null, "hex")
-  var convoID = crypto.randomBytes(128);
-  var secretConvoID = encodeText(sharedSecret, convoID)
-  var introMessage = encodeText(sharedSecret, text)
-  var json = {
-    convoID: secretConvoID,
-    secret: sharedSecret,
-    text: introMessage
-  }
-  var discoverMe = getJson("discovery.json")
-  discoverMe.introductions.push(json)
-  savePublicJson(discoverMe, "discovery.json")
-}*/
-
-/*export function discoverConversation(blockstackID){
-  var discoverThem = getPublicJson(blockstackID, "discovery.json")
+export async function discoverConversation(blockstackID){
+  var discoverThem = await getJson("discovery.json", blockstackID)
   if(discoverThem == 404){
     return;
   } else {
-    var me = getJson("keys.json")
+    var me = await getMyKeys()
     var sharedSecret = me.computeSecret(discoverThem.publicKey, null, "hex")
     for(var i = 0; i < discoverThem.introductions.length; i++){
       if(sharedSecret === discoverThem.introductions[i].secret){ //winner!
-        var convoID = decodeText(discoverThem.introductions[i].convoID)
-        var text = decodeText(discoverThem.introductions[i].text)
-        updateConversations(convoID, blockstackID, text)
+        var textObject = decodeText(discoverThem.introductions[i].textObject, sharedSecret)
+        //newConversation(convoID, blockstackID, text, sharedSecret)
       }
     }
   }
-}*/
+}
+
+async function newConversation(convoID, blockstackID, text, sharedSecret){
+  var myConversations = await getJson("conversations.json")
+  var newConvo = new Conversation(convoID, blockstackID, text, sharedSecret)
+  myConversations.conversations.push(newConvo)
+  saveJson("conversations.json", myConversations)
+  //newMessageAlert()
+  //alert, show new message
+}
+
+export async function discoverMessage(blockstackID, convoID, sharedSecret){
+  var messages = await getJson(convoID, blockstackID)
+  for(var i = 0; i < messages.messages.length; i++){
+    var text = decodeText(messages.messages[i].textObject, sharedSecret)
+    //newMessageAlert()
+    updateConversation(convoID, text)
+  }
+}
+
+export async function updateConversation(convoID, newMessage){
+  var conversation = await getJson(convoID)
+  conversation.messages.push(newMessage)
+}
