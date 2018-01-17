@@ -6,9 +6,7 @@ import {
 import {
   saveConversationById
 } from './conversations'
-import {
-  saveContactById
-} from './contacts'
+import { saveContactsFile } from './contacts'
 
 export const data = {
   contacts: [
@@ -83,9 +81,7 @@ export async function createMockData() {
   // idea, but apparently that causes blockstack hub to return 503s. is that a
   // bug or a design decision??
 
-  for (const c of data.contacts) {
-    await saveContactById(c.id, c)
-  }
+  await saveContactsFile(data.contacts)
 
   for (const c of data.conversations) {
     await saveConversationById(Conversation.getId(c), c)

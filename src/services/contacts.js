@@ -5,8 +5,18 @@ export async function getContacts() {
 }
 
 export async function saveContactById(id, contact) {
-  const list = await getContacts()
-  list.contacts[id] = contact
-  await saveJson('contacts.json', list)
+  const { contacts } = await getContacts()
+  contacts[id] = contact
+  await saveContactsFile(contacts)
   return contact
+}
+
+export async function saveContactsFile(listOrMap) {
+  const contacts = Array.isArray(listOrMap)
+             ? listOrMap.reduce((accm, c) => { accm[c.id] = c; return accm; }, {})
+             : listOrMap
+
+  const file = { contacts }
+  await saveJson('contacts.json', file)
+  return file
 }
