@@ -15,9 +15,11 @@ export async function ensureFilesExist() {
 
   // change to true to hydrate your datastore with MOCK DATA
   if (true) {
-    //newConversation("Hey Bro", "djhealy.id")
+    //newConversation("Hey Broham", "djhealy.id")
     //console.log(await getJson("discovery.json", "djhealy.id"))
-    //console.log(blockstack.lookupProfile("djhealy.id", "http://localhost:6270/v1/names/"))
+    console.log(getJson('public_index.json', { username: 'djhealy.id' }))
+    //console.log(getJson('discovery.json', { username: 'fulgid.id' }))
+    //console.log(blockstack.lookupProfile("fulgid.id", "http://localhost:6270/v1/names/"))
     //enableDiscovery()
     //discoverConversation("djhealy.id")
     //await createMockData()

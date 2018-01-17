@@ -3,7 +3,7 @@ import {getMyKeys, encodeText} from './keys'
 const crypto = require('crypto');
 
 export async function getPublicKey(blockstackID){
-  var discovery = await getJson("public_index.json", blockstackID)
+  var discovery = await getJson('public_index.json', { username: blockstackID })
   if(discovery==null){return null}
   return discovery.pubkey.data
 }
@@ -18,7 +18,7 @@ export async function newConversation(text, blockstackID){
   if(pubkey==null){return null}
   var secret = await getSharedSecret(pubkey)
   var encodedText = encodeText(secret, text)
-  var discovery = await getJson("public_index.json")
+  var discovery = await getJson('public_index.json', { username: blockstackID })
   var convoID = crypto.randomBytes(128);
   var secretConvoID = encodeText(secret, convoID)
   var secretSecret = encodeText(secret, secret)
@@ -28,6 +28,7 @@ export async function newConversation(text, blockstackID){
     text: encodedText
   }
   discovery.introductions.push(json)
+  console.log(discovery)
   await saveJson("public_index.json", discovery, { isPublic: true })
   //addConversation(convoID, blockstackID, text, secret)
 }
