@@ -13,13 +13,17 @@ export function enableDiscovery(){
     prime: prime
   }
   saveJson("keys.json", keys)
-  saveJson("discovery.json", pubkey, true)
+  var discovery = {}
+  discovery.pubkey = pubkey
+  discovery.introductions = []
+  saveJson("discovery.json", discovery, true)
   localStorage.setItem("discovery", true);
 }
 
 export async function discoverConversation(blockstackID){
   var discoverThem = await getJson("discovery.json", blockstackID)
-  if(discoverThem == 404){
+  console.log(discoverThem)
+  if(discoverThem == null){
     return;
   } else {
     var me = await getMyKeys()

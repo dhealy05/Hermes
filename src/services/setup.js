@@ -1,9 +1,7 @@
 import { getJson, saveJson } from './blockstack'
 import { createMockData } from './createMockData'
-import { queryLocalNode } from './discovery'
-import { testSecret } from './keys'
-import { appIndex } from './search'
-import { getConversations } from './conversations'
+import { enableDiscovery, discoverConversation } from './discovery'
+import * as blockstack from 'blockstack'
 
 export async function ensureFilesExist() {
   if (!(await getJson('conversations.json'))) {
@@ -16,8 +14,11 @@ export async function ensureFilesExist() {
 
   // change to true to hydrate your datastore with MOCK DATA
   if (true) {
+    //console.log(blockstack.lookupProfile("djhealy.id", "http://localhost:6270/v1/names/"))
+    //enableDiscovery()
+    discoverConversation("djhealy.id")
     //await createMockData()
-    //await queryLocalNode("x")
+    //enableDiscovery()
     //testSecret()
     //appIndex()
   }
