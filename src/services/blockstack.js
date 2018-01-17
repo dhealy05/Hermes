@@ -1,13 +1,13 @@
 import * as blockstack from 'blockstack'
 
-export const getJson = async (filename, { user = null } = {}) => {
-  if (!user) {
+export const getJson = async (filename, { username = null } = {}) => {
+  if (!username) {
     return JSON.parse(await blockstack.getFile(filename, { decrypt: true }))
   }
 
-  console.debug(`reading ${filename} from user ${user}`)
+  console.debug(`reading ${filename} from user ${username}`)
   const options = {
-    user,
+    username,
     app: 'localhost:3000' // TODO put this in configuration instead of a constant
     //app: 'https://hihermes.co'
   }
