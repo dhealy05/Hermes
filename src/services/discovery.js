@@ -2,7 +2,7 @@ import { Conversation } from '../models/conversation'
 import {saveJson, getJson} from './blockstack'
 import {getMyKeys, decodeText, createKeys} from './keys'
 
-export function enableDiscovery(){
+export async function enableDiscovery(){
   var dh = createKeys()
   var pubkey = dh.getPublicKey()
   var privkey = dh.getPrivateKey()
@@ -12,11 +12,11 @@ export function enableDiscovery(){
     privkey: privkey,
     prime: prime
   }
-  saveJson("keys.json", keys)
+  await saveJson("keys.json", keys)
   var discovery = {}
   discovery.pubkey = pubkey
   discovery.introductions = []
-  saveJson("discovery.json", discovery, true)
+  await saveJson("discovery.json", discovery, { isPublic: true })
   localStorage.setItem("discovery", true);
 }
 

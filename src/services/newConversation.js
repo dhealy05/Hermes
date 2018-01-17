@@ -28,8 +28,7 @@ export async function newConversation(text, blockstackID){
     text: encodedText
   }
   discovery.introductions.push(json)
-  console.log(discovery)
-  saveJson(discovery, "discovery.json", true)
+  await saveJson("discovery.json", discovery, { isPublic: true })
   //addConversation(convoID, blockstackID, text, secret)
 }
 

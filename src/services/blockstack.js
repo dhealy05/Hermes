@@ -8,7 +8,7 @@ export const getJson = async (filename, { username = null } = {}) => {
   console.debug(`reading ${filename} from user ${username}`)
   const options = {
     username,
-    app: 'localhost:3000' // TODO put this in configuration instead of a constant
+    app: 'http://localhost:3000' // TODO put this in configuration instead of a constant
     //app: 'https://hihermes.co'
   }
   return JSON.parse(await blockstack.getFile(filename, options))
@@ -20,5 +20,6 @@ export const saveJson = (filename, json, { isPublic = false } = {}) => {
     return blockstack.putFile(filename, JSON.stringify(json), { encrypt: false })
   }
 
+  console.debug(`saving to ${filename}:`, json)
   return blockstack.putFile(filename, JSON.stringify(json), { encrypt: true })
 }
