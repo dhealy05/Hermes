@@ -1,3 +1,4 @@
+import { Conversation } from '../models/conversation'
 import {saveJson, getJson} from './blockstack'
 import {getMyKeys, decodeText, createKeys} from './keys'
 

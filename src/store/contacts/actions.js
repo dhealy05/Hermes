@@ -14,8 +14,7 @@ export const finishLoadingContacts = payloadAction(FINISH_LOADING_CONTACTS)
 
 export const fetchContacts = () => async dispatch => {
   dispatch(startLoadingContacts())
-  var contacts = await getJson('contacts.json')
-  //const { contacts } = await getContacts()
+  const { contacts } = await getContacts()
   for (const key in contacts) {
     contacts[key] = new Contact(contacts[key])
   }
