@@ -1,9 +1,9 @@
 import { Conversation, Contact, Message } from '../models'
-import { saveJson, getJson } from './blockstack'
 import {
   getConversations,
   getIncomingMessagesForMeta,
   recvMessage,
+  saveOutgoingMessages,
   saveConversationById
 } from './conversations'
 import {
@@ -16,6 +16,7 @@ import {
   createKeys,
   saveKeysFromDiffieHellman
 } from './keys'
+import { saveLocalPublicIndex } from './identity'
 import * as blockstack from 'blockstack'
 
 export async function enableDiscovery() {
@@ -26,7 +27,7 @@ export async function enableDiscovery() {
     introductions: []
   }
 
-  await saveJson('public_index.json', discovery, { isPublic: true })
+  await saveLocalPublicIndex(discovery)
   localStorage.setItem('discovery', true)
 }
 
@@ -46,9 +47,9 @@ export async function discoverConversation(userId) {
     }
 
     const text = decodeText(intro.text, sharedSecret)
-    const convoId = decodeText(intro.convoId, sharedSecret)
-    await saveJson(convoId, { messages: [] }, { isPublic: true })
-    await addConversation(convoId, userId, text, sharedSecret)
+    const filename = decodeText(intro.filename, sharedSecret)
+    await saveOutgoingMessages(filename, [])
+    await addConversation(filename, userId, text, sharedSecret)
     await addContactById(userId)
   }
 }
