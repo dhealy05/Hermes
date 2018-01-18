@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
-import { Conversation, ContentTypes } from '../models'
+import { ContentTypes } from '../models'
 import { formatTime } from '../services/formatTime'
 import { Avatar } from './Avatar'
 

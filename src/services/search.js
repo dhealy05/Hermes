@@ -1,6 +1,6 @@
 import * as blockstack from 'blockstack'
 const request = require('request')
-var publicIDs = []
+var filenames = []
 
 export async function appIndex(){
   console.log("Indexing")
@@ -9,8 +9,8 @@ export async function appIndex(){
     console.log(x)
     console.log(i + 1)
   }
-  console.log("PUBLIC IDS")
-  console.log(publicIDs)
+  console.log("PUBLIC FILE NAMES")
+  console.log(filenames)
   /*var test = blockstack.lookupProfile("deeeds.id", "http://localhost:6270/v1/names/")
   test.then(function(object){
     console.log(object)
@@ -57,7 +57,7 @@ function searchPage(array, callback){
       if(values[i].status == "resolved"){
         if(values[i].object.apps != null){
           console.log(array[i])
-          publicIDs.push(array[i])
+          filenames.push(array[i])
           console.log(values[i].object)
         }
       }

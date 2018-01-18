@@ -14,12 +14,13 @@ export const getJson = async (filename, { username = null, ...options } = {}) =>
   return JSON.parse(await blockstack.getFile(filename, { ...publicOptions, ...options }))
 }
 
-export const saveJson = (filename, json, { isPublic = false, ...options } = {}) => {
+export const saveJson = async (filename, json, { isPublic = false, ...options } = {}) => {
   if (isPublic) {
     console.debug(`saving to ${filename} [PUBLIC FILE]:`, json)
     return blockstack.putFile(filename, JSON.stringify(json), { encrypt: false, ...options })
   }
 
   console.debug(`saving to ${filename}:`, json)
-  return blockstack.putFile(filename, JSON.stringify(json), { encrypt: true, ...options })
+  await blockstack.putFile(filename, JSON.stringify(json), { encrypt: true, ...options })
+  return json
 }

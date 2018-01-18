@@ -8,7 +8,7 @@ export const ContentTypes = {
 
 export const ConversationMetadata = Model('ConversationMetadata', {
   id: '',
-  publicID: '',
+  filename: '',
   secret: '',
   contacts: [],
   thumbnail: {}
@@ -21,9 +21,9 @@ export const Conversation = Model('Conversation', {
   contacts: [],
 
   /**
-   * The random string which is the public ID for the convo
+   * Filename for the public file where outgoing messages are saved
    */
-  publicID: '',
+  filename: '',
 
   /**
    * The secret for the convo
@@ -76,7 +76,7 @@ Conversation.getMetadata = convo => new ConversationMetadata({
   id: Conversation.getId(convo),
   thumbnail: Conversation.getThumbnail(convo),
   contacts: convo.contacts,
-  publicID: convo.publicID,
+  filename: convo.filename,
   secret: convo.secret
 })
 

@@ -1,52 +1,68 @@
-import {saveJson, getJson} from './blockstack'
-import {getMyKeys, getMyPublicIndex, getSharedSecret, encodeText, decodeText} from './keys'
-import {Conversation,Contact,Message} from '../models'
-import {saveConversationById} from './conversations'
-import {saveContactById} from './contacts'
 import * as blockstack from 'blockstack'
-const crypto = require('crypto');
+import {
+  Conversation,
+  Contact,
+  Message
+} from '../models'
+import {
+  getConversations,
+  saveConversationById,
+  saveOutgoingMessages
+} from './conversations'
+import {
+  addContactById,
+  getPublicKeyForId
+} from './contacts'
+import {
+  getMyKeys,
+  getSharedSecret,
+  encodeText,
+  decodeText
+} from './keys'
+import {
+  getLocalPublicIndex,
+  saveLocalPublicIndex
+} from './identity'
 
-export async function getPublicKey(blockstackID){
-  var discovery = await getJson('public_index.json', { username: blockstackID })
-  if(discovery==null){return null}
-  return discovery.pubkey.data
-}
+const crypto = require('crypto')
 
-export async function newConversation(text, blockstackID){
-  var pubkey = await getPublicKey(blockstackID)
-  if(pubkey==null){return null}
-  var secret = await getSharedSecret(pubkey)
-  var encodedText = encodeText(text, secret)
-  console.log(encodedText)
-  var dt = decodeText(encodedText, secret)
-  console.log(dt)
-  var convoID = crypto.randomBytes(20).toString('base64');
-  var secretConvoID = encodeText(convoID, secret)
-  var secretSecret = encodeText(secret, secret)
-  var json = {
-    convoID: secretConvoID,
-    secret: secretSecret,
-    text: encodedText
+export async function newConversation(text, otherId) {
+  const pubkey = await getPublicKeyForId(otherId)
+
+  if (!pubkey) {
+    return null
   }
-  var discovery = await getMyPublicIndex()
-  discovery.introductions = [] //testing only
-  discovery.introductions.push(json)
-  await saveJson("public_index.json", discovery, { isPublic: true })
-  await saveJson(convoID, {messages: []}, {isPublic: true})
-  addConversation(convoID, blockstackID, text, secret)
-  addContact(blockstackID)
+
+  const secret = await getSharedSecret(pubkey)
+  const filename = crypto.randomBytes(20).toString('base64')
+  const json = {
+    filename: encodeText(filename, secret),
+    secret: encodeText(secret, secret),
+    text: encodeText(text, secret)
+  }
+
+  const discovery = await getLocalPublicIndex()
+  discovery.introductions = [json] //testing only
+
+  // we could use Promise.all here but we'd probably get rate-limited
+  await saveLocalPublicIndex(discovery)
+  await saveOutgoingMessages(filename, { messages: [] })
+  await addConversation(filename, otherId, text, secret)
+  await addContactById(otherId)
 }
 
-async function addConversation(convoID, blockstackID, text, sharedSecret){
-  var myConversations = await getJson("conversations.json")
-  var m = new Message({sender: 'you', content: text, sentAt: new Date()})
-  var c = new Conversation({contacts: [blockstackID.replace('.id', '')], publicID: convoID, secret: sharedSecret, messages: [m]})
-  await saveConversationById(Conversation.getId(c), c)
-}
-
-async function addContact(blockstackID){
-  var id = blockstackID.replace('.id', '')
-  var profile = await blockstack.lookupProfile(blockstackID)
-  var contact = {name: profile.name, id: id}
-  saveContactById(id, contact)
+async function addConversation(filename, blockstackId, content, sharedSecret){
+  const myConversations = await getConversations()
+  const msg = new Message({
+    sender: 'you',
+    content,
+    sentAt: new Date()
+  })
+  const convo = new Conversation({
+    filename,
+    contacts: [blockstackId],
+    secret: sharedSecret,
+    messages: [msg]
+  })
+  await saveConversationById(Conversation.getId(convo), convo)
 }

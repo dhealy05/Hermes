@@ -1,78 +1,90 @@
-import {saveJson, getJson} from './blockstack'
-import {getSharedSecret, decodeText, createKeys} from './keys'
-import {Conversation,Contact,Message} from '../models'
-import {saveConversationById} from './conversations'
-import {saveContactById} from './contacts'
+import { Conversation, Contact, Message } from '../models'
+import { saveJson, getJson } from './blockstack'
+import {
+  getConversations,
+  getIncomingMessagesForMeta,
+  recvMessage,
+  saveConversationById
+} from './conversations'
+import {
+  addContactById,
+  getPublicIndexForId
+} from './contacts'
+import {
+  getSharedSecret,
+  decodeText,
+  createKeys,
+  saveKeysFromDiffieHellman
+} from './keys'
 import * as blockstack from 'blockstack'
 
-export async function enableDiscovery(){
-  var dh = createKeys()
-  var pubkey = dh.getPublicKey()
-  var privkey = dh.getPrivateKey()
-  var prime = dh.getPrime()
-  var keys = {
-    pubkey: pubkey,
-    privkey: privkey,
-    prime: prime
+export async function enableDiscovery() {
+  const { pubkey } = await saveKeysFromDiffieHellman()
+
+  const discovery = {
+    pubkey,
+    introductions: []
   }
-  await saveJson("keys.json", keys)
-  var discovery = {}
-  discovery.pubkey = pubkey
-  discovery.introductions = []
+
   await saveJson('public_index.json', discovery, { isPublic: true })
-  localStorage.setItem("discovery", true);
+  localStorage.setItem('discovery', true)
 }
 
-export async function discoverConversation(blockstackID){
-  var discoverThem = await getJson('public_index.json', { username: blockstackID })
-  console.log(discoverThem)
-  if(discoverThem == null){return;}
-  var sharedSecret = await getSharedSecret(discoverThem.pubkey.data)
-  for(var i = 0; i < discoverThem.introductions.length; i++){
-    var theirSecret = decodeText(discoverThem.introductions[i].secret, sharedSecret)
-    if(sharedSecret == theirSecret){ //winner!
-      var text = decodeText(discoverThem.introductions[i].text, sharedSecret)
-      console.log(text)
-      var convoID = decodeText(discoverThem.introductions[i].convoID, sharedSecret)
-      await saveJson(convoID, {messages: []}, {isPublic: true})
-      addConversation(convoID, blockstackID, text, sharedSecret)
-      addContact(blockstackID)
+export async function discoverConversation(userId) {
+  const theirIndex = await getPublicIndexForId(userId)
+
+  if (!theirIndex) {
+    return
+  }
+
+  const sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
+
+  for (const intro of theirIndex.introductions) {
+    const theirSecret = decodeText(intro.secret, sharedSecret)
+    if (sharedSecret !== theirSecret) {
+      continue
     }
+
+    const text = decodeText(intro.text, sharedSecret)
+    const convoId = decodeText(intro.convoId, sharedSecret)
+    await saveJson(convoId, { messages: [] }, { isPublic: true })
+    await addConversation(convoId, userId, text, sharedSecret)
+    await addContactById(userId)
   }
 }
 
-async function addConversation(convoID, blockstackID, text, sharedSecret){
-  var id = blockstackID.replace('.id', '')
-  var myConversations = await getJson("conversations.json")
-  var m = new Message({sender: id, content: text, sentAt: new Date()})
-  var c = new Conversation({contacts: [id], publicID: convoID, secret: sharedSecret, messages: [m]})
-  await saveConversationById(Conversation.getId(c), c)
+async function addConversation(filename, userId, text, sharedSecret) {
+  const myConversations = await getConversations()
+  const msg = new Message({
+    sender: userId,
+    content: text,
+    sentAt: new Date()
+  })
+
+  const convo = new Conversation({
+    filename,
+    contacts: [userId],
+    secret: sharedSecret,
+    messages: [msg]
+  })
+
+  await saveConversationById(Conversation.getId(convo), convo)
 }
 
-async function addContact(blockstackID){
-  var id = blockstackID.replace('.id', '')
-  var profile = await blockstack.lookupProfile(blockstackID)
-  var contact = {name: profile.name, id: id}
-  saveContactById(id, contact)
-}
+export async function discoverMessage(userId) {
+  const { conversations } = await getConversations()
+  const metadata = conversations[userId]
+  const convoId = Conversation.getId(metadata)
+  const incoming = await getIncomingMessagesForMeta(metadata)
 
-export async function discoverMessage(blockstackID){
-  var id = blockstackID.replace('.id', '')
-  var conversations = await getJson("conversations.json")
-  var convoMeta = conversations.conversations[id]
-  console.log(convoMeta)
-  var convo = await getJson(convoMeta.publicID, {username:blockstackID})
-  console.log(convo)
-  for(var i = 0; i < convo.messages.length; i++){
-    var text = decodeText(convo.messages[i].content, convoMeta.secret)
-    console.log(text)
-    //newMessageAlert()
-    //updateConversation(convoID, text)
+  if (!incoming) {
+    return
   }
-}
 
-export async function updateConversation(convoID, newMessage){
-  var conversation = await getJson(convoID)
-  conversation.messages.push(newMessage)
-  //then, get conversation list and update thumbnail
+  for (const msg of incoming.messages) {
+    await recvMessage(convoId, new Message({
+      ...msg,
+      content: decodeText(msg.content, metadata.secret)
+    }))
+  }
 }

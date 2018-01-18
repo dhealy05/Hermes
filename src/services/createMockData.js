@@ -26,7 +26,7 @@ export const data = {
   conversations: [
     new Conversation({
       contacts: ['mike'],
-      publicID: 'XYZ',
+      filename: 'XYZ',
       secret: '1A2A',
       messages: [
         new Message({
@@ -37,7 +37,7 @@ export const data = {
     }),
     new Conversation({
       contacts: ['sarah'],
-      publicID: 'ABC',
+      filename: 'ABC',
       secret: '3B4B',
       messages: [
         new Message({
@@ -59,7 +59,7 @@ export const data = {
     }),
     new Conversation({
       contacts: ['sarah', 'jessica'],
-      publicID: '123',
+      filename: '123',
       secret: '5C6C',
       messages: [
         new Message({

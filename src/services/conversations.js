@@ -10,11 +10,11 @@ export async function getConversationById(id) {
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
-export async function createNewConversation(contactIds, publicID, secret) {
+export async function createNewConversation(contacts, filename, secret) {
   const convo = new Conversation({
-    contacts: contactIds,
-    publicID: publicID,
-    secret: secret
+    contacts,
+    filename,
+    secret
   })
   const id = Conversation.getId(convo)
 
@@ -40,6 +40,31 @@ export async function sendMessage(convoId, message) {
   const convo = await getConversationById(convoId)
   convo.messages.unshift(message)
   return saveConversationById(convoId, convo)
+}
+
+export async function recvMessage(convoId, message) {
+  if (!(message instanceof Message)) {
+    throw new TypeError('must pass Message instance to recvMessage')
+  }
+
+  const convo = await getConversationById(convoId)
+  convo.messages.unshift(message)
+  return saveConversationById(convoId, convo)
+}
+
+export function saveOutgoingMessages(filename, messages) {
+  return saveJson(
+    filename,
+    { messages },
+    { isPublic: true }
+  )
+}
+
+export async function getIncomingMessagesForMeta(metadata) {
+  const { filename, contacts } = metadata
+  const [username] = contacts // TODO: support group chat
+
+  return getJson(filename, { username })
 }
 
 const filenameFromId = id => `conversation_${id}.json`
