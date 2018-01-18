@@ -1,5 +1,6 @@
-import { Conversation, Contact, Message } from '../models'
+import { Conversation, Message } from '../models'
 import {
+  createNewConversation,
   getConversations,
   getIncomingMessagesForMeta,
   recvMessage,
@@ -13,11 +14,9 @@ import {
 import {
   getSharedSecret,
   decodeText,
-  createKeys,
   saveKeysFromDiffieHellman
 } from './keys'
 import { saveLocalPublicIndex } from './identity'
-import * as blockstack from 'blockstack'
 
 export async function enableDiscovery() {
   const { pubkey } = await saveKeysFromDiffieHellman()
@@ -49,27 +48,9 @@ export async function discoverConversation(userId) {
     const text = decodeText(intro.text, sharedSecret)
     const filename = decodeText(intro.filename, sharedSecret)
     await saveOutgoingMessages(filename, [])
-    await addConversation(filename, userId, text, sharedSecret)
+    await createNewConversation(filename, userId, text, sharedSecret)
     await addContactById(userId)
   }
-}
-
-async function addConversation(filename, userId, text, sharedSecret) {
-  const myConversations = await getConversations()
-  const msg = new Message({
-    sender: userId,
-    content: text,
-    sentAt: new Date()
-  })
-
-  const convo = new Conversation({
-    filename,
-    contacts: [userId],
-    secret: sharedSecret,
-    messages: [msg]
-  })
-
-  await saveConversationById(Conversation.getId(convo), convo)
 }
 
 export async function discoverMessage(userId) {

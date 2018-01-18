@@ -32,7 +32,7 @@ export class ChatView extends React.Component {
   justReceivedNewMessage = false
 
   componentWillReceiveProps(next, prev) {
-    const path = 'activeConversation.messages.length'
+    const path = 'conversation.messages.length'
 
     if (get(next, path, 0) !== get(prev, path, 0)) {
       /*
@@ -77,12 +77,12 @@ export class ChatView extends React.Component {
   setMessagesList = el => this.messagesList = el
 
   render() {
-    const { conversation, contacts, onSignOut, sidebar } = this.props
+    const { identity, conversation, contacts, onSignOut, sidebar } = this.props
 
     const messageEls = conversation.messages.map(({ sender, content, sentAt }, i) => (
       // TODO figure out proper way to tell if the sender is the current user
       <Message key={i}
-               direction={sender === 'you' ? 'right' : 'left'}
+               direction={sender === identity.username ? 'right' : 'left'}
                sender={contacts[sender]}
                timestamp={sentAt}
                content={content}/>
@@ -105,8 +105,8 @@ export class ChatView extends React.Component {
   }
 }
 ChatView.propTypes = {
-  thumbnails: PropTypes.arrayOf(PropTypes.object),
-  activeConversation: PropTypes.object,
+  identity: PropTypes.object.isRequired,
+  conversation: PropTypes.object,
   onSendMessage: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired

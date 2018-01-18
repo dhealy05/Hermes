@@ -9,7 +9,7 @@ import { store, history, actions } from './store'
 
 applyGlobalStyles()
 
-store.dispatch(actions.auth.checkAuth())
+store.dispatch(actions.auth.checkAuth)
 
 ReactDOM.render(
   <Provider store={store}>

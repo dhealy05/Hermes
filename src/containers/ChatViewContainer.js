@@ -14,6 +14,8 @@ import { ChatSidebarContainer } from './ChatSidebarContainer'
 
 const WithRedux = connect(
   state => {
+    const identity = state.auth.identity
+
     const conversation = state.chat.activeConversation
                       && state.chat.conversationDetails[state.chat.activeConversation]
 
@@ -25,6 +27,7 @@ const WithRedux = connect(
                  || conversation.loading
 
     return {
+      identity,
       conversation,
       loading,
       contacts
@@ -33,8 +36,9 @@ const WithRedux = connect(
   dispatch => ({
     loadInitialData: async () => {
       await dispatch(actions.setup())
-      dispatch(actions.contacts.fetchContacts())
-      dispatch(actions.chat.fetchConversationList())
+      await dispatch(actions.contacts.fetchContacts())
+      await dispatch(actions.contacts.fetchSelf())
+      await dispatch(actions.chat.fetchConversationList())
     },
     onSendMessage: text => dispatch(actions.chat.sendMessage(text))
   })

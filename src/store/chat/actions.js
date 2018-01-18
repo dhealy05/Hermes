@@ -1,3 +1,4 @@
+import { map } from 'lodash'
 import {
   ContentTypes,
   Conversation,
@@ -9,6 +10,8 @@ import {
   getConversationById,
   sendMessage as saveMessageToJson
 } from '../../services'
+import { identity } from '../../services/identity'
+import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
 
 export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
@@ -48,7 +51,21 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   dispatch(startLoadingConversationList())
   const conversations = await loadConversationMetadata()
 
-  const { chat: { activeConversation, conversationDetails } } = getState()
+  const { chat: { activeConversation, conversationDetails },
+          contacts: { contactsById } } = getState()
+
+  await Promise.all(
+    map(conversations, convo => Promise.all(
+      convo.contacts.map(contactId => {
+        const cached = contactsById[contactId]
+        if (cached) {
+          return cached
+        }
+
+        return dispatch(contactActions.fetchContactById(contactId))
+      }))
+    )
+  )
 
   if (!activeConversation
       || !conversationDetails[activeConversation]
@@ -74,7 +91,7 @@ export const sendMessage = text => async (dispatch, getState) => {
   const convo = conversationDetails[activeConversation]
 
   const message = new Message({
-    sender: 'you', // TODO agh
+    sender: identity().username,
     contentType: ContentTypes.Text,
     timestamp: new Date().toISOString(),
     content: text

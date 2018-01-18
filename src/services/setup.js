@@ -17,8 +17,6 @@ export async function ensureFilesExist({ cleanSlate = false } = {}) {
 
   if (cleanSlate || false) {
     //console.log(blockstack.loadUserData())
-    //console.log(blockstack.lookupProfile("djhealy.id"))
-    //console.log(await blockstack.lookupProfile("fulgid.id", "http://localhost:6270/v1/names/"))
     //await createMockData()
     //console.info('SETTING UP')
     //await enableDiscovery()
@@ -28,8 +26,7 @@ export async function ensureFilesExist({ cleanSlate = false } = {}) {
     //console.info('[DOMESTIC] fulgid.id/public_index.json', await getJson('public_index.json', { decrypt: false }))
     //console.info('[FOREIGN] fulgid.id/public_index.json', await getJson('public_index.json', { username: 'fulgid.id' }))
     //console.info('djhealy.id/public_index.json', await getJson('public_index.json', { username: 'djhealy.id' }))
-    console.info('discover', await discoverConversation("djhealy.id"))
+    //await discoverConversation("djhealy.id")
     //console.info('message', await discoverMessage("djhealy.id"))
-    //await createMockData()
   }
 }

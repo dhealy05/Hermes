@@ -1,10 +1,9 @@
-import * as blockstack from 'blockstack'
 import {
   Conversation,
-  Contact,
   Message
 } from '../models'
 import {
+  createNewConversation,
   getConversations,
   saveConversationById,
   saveOutgoingMessages
@@ -14,10 +13,8 @@ import {
   getPublicKeyForId
 } from './contacts'
 import {
-  getMyKeys,
   getSharedSecret,
-  encodeText,
-  decodeText
+  encodeText
 } from './keys'
 import {
   getLocalPublicIndex,
@@ -47,22 +44,6 @@ export async function newConversation(text, otherId) {
   // we could use Promise.all here but we'd probably get rate-limited
   await saveLocalPublicIndex(discovery)
   await saveOutgoingMessages(filename, { messages: [] })
-  await addConversation(filename, otherId, text, secret)
+  await createNewConversation(filename, otherId, text, secret)
   await addContactById(otherId)
-}
-
-async function addConversation(filename, blockstackId, content, sharedSecret){
-  const myConversations = await getConversations()
-  const msg = new Message({
-    sender: 'you',
-    content,
-    sentAt: new Date()
-  })
-  const convo = new Conversation({
-    filename,
-    contacts: [blockstackId],
-    secret: sharedSecret,
-    messages: [msg]
-  })
-  await saveConversationById(Conversation.getId(convo), convo)
 }

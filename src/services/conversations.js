@@ -1,4 +1,5 @@
 import { Conversation, Message } from '../models'
+import { identity } from './identity'
 import { getJson, saveJson } from './blockstack'
 
 export async function getConversations() {
@@ -10,15 +11,21 @@ export async function getConversationById(id) {
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
-export async function createNewConversation(contacts, filename, secret) {
-  const convo = new Conversation({
-    contacts,
-    filename,
-    secret
+export function createNewConversation(filename, userId, content, sharedSecret) {
+  const msg = new Message({
+    sender: identity().username,
+    content,
+    sentAt: new Date()
   })
-  const id = Conversation.getId(convo)
 
-  return saveConversationById(id, convo)
+  const convo = new Conversation({
+    filename,
+    contacts: [userId],
+    secret: sharedSecret,
+    messages: [msg]
+  })
+
+  return saveConversationById(Conversation.getId(convo), convo)
 }
 
 export async function saveConversationById(id, convo) {
@@ -39,6 +46,9 @@ export async function sendMessage(convoId, message) {
 
   const convo = await getConversationById(convoId)
   convo.messages.unshift(message)
+
+  // TODO is this right?
+  await saveOutgoingMessages(convo.filename, [message])
   return saveConversationById(convoId, convo)
 }
 
