@@ -1,5 +1,5 @@
 {
-  "name": "dchat",
+  "name": "hermes",
   "icons": [
     {
       "src": "favicon.ico",
@@ -7,7 +7,7 @@
       "type": "image/x-icon"
     }
   ],
-  "start_url": "https://dchat.co",
+  "start_url": "https://hihermes.co",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"

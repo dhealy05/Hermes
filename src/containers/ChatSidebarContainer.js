@@ -36,7 +36,7 @@ export const ChatSidebar = ({ conversationsById, contactsById, selectActiveConve
   })
 
   return (
-    <Sidebar title="dchat">
+    <Sidebar title="hermes">
       <ThumbnailsList thumbnails={thumbnails}
                       onSelectConversation={selectActiveConversation}/>
     </Sidebar>

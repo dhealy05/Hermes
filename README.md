@@ -1,4 +1,4 @@
-**Dchat—Decentralized, Serverless Chat using Blockstack**
+**Hermes—Decentralized, Serverless Chat using Blockstack**
 
 There are countless examples of governments, corporations and other actors monitoring, surveilling and restricting communications channels. Dchat makes direct peer to peer communications possible, using no external servers or central points of failure, using Blockstack’s Atlas and Gaia routing and storage architecture, with the Bitcoin blockchain as the source of truth. Users own their own data, sharing only with whom they choose, thereby solving the problem of surveillance.
 

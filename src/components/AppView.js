@@ -34,7 +34,7 @@ export const AppView = ({
   children
 }) => (
   <Layout>
-    {sidebar ? sidebar : <Sidebar title="dchat"/>}
+    {sidebar ? sidebar : <Sidebar title="hermes"/>}
     <MainOutletContainer>
       <TopNav onSignOut={onSignOut}/>
       <MainOutlet>
