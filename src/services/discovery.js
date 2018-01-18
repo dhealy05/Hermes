@@ -1,6 +1,6 @@
 import { Conversation } from '../models/conversation'
 import {saveJson, getJson} from './blockstack'
-import {getMyKeys, decodeText, createKeys} from './keys'
+import {getSharedSecret, decodeText, createKeys} from './keys'
 
 export async function enableDiscovery(){
   var dh = createKeys()
@@ -25,15 +25,12 @@ export async function discoverConversation(blockstackID){
   if(discoverThem == null){
     return;
   } else {
-    var me = await getMyKeys()
-    var sharedSecret = me.computeSecret(discoverThem.pubkey.data, null, "hex")
+    var sharedSecret = await getSharedSecret(discoverThem.pubkey.data)
     for(var i = 0; i < discoverThem.introductions.length; i++){
-      var theirSecret = decodeText(discoverThem.introductions[i].secret, sharedSecret)
-      if(sharedSecret === theirSecret){ //winner!
-        var text = decodeText(discoverThem.introductions[i].text, sharedSecret)
-        var convoID = decodeText(discoverThem.introductions[i].convoID, sharedSecret)
-        console.log(text)
-        console.log(convoID)
+      var theirSecret = decodeText(discoverThem.introductions[i].secret.data, sharedSecret)
+      if(sharedSecret == theirSecret){ //winner!
+        var text = decodeText(discoverThem.introductions[i].text.data, sharedSecret)
+        var convoID = decodeText(discoverThem.introductions[i].convoID.data, sharedSecret)
         //newConversation(convoID, blockstackID, text, sharedSecret)
       }
     }

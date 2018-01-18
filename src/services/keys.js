@@ -1,3 +1,4 @@
+import * as blockstack from 'blockstack'
 import {getJson} from './blockstack'
 const crypto = require('crypto');
 const group = "modp5";
@@ -18,21 +19,33 @@ export async function getMyKeys(){
   return dh
 }
 
+export async function getSharedSecret(pubkey){
+  var me = await getMyKeys()
+  var secret = me.computeSecret(pubkey, null, null)
+  secret = secret.toString('base64')
+  return secret
+}
+
+export async function getMyPublicIndex(){
+  var myPublicIndex = await getJson('public_index.json', {username:blockstack.loadUserData().username})
+  return myPublicIndex
+}
+
 export function makeCypher(secret){
   var initializationVector = crypto.randomBytes(128);
-  var hashedSecret = crypto.createHash(hash).update(secret).digest("binary");
+  var hashedSecret = crypto.createHash(hash).update(secret).digest("base64");
   var cypher = crypto.createCipher(cypherType, hashedSecret, initializationVector);
   return cypher
 }
 
-export function encodeText(secret, text){
+export function encodeText(text, secret){
   var cypher = makeCypher(secret)
   var encodedText = cypher.update(text)
   return encodedText
 }
 
 export function decodeText(encodedText, secret){
-   var hashedSecret = crypto.createHash(hash).update(secret).digest("binary");
+   var hashedSecret = crypto.createHash(hash).update(secret).digest("base64");
    var cypher = crypto.createDecipher(cypherType, hashedSecret)
    var plainText = cypher.update(encodedText, null, "utf8");
    return plainText
@@ -40,9 +53,11 @@ export function decodeText(encodedText, secret){
 
 /*export async function testSecret(){
   var me = await getMyKeys()
+  var otro = me.getPublicKey()
   console.log(me)
-  var myKeyObject = await getJson('public_index.json')
-  var myKey = myKeyObject.data
+  var myKeyObject = await getMyPublicIndex()
+  console.log(myKeyObject)
+  var myKey = myKeyObject.pubkey.data
 
   var otherPerson = createKeys()
   console.log(otherPerson)
@@ -62,7 +77,7 @@ export function decodeText(encodedText, secret){
   console.log(eveSecret.equals(mySecret))
 
   var cypherTextObject = encodeText(mySecret, "Go Bills!")
-  console.log(cypherTextObject.encodedText)
+  console.log(cypherTextObject)
   var decodedCypher = decodeText(cypherTextObject, theirSecret)
   var decodedCypher1 = decodeText(cypherTextObject, eveSecret)
   console.log(decodedCypher)
