@@ -25,15 +25,18 @@ export async function enableDiscovery(){
 
 export async function discoverConversation(blockstackID){
   var discoverThem = await getJson('public_index.json', { username: blockstackID })
+  console.log(discoverThem)
   if(discoverThem == null){return;}
   var sharedSecret = await getSharedSecret(discoverThem.pubkey.data)
   for(var i = 0; i < discoverThem.introductions.length; i++){
-    var theirSecret = decodeText(discoverThem.introductions[i].secret.data, sharedSecret)
+    var theirSecret = decodeText(discoverThem.introductions[i].secret, sharedSecret)
     if(sharedSecret == theirSecret){ //winner!
-      var text = decodeText(discoverThem.introductions[i].text.data, sharedSecret)
-      var convoID = decodeText(discoverThem.introductions[i].convoID.data, sharedSecret)
+      var text = decodeText(discoverThem.introductions[i].text, sharedSecret)
+      console.log(text)
+      var convoID = decodeText(discoverThem.introductions[i].convoID, sharedSecret)
       await saveJson(convoID, {messages: []}, {isPublic: true})
       addConversation(convoID, blockstackID, text, sharedSecret)
+      addContact(blockstackID)
     }
   }
 }

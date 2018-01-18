@@ -31,10 +31,10 @@ export async function newConversation(text, blockstackID){
   var discovery = await getMyPublicIndex()
   discovery.introductions = [] //testing only
   discovery.introductions.push(json)
-  /*await saveJson("public_index.json", discovery, { isPublic: true })
+  await saveJson("public_index.json", discovery, { isPublic: true })
   await saveJson(convoID, {messages: []}, {isPublic: true})
   addConversation(convoID, blockstackID, text, secret)
-  addContact(blockstackID)*/
+  addContact(blockstackID)
 }
 
 async function addConversation(convoID, blockstackID, text, sharedSecret){
