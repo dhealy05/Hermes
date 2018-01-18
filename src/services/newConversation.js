@@ -17,6 +17,9 @@ export async function newConversation(text, blockstackID){
   if(pubkey==null){return null}
   var secret = await getSharedSecret(pubkey)
   var encodedText = encodeText(text, secret)
+  console.log(encodedText)
+  var dt = decodeText(encodedText, secret)
+  console.log(dt)
   var convoID = crypto.randomBytes(20).toString('base64');
   var secretConvoID = encodeText(convoID, secret)
   var secretSecret = encodeText(secret, secret)
@@ -28,9 +31,10 @@ export async function newConversation(text, blockstackID){
   var discovery = await getMyPublicIndex()
   discovery.introductions = [] //testing only
   discovery.introductions.push(json)
-  await saveJson("public_index.json", discovery, { isPublic: true })
+  /*await saveJson("public_index.json", discovery, { isPublic: true })
+  await saveJson(convoID, {messages: []}, {isPublic: true})
   addConversation(convoID, blockstackID, text, secret)
-  addContact(blockstackID)
+  addContact(blockstackID)*/
 }
 
 async function addConversation(convoID, blockstackID, text, sharedSecret){

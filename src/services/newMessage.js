@@ -1,8 +1,21 @@
 import {saveJson, getJson} from './blockstack'
 import {encodeText} from './keys'
+import * as blockstack from 'blockstack'
 
-export async function newMessage(text, convoID){
-  var convo = await getJson(convoID)
-  var encodedText = encodeText(text, convo.secret)
-
+export async function newMessage(text, blockstackID){
+  var id = blockstackID.replace('.id', '')
+  var conversations = await getJson("conversations.json")
+  var convoMeta = conversations.conversations[id]
+  var convo = await getJson(convoMeta.publicID, {username:blockstack.loadUserData().username})
+  var encodedText = encodeText(text, convoMeta.secret)
+  var message = {}
+  message.sentAt = new Date()
+  message.content = encodedText
+  convo.messages = [] //testing only
+  convo.messages.push(message)
+  await saveJson(convoMeta.publicID, convo, {isPublic: true})
+  var privateConversation = await getJson("conversation_" + id + ".json")
+  message.text = text
+  privateConversation.messages.push(message)
+  await saveJson("conversation_" + id + ".json", privateConversation)
 }

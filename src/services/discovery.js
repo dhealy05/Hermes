@@ -32,6 +32,7 @@ export async function discoverConversation(blockstackID){
     if(sharedSecret == theirSecret){ //winner!
       var text = decodeText(discoverThem.introductions[i].text.data, sharedSecret)
       var convoID = decodeText(discoverThem.introductions[i].convoID.data, sharedSecret)
+      await saveJson(convoID, {messages: []}, {isPublic: true})
       addConversation(convoID, blockstackID, text, sharedSecret)
     }
   }
@@ -52,12 +53,18 @@ async function addContact(blockstackID){
   saveContactById(id, contact)
 }
 
-export async function discoverMessage(blockstackID, convoID, sharedSecret){
-  var messages = await getJson(convoID, blockstackID)
-  for(var i = 0; i < messages.messages.length; i++){
-    var text = decodeText(messages.messages[i].textObject, sharedSecret)
+export async function discoverMessage(blockstackID){
+  var id = blockstackID.replace('.id', '')
+  var conversations = await getJson("conversations.json")
+  var convoMeta = conversations.conversations[id]
+  console.log(convoMeta)
+  var convo = await getJson(convoMeta.publicID, {username:blockstackID})
+  console.log(convo)
+  for(var i = 0; i < convo.messages.length; i++){
+    var text = decodeText(convo.messages[i].content, convoMeta.secret)
+    console.log(text)
     //newMessageAlert()
-    updateConversation(convoID, text)
+    //updateConversation(convoID, text)
   }
 }
 

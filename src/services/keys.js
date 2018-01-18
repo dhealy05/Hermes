@@ -41,10 +41,11 @@ export function makeCypher(secret){
 export function encodeText(text, secret){
   var cypher = makeCypher(secret)
   var encodedText = cypher.update(text)
-  return encodedText
+  return encodedText.toString('base64')
 }
 
 export function decodeText(encodedText, secret){
+  encodedText = Buffer.from(encodedText, 'base64')
    var hashedSecret = crypto.createHash(hash).update(secret).digest("base64");
    var cypher = crypto.createDecipher(cypherType, hashedSecret)
    var plainText = cypher.update(encodedText, null, "utf8");

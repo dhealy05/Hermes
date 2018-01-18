@@ -1,7 +1,8 @@
 import { getJson, saveJson } from './blockstack'
 import { createMockData } from './createMockData'
-import { enableDiscovery, discoverConversation } from './discovery'
+import { enableDiscovery, discoverConversation, discoverMessage } from './discovery'
 import { newConversation } from './newConversation'
+import { newMessage } from './newMessage'
 import { testSecret } from './keys'
 import * as blockstack from 'blockstack'
 
@@ -16,7 +17,9 @@ export async function ensureFilesExist() {
 
   // change to true to hydrate your datastore with MOCK DATA
   if (true) {
-    //console.log(await getJson("contacts.json"))
+    //discoverMessage("djhealy.id")
+    //newMessage("Yoooooo", "djhealy.id")
+    //console.log(await getJson("conversation_mike.json"))
     //discoverConversation("djhealy.id")
     //newConversation("Hey Broham", "djhealy.id")
     //console.log(await getJson("conversations.json"))
