@@ -1,6 +1,7 @@
 import { Conversation, Message } from '../models'
 import { identity } from './identity'
 import { getJson, saveJson } from './blockstack'
+import { encodeText } from './keys'
 
 export async function getConversations() {
   return getJson('conversations.json')
@@ -48,7 +49,7 @@ export async function sendMessage(convoId, message) {
   convo.messages.unshift(message)
 
   // TODO is this right?
-  await saveOutgoingMessages(convo.filename, [message])
+  await saveOutgoingMessages(convo, [message])
   return saveConversationById(convoId, convo)
 }
 
@@ -62,9 +63,14 @@ export async function recvMessage(convoId, message) {
   return saveConversationById(convoId, convo)
 }
 
-export function saveOutgoingMessages(filename, messages) {
+export function saveOutgoingMessages(convo, rawMessages) {
+  const messages = rawMessages.map(msg => ({
+    ...msg,
+    content: encodeText(msg.content, convo.secret)
+  }))
+
   return saveJson(
-    filename,
+    convo.filename,
     { messages },
     { isPublic: true }
   )

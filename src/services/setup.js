@@ -4,7 +4,6 @@ import { enableDiscovery, discoverConversation, discoverMessage } from './discov
 import { newConversation } from './newConversation'
 import { newMessage } from './newMessage'
 import { testSecret } from './keys'
-import * as blockstack from 'blockstack'
 
 export async function ensureFilesExist({ cleanSlate = false } = {}) {
   if (cleanSlate || !(await getJson('conversations.json'))) {
