@@ -16,8 +16,10 @@ export async function ensureFilesExist() {
 
   // change to true to hydrate your datastore with MOCK DATA
   if (true) {
-    discoverConversation("djhealy.id")
+    //console.log(await getJson("contacts.json"))
+    //discoverConversation("djhealy.id")
     //newConversation("Hey Broham", "djhealy.id")
+    //console.log(await getJson("conversations.json"))
     //console.log(await getJson("discovery.json", "djhealy.id"))
     //console.log(getJson('public_index.json', { username: 'djhealy.id' }))
     //console.log(getJson('public_index.json', { username: 'fulgid.id' }))

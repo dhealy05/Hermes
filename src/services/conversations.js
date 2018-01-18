@@ -10,9 +10,11 @@ export async function getConversationById(id) {
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
-export async function createNewConversation(contactIds) {
+export async function createNewConversation(contactIds, publicID, secret) {
   const convo = new Conversation({
-    contacts: contactIds
+    contacts: contactIds,
+    publicID: publicID,
+    secret: secret
   })
   const id = Conversation.getId(convo)
 

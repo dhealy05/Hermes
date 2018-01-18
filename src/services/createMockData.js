@@ -26,6 +26,8 @@ export const data = {
   conversations: [
     new Conversation({
       contacts: ['mike'],
+      publicID: 'XYZ',
+      secret: '1A2A',
       messages: [
         new Message({
           sender: 'mike',
@@ -35,6 +37,8 @@ export const data = {
     }),
     new Conversation({
       contacts: ['sarah'],
+      publicID: 'ABC',
+      secret: '3B4B',
       messages: [
         new Message({
           sender: 'sarah',
@@ -55,6 +59,8 @@ export const data = {
     }),
     new Conversation({
       contacts: ['sarah', 'jessica'],
+      publicID: '123',
+      secret: '5C6C',
       messages: [
         new Message({
           sender: 'jessica',

@@ -8,6 +8,8 @@ export const ContentTypes = {
 
 export const ConversationMetadata = Model('ConversationMetadata', {
   id: '',
+  publicID: '',
+  secret: '',
   contacts: [],
   thumbnail: {}
 })
@@ -17,6 +19,16 @@ export const Conversation = Model('Conversation', {
    * List of IDs of contacts involved in the conversation
    */
   contacts: [],
+
+  /**
+   * The random string which is the public ID for the convo
+   */
+  publicID: '',
+
+  /**
+   * The secret for the convo
+   */
+  secret: '',
 
   /**
    * List of messages contained in the conversation
@@ -63,7 +75,9 @@ Conversation.getThumbnail = convo => {
 Conversation.getMetadata = convo => new ConversationMetadata({
   id: Conversation.getId(convo),
   thumbnail: Conversation.getThumbnail(convo),
-  contacts: convo.contacts
+  contacts: convo.contacts,
+  publicID: convo.publicID,
+  secret: convo.secret
 })
 
 export const Message = Model('Message', {
