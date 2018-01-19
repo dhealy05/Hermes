@@ -1,24 +1,25 @@
 import {saveJson, getJson} from './blockstack'
-import {enableDiscovery} from './discovery'
+import {getConversations} from './conversations'
+import {enableDiscovery, discoverMessage} from './discovery'
+import {identity} from './identity'
 
 async function checkDiscovery(){
   var discovery = localStorage.getItem("discovery");
   if(discovery == true){return;}
-  var discoveryJson = await getJson("public_index.json")
+  var discoveryJson = await getJson("public_index.json", {username: identity().username} )
   if(discoveryJson !== null){return;}
   enableDiscovery()
 }
 
-async function checkNewMessages(){
-  /*get conversations.json
-  iterate through IDs
-  check each file
-  if there is a message with timestamp>than current, add
-  */
+export async function checkNewMessages(){
+  const conversations = getConversations()
+  for(var convo in conversations){
+    await discoverMessage(conversations, convo.id)
+  }
 }
 
 async function checkNewConversations(){
-  /*
+  /* TODO
   iterate through network IDs
   check secrets
   etc

@@ -38,7 +38,6 @@ export async function discoverConversation(userId) {
   }
 
   const sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
-
   for (const intro of theirIndex.introductions) {
     const theirSecret = decodeText(intro.secret, sharedSecret)
     if (sharedSecret !== theirSecret) {
@@ -53,8 +52,8 @@ export async function discoverConversation(userId) {
   }
 }
 
-export async function discoverMessage(userId) {
-  const { conversations } = await getConversations()
+export async function discoverMessage(conversations, userId) {
+  //const { conversations } = await getConversations()
   const metadata = conversations[userId]
   const convoId = Conversation.getId(metadata)
   const incoming = await getIncomingMessagesForMeta(metadata)

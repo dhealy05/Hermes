@@ -46,11 +46,39 @@ export async function sendMessage(convoId, message) {
   message.sentAt = new Date().toISOString()
 
   const convo = await getConversationById(convoId)
+
+  var boundary = getMessageTimeBoundary(convo.messages)
+  var outbox = await getJson(convo.filename, {username: identity().username})
+  if(boundary != null){outbox.messages = purgeOutbox(outbox.messages, boundary)}
+  //right now this is naive, and only checks the sender's conversations 
+  // TODO add read receipts for more efficiency
+
   convo.messages.unshift(message)
 
+  outbox.messages.push(message)
+
   // TODO is this right?
-  await saveOutgoingMessages(convo, [message])
+  await saveOutgoingMessages(convo, outbox.messages)
   return saveConversationById(convoId, convo)
+}
+
+function getMessageTimeBoundary(messages){
+  for(var i = 0; i < messages.length; i++){
+    if(messages[i].sender != identity().username){
+      return messages[i].sentAt
+    }
+  }
+  return null
+}
+
+function purgeOutbox(messages, boundary){
+  boundary = new Date(boundary)
+  for(var i = 0; i < messages.length; i++){
+    if(new Date(messages[i].sentAt) < boundary){
+      messages.splice(i, 1)
+    }
+  }
+  return messages
 }
 
 export async function recvMessage(convoId, message) {
@@ -63,12 +91,11 @@ export async function recvMessage(convoId, message) {
   return saveConversationById(convoId, convo)
 }
 
-export function saveOutgoingMessages(convo, rawMessages) {
+export function saveOutgoingMessages(convo, rawMessages, boundary) {
   const messages = rawMessages.map(msg => ({
     ...msg,
     content: encodeText(msg.content, convo.secret)
   }))
-
   return saveJson(
     convo.filename,
     { messages },

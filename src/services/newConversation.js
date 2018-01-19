@@ -20,10 +20,18 @@ import {
   getLocalPublicIndex,
   saveLocalPublicIndex
 } from './identity'
+import {
+  getJson
+} from './blockstack'
 
 const crypto = require('crypto')
 
 export async function newConversation(text, otherId) {
+
+  var contacts = await getJson("contacts.json")
+  if(contacts[otherId] != null){return true}
+  //this is also a naive check TODO improve
+
   const pubkey = await getPublicKeyForId(otherId)
 
   if (!pubkey) {
