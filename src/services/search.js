@@ -3,18 +3,16 @@ const request = require('request')
 var filenames = []
 
 export async function appIndex(){
-  console.log("Indexing")
+  /*console.log("Indexing")
   for(var i = 300; i < 390; i++){
     var x = await getPage(i)
     console.log(x)
     console.log(i + 1)
   }
   console.log("PUBLIC FILE NAMES")
-  console.log(filenames)
-  /*var test = blockstack.lookupProfile("deeeds.id", "http://localhost:6270/v1/names/")
-  test.then(function(object){
-    console.log(object)
-  })*/
+  console.log(filenames)*/
+  var test = blockstack.lookupProfile("djhealy.id", "http://localhost:6270/v1/names/")
+  test.then(object=>{console.log(object)})
 }
 
 async function getPage(page){
@@ -27,7 +25,7 @@ async function getPage(page){
       method: 'GET'
     }
     request(requestData, function (error, response, body) {
-      if(response == null){resolve("Next Page");}
+      if(response === null){resolve("Next Page");}
       if(response.statusCode != 200){resolve("Next Page");}
       try {
         var newArray = JSON.parse(body);

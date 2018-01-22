@@ -24,3 +24,7 @@ export const saveJson = async (filename, json, { isPublic = false, ...options } 
   await blockstack.putFile(filename, JSON.stringify(json), { encrypt: true, ...options })
   return json
 }
+
+export const deleteJson = async filename => {
+  return blockstack.deleteFile(filename)
+}

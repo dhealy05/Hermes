@@ -55,7 +55,7 @@ export const Message = ({ direction = 'left', sender, timestamp, content }) => {
 
   return (
     <OuterContainer direction={direction}>
-      <SenderAvatar image="https://lorempixel.com/64/64"/>
+      <SenderAvatar image={sender.pic}/>
       <MessageText>
         <SenderDetails>
           <SenderName>{sender.name}</SenderName>

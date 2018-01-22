@@ -4,7 +4,7 @@ import {
   getConversations,
   getIncomingMessagesForMeta,
   recvMessage,
-  saveOutgoingMessages,
+  saveNewOutbox,
   saveConversationById
 } from './conversations'
 import {
@@ -40,20 +40,21 @@ export async function discoverConversation(userId) {
   const sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
   for (const intro of theirIndex.introductions) {
     const theirSecret = decodeText(intro.secret, sharedSecret)
+
     if (sharedSecret !== theirSecret) {
       continue
     }
 
     const text = decodeText(intro.text, sharedSecret)
     const filename = decodeText(intro.filename, sharedSecret)
-    await saveOutgoingMessages(filename, [])
-    await createNewConversation(filename, userId, text, sharedSecret)
+    await saveNewOutbox(intro.filename)
+    await createNewConversation(intro.filename, userId, text, sharedSecret)
     await addContactById(userId)
   }
 }
 
-export async function discoverMessage(conversations, userId) {
-  //const { conversations } = await getConversations()
+export async function discoverMessage(userId) {
+  const { conversations } = await getConversations()
   const metadata = conversations[userId]
   const convoId = Conversation.getId(metadata)
   const incoming = await getIncomingMessagesForMeta(metadata)

@@ -1,6 +1,6 @@
 import { Conversation, Message } from '../models'
-import { identity } from './identity'
-import { getJson, saveJson } from './blockstack'
+import { identity, lookupProfile } from './identity'
+import { getJson, saveJson, deleteJson } from './blockstack'
 import { encodeText } from './keys'
 
 export async function getConversations() {
@@ -12,18 +12,22 @@ export async function getConversationById(id) {
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
-export function createNewConversation(filename, userId, content, sharedSecret) {
+export async function createNewConversation(filename, userId, content, sharedSecret) {
   const msg = new Message({
     sender: identity().username,
     content,
     sentAt: new Date()
   })
 
+  const profile = await lookupProfile(userId)
+  const pic = profile.image[0].contentUrl
+
   const convo = new Conversation({
     filename,
     contacts: [userId],
     secret: sharedSecret,
-    messages: [msg]
+    messages: [msg],
+    pic: pic
   })
 
   return saveConversationById(Conversation.getId(convo), convo)
@@ -50,7 +54,7 @@ export async function sendMessage(convoId, message) {
   var boundary = getMessageTimeBoundary(convo.messages)
   var outbox = await getJson(convo.filename, {username: identity().username})
   if(boundary != null){outbox.messages = purgeOutbox(outbox.messages, boundary)}
-  //right now this is naive, and only checks the sender's conversations 
+  //right now this is naive, and only checks the sender's conversations
   // TODO add read receipts for more efficiency
 
   convo.messages.unshift(message)
@@ -101,6 +105,22 @@ export function saveOutgoingMessages(convo, rawMessages, boundary) {
     { messages },
     { isPublic: true }
   )
+}
+
+export function saveNewOutbox(filename){
+  return saveJson(
+    filename,
+    { messages: [] },
+    { isPublic: true }
+  )
+}
+
+export async function deleteConversation(id){
+  var conversations = await getJson("conversations.json")
+  var filename = conversations[id].filename
+  delete conversations[id]
+  await saveJson("conversations.json", conversations)
+  await deleteJson(filename)
 }
 
 export async function getIncomingMessagesForMeta(metadata) {

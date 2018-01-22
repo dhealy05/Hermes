@@ -13,3 +13,7 @@ export const saveLocalPublicIndex = data => saveJson(
   data,
   { isPublic: true }
 )
+
+export async function lookupProfile(id){
+  return await blockstack.lookupProfile(id, "http://localhost:6270/v1/names/")
+}

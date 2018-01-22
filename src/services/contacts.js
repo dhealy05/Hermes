@@ -8,9 +8,12 @@ export async function getContacts() {
 
 export async function addContactById(id) {
   const profile = await blockstack.lookupProfile(id)
+  const pic = profile.image[0].contentUrl
+
   const contact = new Contact({
     id,
-    name: profile.name
+    name: profile.name,
+    pic: pic
   })
   return saveContactDataById(id, contact)
 }
@@ -30,6 +33,12 @@ export async function saveContactsFile(listOrMap) {
   const file = { contacts }
   await saveJson('contacts.json', file)
   return file
+}
+
+export async function deleteContact(id){
+  var contacts = await getJson("contacts.json")
+  delete contacts[id]
+  await saveJson("contacts.json", contacts)
 }
 
 export function getPublicIndexForId(username) {

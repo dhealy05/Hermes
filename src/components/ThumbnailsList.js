@@ -66,7 +66,7 @@ export const ThumbnailsList = props => {
       <ListItem key={t.id}
                 onClick={() => props.onSelectConversation(t.id)}>
         <Avatar size={48}
-                image="https://lorempixel.com/64/64"/>
+                image={t.pic}/>
         <TextContainer>
           <TitleContainer>
             <Title>{t.title}</Title>

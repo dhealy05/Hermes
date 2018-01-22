@@ -11,6 +11,7 @@ export const ConversationMetadata = Model('ConversationMetadata', {
   filename: '',
   secret: '',
   contacts: [],
+  pic: '',
   thumbnail: {}
 })
 
@@ -31,6 +32,11 @@ export const Conversation = Model('Conversation', {
   secret: '',
 
   /**
+   * The pic of the sender
+   */
+  pic: '',
+
+  /**
    * List of messages contained in the conversation
    */
   messages: []
@@ -43,13 +49,14 @@ Conversation.getDefaultThumbnail = () => ({
   version: CURRENT_THUMBNAIL_VERSION,
   contentType: ContentTypes.Text,
   content: '',
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
+  pic: 'https://lorempixel.com/64/64'
 })
 
 Conversation.getThumbnail = convo => {
   const id = Conversation.getId(convo)
   const version = CURRENT_THUMBNAIL_VERSION
-  const [firstMessage] = convo.messages
+  const [firstMessage] = convo.messages //should this be convo.messages[0]?
 
   const base = Conversation.getDefaultThumbnail()
 
@@ -68,7 +75,8 @@ Conversation.getThumbnail = convo => {
     contentType: firstMessage.type,
     content: firstMessage.content,
     lastSender: firstMessage.sender,
-    timestamp: firstMessage.sentAt
+    timestamp: firstMessage.sentAt,
+    pic: convo.pic
   }
 }
 
@@ -77,7 +85,8 @@ Conversation.getMetadata = convo => new ConversationMetadata({
   thumbnail: Conversation.getThumbnail(convo),
   contacts: convo.contacts,
   filename: convo.filename,
-  secret: convo.secret
+  secret: convo.secret,
+  pic: convo.pic
 })
 
 export const Message = Model('Message', {

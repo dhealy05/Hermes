@@ -6,7 +6,7 @@ import {
   createNewConversation,
   getConversations,
   saveConversationById,
-  saveOutgoingMessages
+  saveNewOutbox
 } from './conversations'
 import {
   addContactById,
@@ -51,7 +51,7 @@ export async function newConversation(text, otherId) {
 
   // we could use Promise.all here but we'd probably get rate-limited
   await saveLocalPublicIndex(discovery)
-  await saveOutgoingMessages(filename, { messages: [] })
+  await saveNewOutbox(filename)
   await createNewConversation(filename, otherId, text, secret)
   await addContactById(otherId)
 }

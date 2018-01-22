@@ -9,5 +9,8 @@ export const Contact = Model('Contact', {
   /**
    * Display name of the contact
    */
-  name: ''
+  name: '',
+
+  //picture of the contact
+  pic: ''
 })
