@@ -85,12 +85,20 @@ function purgeOutbox(messages, boundary){
   return messages
 }
 
+function checkTimestamp(message, messages) {
+    for (var i = 0; i < messages.length; i++) {
+      if (message.sentAt == messages[i].sentAt){return true}
+    }
+    return false
+}
+
 export async function recvMessage(convoId, message) {
   if (!(message instanceof Message)) {
     throw new TypeError('must pass Message instance to recvMessage')
   }
 
   const convo = await getConversationById(convoId)
+  if(checkTimestamp(message, convo.messages)){console.log("got em"); return null;}
   convo.messages.unshift(message)
   return saveConversationById(convoId, convo)
 }
@@ -98,7 +106,10 @@ export async function recvMessage(convoId, message) {
 export function saveOutgoingMessages(convo, rawMessages, boundary) {
   const messages = rawMessages.map(msg => ({
     ...msg,
-    content: encodeText(msg.content, convo.secret)
+    content: encodeText(msg.content, convo.secret),
+    sender: encodeText(msg.sender, convo.secret),
+    sentAt: encodeText(msg.sentAt, convo.secret),
+    timestamp: encodeText(msg.timestamp, convo.secret)
   }))
   return saveJson(
     convo.filename,

@@ -29,6 +29,7 @@ const crypto = require('crypto')
 export async function newConversation(text, otherId) {
 
   var contacts = await getJson("contacts.json")
+  console.log(contacts)
   if(contacts[otherId] != null){return true}
   //this is also a naive check TODO improve
 

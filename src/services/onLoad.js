@@ -12,9 +12,10 @@ async function checkDiscovery(){
 }
 
 export async function checkNewMessages(){
-  const conversations = getConversations()
-  for(var convo in conversations){
-    await discoverMessage(conversations, convo.id)
+  const object = await getConversations()
+  const conversations = object.conversations
+  for(var id in conversations){
+    await discoverMessage(conversations[id], id)
   }
 }
 

@@ -16,7 +16,7 @@ export async function ensureFilesExist({ cleanSlate = false } = {}) {
 
   if (cleanSlate || true) {
     //deleteConversation()
-    appIndex()
+    //appIndex()
     //checkNewMessages()
     //console.log(blockstack.loadUserData())
     //await createMockData()

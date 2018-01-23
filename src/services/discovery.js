@@ -53,9 +53,8 @@ export async function discoverConversation(userId) {
   }
 }
 
-export async function discoverMessage(userId) {
-  const { conversations } = await getConversations()
-  const metadata = conversations[userId]
+export async function discoverMessage(metadata, userId) {
+
   const convoId = Conversation.getId(metadata)
   const incoming = await getIncomingMessagesForMeta(metadata)
 
@@ -64,9 +63,13 @@ export async function discoverMessage(userId) {
   }
 
   for (const msg of incoming.messages) {
+    console.log(msg)
     await recvMessage(convoId, new Message({
       ...msg,
-      content: decodeText(msg.content, metadata.secret)
+      content: decodeText(msg.content, metadata.secret),
+      sender: decodeText(msg.sender, metadata.secret),
+      sentAt: decodeText(msg.sentAt, metadata.secret),
+      timestamp: decodeText(msg.timestamp, metadata.secret)
     }))
   }
 }

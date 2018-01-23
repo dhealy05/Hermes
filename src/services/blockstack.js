@@ -11,6 +11,8 @@ export const getJson = async (filename, { username = null, ...options } = {}) =>
     app: 'http://localhost:3000' // TODO put this in configuration instead of a constant
     //app: 'https://hihermes.co',
   }
+  //if(blockstack.lookupProfile(username, "http://localhost:6270/v1/names/")===null){return null}
+  if(username.indexOf(".id") == -1){return null}
   return JSON.parse(await blockstack.getFile(filename, { ...publicOptions, ...options }))
 }
 
