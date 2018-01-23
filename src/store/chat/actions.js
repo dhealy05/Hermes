@@ -22,7 +22,7 @@ export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
 export const setActiveConversation = id => async (dispatch, getState) => {
   const { chat: { conversationDetails } } = getState()
 
-  if (id && !conversationDetails[id]) {
+  if (id && id !== COMPOSE_CONVERSATION_ID && !conversationDetails[id]) {
     // not using `await` because we want to show a loading state
     dispatch(fetchConversationDetails(id))
   }
