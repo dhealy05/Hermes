@@ -53,6 +53,6 @@ export async function newConversation(text, otherId) {
   // we could use Promise.all here but we'd probably get rate-limited
   await saveLocalPublicIndex(discovery)
   await saveNewOutbox(filename)
-  await createNewConversation(filename, otherId, text, secret)
   await addContactById(otherId)
+  return createNewConversation(filename, otherId, text, secret)
 }

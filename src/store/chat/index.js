@@ -10,7 +10,8 @@ const initialState = {
   loadingConversationMetadata: false,
   activeConversation: null,
   conversationMetadata: {},
-  conversationDetails: {}
+  conversationDetails: {},
+  newMessageRecipients: []
 }
 
 export const reducer = (state = initialState, action) => {
@@ -60,6 +61,11 @@ export const reducer = (state = initialState, action) => {
           ...state.conversationDetails,
           [Conversation.getId(action.payload)]: action.payload
         }
+      }
+    case actions.SET_NEW_MESSAGE_RECIPIENTS:
+      return {
+        ...state,
+        newMessageRecipients: action.payload
       }
     default:
       return state

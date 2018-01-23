@@ -1,4 +1,4 @@
-import { Conversation, Message } from '../models'
+import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
 import { getJson, saveJson, deleteJson } from './blockstack'
 import { encodeText } from './keys'
@@ -127,11 +127,12 @@ export function saveNewOutbox(filename){
 }
 
 export async function deleteConversation(id){
-  var conversations = await getJson("conversations.json")
-  var filename = conversations[id].filename
+  const { conversations } = await getConversations()
+  const filename = conversations[id].filename
   delete conversations[id]
-  await saveJson("conversations.json", conversations)
+  await saveJson('conversations.json', conversations)
   await deleteJson(filename)
+  await deleteJson(`conversation_${id}.json`)
 }
 
 export async function getIncomingMessagesForMeta(metadata) {

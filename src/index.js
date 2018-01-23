@@ -6,6 +6,10 @@ import { applyGlobalStyles } from './globalStyle'
 import registerServiceWorker from './registerServiceWorker'
 import { Routes } from './routes'
 import { store, history, actions } from './store'
+import * as services from './services'
+
+// expose for using the console as a poor man's REPL
+window.__HERMES = services
 
 applyGlobalStyles()
 

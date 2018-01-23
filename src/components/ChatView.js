@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import { AppView } from './AppView'
 import { Message } from './Message'
 import { TextInput } from './TextInput'
+import { AddUserToChat } from './AddUserToChat'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -77,26 +78,43 @@ export class ChatView extends React.Component {
   setMessagesList = el => this.messagesList = el
 
   render() {
-    const { identity, conversation, contacts, onSignOut, sidebar } = this.props
+    const {
+      identity,
+      composing,
+      conversation,
+      contacts,
+      newMessageRecipients,
+      onSignOut,
+      onSetNewMessageRecipients,
+      sidebar
+    } = this.props
 
-    const messageEls = conversation.messages.map(({ sender, content, sentAt }, i) => (
-      // TODO figure out proper way to tell if the sender is the current user
-      <Message key={i}
-               direction={sender === identity.username ? 'right' : 'left'}
-               sender={contacts[sender]}
-               timestamp={sentAt}
-               content={content}/>
-    ))
+    let messageContents = []
+
+    if (conversation) {
+      messageContents = conversation.messages.map(({ sender, content, sentAt }, i) => (
+        // TODO figure out proper way to tell if the sender is the current user
+        <Message key={i}
+                 direction={sender === identity.username ? 'right' : 'left'}
+                 sender={contacts[sender]}
+                 timestamp={sentAt}
+                 content={content}/>
+      ))
+    } else if (composing) {
+      messageContents = (
+        <AddUserToChat recipients={newMessageRecipients}
+                       onChange={onSetNewMessageRecipients}/>
+      )
+    }
 
     return (
       <AppView onSignOut={onSignOut}
                sidebar={sidebar}>
         <MessagesContainer ref={this.setMessagesList}>
-          {messageEls}
+          {messageContents}
         </MessagesContainer>
         <MessageInput fullWidth
                       placeholder="type your message"
-                      style={{width: '100%'}}
                       value={this.state.msgInput}
                       onChange={this.onMsgInputChange}
                       onKeyUp={this.onMsgInputKeyUp}/>
@@ -106,8 +124,11 @@ export class ChatView extends React.Component {
 }
 ChatView.propTypes = {
   identity: PropTypes.object.isRequired,
+  composing: PropTypes.bool,
   conversation: PropTypes.object,
+  newMessageRecipients: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSendMessage: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
+  onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired
 }

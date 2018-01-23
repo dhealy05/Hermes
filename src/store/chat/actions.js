@@ -6,19 +6,23 @@ import {
   Message
 } from '../../models'
 import {
+  deleteConversation as deleteConversationService,
   getConversations,
   getConversationById,
   sendMessage as saveMessageToJson
 } from '../../services'
+import { newConversation } from '../../services/newConversation'
 import { identity } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
+
+export const COMPOSE_CONVERSATION_ID = 'compose'
 
 export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
 export const setActiveConversation = id => async (dispatch, getState) => {
   const { chat: { conversationDetails } } = getState()
 
-  if (!conversationDetails[id]) {
+  if (id && !conversationDetails[id]) {
     // not using `await` because we want to show a loading state
     dispatch(fetchConversationDetails(id))
   }
@@ -28,6 +32,11 @@ export const setActiveConversation = id => async (dispatch, getState) => {
     payload: id
   })
 }
+
+export const startComposing = () => ({
+  type: SET_ACTIVE_CONVERSATION,
+  payload: COMPOSE_CONVERSATION_ID
+})
 
 export const RECV_MESSAGE = 'RECV_MESSAGE'
 export const recvMessage = payloadAction(RECV_MESSAGE)
@@ -46,6 +55,22 @@ export const finishLoadingConversationDetails = payloadAction(FINISH_LOADING_CON
 
 export const SET_CONVERSATION_DETAILS = 'SET_CONVERSATION_DETAILS'
 export const setConversationDetails = payloadAction(SET_CONVERSATION_DETAILS)
+
+export const SET_NEW_MESSAGE_RECIPIENTS = 'SET_NEW_MESSAGE_RECIPIENTS'
+export const setNewMessageRecipients = ids => (dispatch, getState) => {
+  const { contacts: { contactsById } } = getState()
+
+  for (const id of ids) {
+    if (!contactsById[id]) {
+      dispatch(contactActions.fetchContactById(id))
+    }
+  }
+
+  dispatch({
+    type: SET_NEW_MESSAGE_RECIPIENTS,
+    payload: ids
+  })
+}
 
 export const fetchConversationList = () => async (dispatch, getState) => {
   dispatch(startLoadingConversationList())
@@ -70,13 +95,19 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   if (!activeConversation
       || !conversationDetails[activeConversation]
       || conversationDetails[activeConversation].loading) {
-    await dispatch(fetchConversationDetails(Object.keys(conversations)[0]))
+    const defaultConvo = Object.keys(conversations)[0] || COMPOSE_CONVERSATION_ID
+
+    await dispatch(fetchConversationDetails(defaultConvo))
   }
 
   dispatch(finishLoadingConversationList(conversations))
 }
 
 export const fetchConversationDetails = id => async dispatch => {
+  if (!id || id === COMPOSE_CONVERSATION_ID) {
+    return
+  }
+
   dispatch(startLoadingConversationDetails(id))
   const convo = await getConversationById(id)
   dispatch(finishLoadingConversationDetails(convo))
@@ -87,7 +118,20 @@ export const sendMessage = text => async (dispatch, getState) => {
     return
   }
 
-  const { chat: { activeConversation, conversationDetails } } = getState()
+  const { chat: { activeConversation,
+                  conversationDetails,
+                  newMessageRecipients } } = getState()
+
+  if (activeConversation === COMPOSE_CONVERSATION_ID) {
+    console.info('recipients', newMessageRecipients)
+    const [recipient] = newMessageRecipients // TODO support group chat
+    const convo = await newConversation(text, recipient)
+
+    dispatch(setConversationDetails(convo))
+    dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+    return
+  }
+
   const convo = conversationDetails[activeConversation]
 
   const message = new Message({
@@ -98,6 +142,21 @@ export const sendMessage = text => async (dispatch, getState) => {
   })
 
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
+  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+}
+
+export const deleteActiveConversation = () => (dispatch, getState) => {
+  const { chat: { activeConversation } } = getState()
+
+  if (!activeConversation || activeConversation === COMPOSE_CONVERSATION_ID) {
+    return
+  }
+
+  dispatch(deleteConversation(activeConversation))
+}
+
+export const deleteConversation = id => async dispatch => {
+  await deleteConversationService(id)
   dispatch(finishLoadingConversationList(await loadConversationMetadata()))
 }
 

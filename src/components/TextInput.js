@@ -14,11 +14,19 @@ const Input = styled.input.attrs({
   &:focus {
     outline: none;
   }
+
+  ${props => props.fullWidth && css`
+    width: 100%;
+  `}
 `
 
 const Outer = styled.div`
   font-size: 1em;
   margin: 0.75rem 0;
+
+  ${props => props.fullWidth && css`
+    width: 100%;
+  `}
 `
 
 const Inner = styled(Paper)`
@@ -26,6 +34,7 @@ const Inner = styled(Paper)`
 
   ${props => props.fullWidth && css`
     display: flex;
+    width: 100%;
   `}
 `
 
@@ -42,10 +51,10 @@ export const TextInput = ({
   label,
   ...other
 }) => (
-  <Outer className={className}>
+  <Outer className={className} fullWidth={fullWidth}>
     { label ? <Label>{label}</Label> : null }
     <Inner layer={layer} fullWidth={fullWidth}>
-      <Input {...other}/>
+      <Input fullWidth={fullWidth} {...other}/>
     </Inner>
   </Outer>
 )

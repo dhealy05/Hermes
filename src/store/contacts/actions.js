@@ -37,7 +37,7 @@ export const fetchSelf = () => async dispatch => {
 
 export const fetchContactById = id => async dispatch => {
   dispatch(startLoadingContactById(id))
-  const contact = addContactById(id)
+  const contact = await addContactById(id)
   dispatch(finishLoadingContactById({ id, contact }))
   return contact
 }

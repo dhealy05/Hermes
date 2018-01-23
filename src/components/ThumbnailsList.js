@@ -78,8 +78,21 @@ export const ThumbnailsList = props => {
     )
   })
 
+  const newMessage = (
+    <ListItem key="new_message"
+              onClick={props.onNewMessage}>
+      {/* TODO replace with a plus button graphic */}
+      <Avatar size={48}
+              image="https://lorempixel.com/64/64"/>
+      <TextContainer>
+        start new chat
+      </TextContainer>
+    </ListItem>
+  )
+
   return (
     <List>
+      {newMessage}
       {items}
     </List>
   )
@@ -93,5 +106,6 @@ ThumbnailsList.propTypes = {
     lastSenderName: PropTypes.string.isRequired,
     timestamp: PropTypes.string.isRequired
   })).isRequired,
-  onSelectConversation: PropTypes.func.isRequired
+  onSelectConversation: PropTypes.func.isRequired,
+  onNewMessage: PropTypes.func.isRequired
 }

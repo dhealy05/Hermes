@@ -32,7 +32,7 @@ export const reducer = (state = initialState, action) => {
           ...state.contactsById,
           [action.payload]: new Contact({
             id: action.payload,
-            name: 'loading...',
+            name: action.payload,
             loading: true
           })
         }
