@@ -8,7 +8,8 @@ export async function getContacts() {
 
 export async function addContactById(id) {
   const profile = await blockstack.lookupProfile(id)
-  const pic = profile.image[0].contentUrl
+  var pic = ''
+  if(profile.image != null){pic = profile.image[0].contentUrl}
 
   const contact = new Contact({
     id,

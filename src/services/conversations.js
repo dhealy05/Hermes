@@ -20,7 +20,8 @@ export async function createNewConversation(filename, userId, content, sharedSec
   })
 
   const profile = await lookupProfile(userId)
-  const pic = profile.image[0].contentUrl
+  var pic = ''
+  if(profile.image != null){pic = profile.image[0].contentUrl}
 
   const convo = new Conversation({
     filename,
