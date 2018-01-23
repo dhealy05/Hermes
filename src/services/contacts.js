@@ -14,7 +14,7 @@ export async function addContactById(id) {
   const contact = new Contact({
     id,
     name: profile.name,
-    pic: pic
+    pic
   })
   return saveContactDataById(id, contact)
 }

@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { Contact } from '../../models'
 import { addContactById, getContacts } from '../../services/contacts'
 import { identity } from '../../services/identity'
@@ -25,12 +26,15 @@ export const fetchContacts = () => async dispatch => {
 }
 
 export const fetchSelf = () => async dispatch => {
-  const { username, profile: { name } } = identity()
+  const { username, profile: { name, image } } = identity()
+  const pic = get(image, '[0].contentUrl', undefined)
+
   dispatch(finishLoadingContactById({
     id: username,
     contact: new Contact({
       id: username,
-      name
+      name,
+      pic
     })
   }))
 }
