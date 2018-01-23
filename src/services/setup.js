@@ -29,7 +29,7 @@ export async function ensureFilesExist({ cleanSlate = false } = {}) {
     //console.info('[DOMESTIC] fulgid.id/public_index.json', await getJson('public_index.json', { decrypt: false }))
     //console.info('[FOREIGN] fulgid.id/public_index.json', await getJson('public_index.json', { username: 'fulgid.id' }))
     //console.info('djhealy.id/public_index.json', await getJson('public_index.json', { username: 'djhealy.id' }))
-    //await discoverConversation("djhealy.id")
+    //await discoverConversation("fulgid.id")
     //console.info('message', await discoverMessage("djhealy.id"))
   }
 }
