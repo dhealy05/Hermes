@@ -13,6 +13,7 @@ export const Circle = styled(Paper).attrs({
 
   ${props => props.background && css`
     background-image: url('${props.background}');
+    background-size: cover;
   `}
 `
 
