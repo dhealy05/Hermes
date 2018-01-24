@@ -52,13 +52,15 @@ const Content = styled.div`
 
 export const Message = ({ direction = 'left', sender, timestamp, content }) => {
   const time = formatTime(timestamp)
+  const avatar = sender && sender.pic
+  const name = (sender && sender.name) || 'anon'
 
   return (
     <OuterContainer direction={direction}>
-      <SenderAvatar image={sender.pic}/>
+      <SenderAvatar image={avatar}/>
       <MessageText>
         <SenderDetails>
-          <SenderName>{sender.name}</SenderName>
+          <SenderName>{name}</SenderName>
           <Timestamp>{time}</Timestamp>
         </SenderDetails>
         <Content>{content}</Content>

@@ -13,7 +13,7 @@ export async function ensureFilesExist() {
     await saveJson('contacts.json', { contacts: {} })
   }
 
-  checkNewMessages()
+  //checkNewMessages()
 }
 
 export async function cleanSlate(){
