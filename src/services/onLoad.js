@@ -1,7 +1,7 @@
 import {saveJson, getJson} from './blockstack'
 import {getConversations} from './conversations'
 import {enableDiscovery, discoverMessage} from './discovery'
-import {identity} from './identity'
+import {identity, getLocalPublicIndex, saveLocalPublicIndex} from './identity'
 
 async function checkDiscovery(){
   var discovery = localStorage.getItem("discovery");
@@ -17,6 +17,11 @@ export async function checkNewMessages(){
   for(var id in conversations){
     await discoverMessage(id, conversations[id])
   }
+}
+
+export async function clearIntroductions(){
+  const index = getLocalPublicIndex()
+  
 }
 
 async function checkNewConversations(){
