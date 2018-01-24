@@ -123,7 +123,6 @@ export const sendMessage = text => async (dispatch, getState) => {
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
-    console.info('recipients', newMessageRecipients)
     const [recipient] = newMessageRecipients // TODO support group chat
     const convo = await newConversation(text, recipient)
 

@@ -49,7 +49,7 @@ export async function discoverConversation(userId) {
     const filename = decodeText(intro.filename, sharedSecret)
 
     await saveNewOutbox(filename)
-    await createNewConversation(filename, userId, text, sharedSecret)
+    await createNewConversation(filename, userId, text, sharedSecret, userId)
     await addContactById(userId)
     return true
   }

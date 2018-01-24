@@ -13,9 +13,15 @@ export async function getConversationById(id) {
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
-export async function createNewConversation(filename, userId, content, sharedSecret) {
+export async function createNewConversation(
+  filename,
+  userId,
+  content,
+  sharedSecret,
+  sender = identity.username()
+) {
   const msg = new Message({
-    sender: identity().username,
+    sender,
     content,
     sentAt: new Date()
   })
