@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { get } from 'lodash'
+import * as colors from '../colors'
 import { AppView } from './AppView'
 import { Message } from './Message'
 import { TextInput } from './TextInput'
@@ -14,12 +15,18 @@ const MessagesContainer = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
+
+  &::-webkit-scrollbar-track {
+    width: 3px;
+    background-color: ${colors.white};
+  }
 `
 
 const MessageInput = styled(TextInput).attrs({
-  layer: 2
+  unstyled: true,
+  //layer: 2
 })`
-  margin: 24px;
+  margin: 0;
   margin-top: 0;
 `
 

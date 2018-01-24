@@ -6,20 +6,25 @@ import * as layers from '../layers'
 
 const OuterContainer = styled.div`
   width: 25%;
+  min-width: 165px;
   background-color: ${colors.white};
-  box-shadow: ${colors.border} 2px 0 4px 0;
+  box-shadow: ${colors.border} 1px 0 2px 0;
   z-index: ${layers.Sidebar};
 `
 
-const Title = styled.h2`
+const Title = styled.div`
+  height: 24px;
   padding: 18px;
   margin-top: 0;
+  box-shadow: ${colors.borderLight} 0 1px 2px 0;
 `
 
 export const Sidebar = ({ className, title, children }) => {
   return (
     <OuterContainer className={className}>
-      {title ? <Title>{title}</Title> : null}
+      <Title>
+        <img src="/title-logo-inverted.svg"/>
+      </Title>
       {children}
     </OuterContainer>
   )

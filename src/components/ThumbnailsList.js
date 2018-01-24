@@ -15,7 +15,7 @@ const List = styled.ul`
 const ListItem = styled.li`
   display: flex;
   align-items: center;
-  padding: 0.5em;
+  padding: 0.5em 1em;
 
   &:hover {
     cursor: pointer;

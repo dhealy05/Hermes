@@ -10,21 +10,17 @@ const OuterContainer = styled(Paper).attrs({
   unstyled: true,
   layer: 1
 })`
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: calc(100% - (14px * 2));
   height: 24px;
-  padding: 14px;
+  padding: 18px;
   overflow: hidden;
   background-color: ${colors.white};
   color: ${colors.black};
   z-index: ${layers.TopNav};
-  box-shadow: ${colors.border} 0 2px 4px 0;
-
-  &:hover {
-    box-shadow: ${colors.border} 0 2px 4px 0;
-  }
+  box-shadow: ${colors.borderLight} 0 1px 2px 0;
 `
 
 export const TopNav = ({ onSignOut, className }) => (

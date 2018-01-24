@@ -10,31 +10,22 @@ const Input = styled.input.attrs({
   font-size: 1em;
   border: none;
   background-color: ${colors.white};
+  width: 100%;
+  padding: 0.5em 1em;
 
   &:focus {
     outline: none;
   }
-
-  ${props => props.fullWidth && css`
-    width: 100%;
-  `}
 `
 
 const Outer = styled.div`
   font-size: 1em;
   margin: 0.75rem 0;
-
-  ${props => props.fullWidth && css`
-    width: 100%;
-  `}
 `
 
 const Inner = styled(Paper)`
-  padding: 0.5rem;
-
   ${props => props.fullWidth && css`
     display: flex;
-    width: 100%;
   `}
 `
 
