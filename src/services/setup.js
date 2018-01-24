@@ -1,6 +1,5 @@
 import { Conversation } from '../models/conversation'
 import { getJson, saveJson } from './blockstack'
-import { createMockData } from './createMockData'
 import { checkNewMessages } from './onLoad'
 import { getLocalPublicIndex, saveLocalPublicIndex } from './identity'
 
@@ -19,7 +18,6 @@ export async function ensureFilesExist() {
 export async function cleanSlate(){
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
-  await createMockData()
   var index = await getLocalPublicIndex()
   index.introductions = []
   await saveLocalPublicIndex(index)

@@ -26,12 +26,20 @@ export const reducer = (state = initialState, action) => {
         ...state,
         loadingConversationMetadata: true
       }
-    case actions.FINISH_LOADING_CONVERSATION_LIST:
+    case actions.FINISH_LOADING_CONVERSATION_LIST: {
+      let { activeConversation } = state
+
+      if (!activeConversation) {
+        activeConversation = actions.COMPOSE_CONVERSATION_ID
+      }
+
       return {
         ...state,
         loadingConversationMetadata: false,
-        conversationMetadata: action.payload
+        conversationMetadata: action.payload,
+        activeConversation
       }
+    }
     case actions.START_LOADING_CONVERSATION_DETAILS:
       return {
         ...state,
@@ -40,7 +48,7 @@ export const reducer = (state = initialState, action) => {
           [action.payload]: { loading: true }
         }
       }
-    case actions.FINISH_LOADING_CONVERSATION_DETAILS:
+    case actions.FINISH_LOADING_CONVERSATION_DETAILS: {
       let { activeConversation } = state
       if (!activeConversation) {
         activeConversation = Conversation.getId(action.payload)
@@ -54,6 +62,7 @@ export const reducer = (state = initialState, action) => {
           [Conversation.getId(action.payload)]: { ...action.payload, loading: false }
         }
       }
+    }
     case actions.SET_CONVERSATION_DETAILS:
       return {
         ...state,
