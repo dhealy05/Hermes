@@ -15,7 +15,7 @@ export async function checkNewMessages(){
   const object = await getConversations()
   const conversations = object.conversations
   for(var id in conversations){
-    await discoverMessage(conversations[id], id)
+    await discoverMessage(id, conversations[id])
   }
 }
 

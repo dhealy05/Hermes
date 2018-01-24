@@ -11,7 +11,7 @@ export async function appIndex(){
   }
   console.log("PUBLIC FILE NAMES")
   console.log(filenames)*/
-  var test = blockstack.lookupProfile("djhealy.id", "http://localhost:6270/v1/names/")
+  var test = blockstack.lookupProfile("djh.id", "http://localhost:6270/v1/names/")
   test.then(object=>{console.log(object)})
 }
 

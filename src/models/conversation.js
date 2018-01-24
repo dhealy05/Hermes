@@ -4,6 +4,7 @@ export const CURRENT_THUMBNAIL_VERSION = 1
 
 export const ContentTypes = {
   Text: 1
+  //TODO: change this to a string so it can be encoded in transit
 }
 
 export const ConversationMetadata = Model('ConversationMetadata', {

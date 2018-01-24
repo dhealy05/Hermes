@@ -34,7 +34,7 @@ export async function discoverConversation(userId) {
   const theirIndex = await getPublicIndexForId(userId)
 
   if (!theirIndex) {
-    return
+    return false
   }
 
   const sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
@@ -47,13 +47,23 @@ export async function discoverConversation(userId) {
 
     const text = decodeText(intro.text, sharedSecret)
     const filename = decodeText(intro.filename, sharedSecret)
-    await saveNewOutbox(intro.filename)
-    await createNewConversation(intro.filename, userId, text, sharedSecret)
+
+    await saveNewOutbox(filename)
+    await createNewConversation(filename, userId, text, sharedSecret)
     await addContactById(userId)
+    return true
   }
+  return false
 }
 
-export async function discoverMessage(metadata, userId) {
+export async function discoverMessage(userId, metadata) {
+  /*************TESTING ONLY****************/
+  if(metadata == null){
+    const object = await getConversations()
+    const conversations = object.conversations
+    metadata = conversations[userId]
+  }
+  //**************************************/
 
   const convoId = Conversation.getId(metadata)
   const incoming = await getIncomingMessagesForMeta(metadata)
@@ -70,6 +80,7 @@ export async function discoverMessage(metadata, userId) {
       sender: decodeText(msg.sender, metadata.secret),
       sentAt: decodeText(msg.sentAt, metadata.secret),
       timestamp: decodeText(msg.timestamp, metadata.secret)
+      //contentType: decodeText(msg.contentType, metadata.secret)
     }))
   }
 }

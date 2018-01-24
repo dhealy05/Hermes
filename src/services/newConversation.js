@@ -23,14 +23,18 @@ import {
 import {
   getJson
 } from './blockstack'
+import {
+  discoverConversation
+} from './discovery'
 
 const crypto = require('crypto')
 
 export async function newConversation(text, otherId) {
 
+  if(await discoverConversation(otherId)){return true}
+
   var contacts = await getJson("contacts.json")
-  console.log(contacts)
-  if(contacts[otherId] != null){return true}
+  if(contacts[otherId] != null){console.log("contacted"); return true}
   //this is also a naive check TODO improve
 
   const pubkey = await getPublicKeyForId(otherId)

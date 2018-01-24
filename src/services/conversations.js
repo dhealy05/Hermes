@@ -2,6 +2,7 @@ import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
 import { getJson, saveJson, deleteJson } from './blockstack'
 import { encodeText } from './keys'
+import { getContacts } from './contacts'
 
 export async function getConversations() {
   return getJson('conversations.json')
@@ -63,7 +64,8 @@ export async function sendMessage(convoId, message) {
   outbox.messages.push(message)
 
   // TODO is this right?
-  await saveOutgoingMessages(convo, outbox.messages)
+  if(convoId != identity().username){console.log("No Equal");await saveOutgoingMessages(convo, outbox.messages)}
+  //await saveOutgoingMessages(convo, outbox.messages)
   return saveConversationById(convoId, convo)
 }
 
@@ -111,6 +113,7 @@ export function saveOutgoingMessages(convo, rawMessages, boundary) {
     sender: encodeText(msg.sender, convo.secret),
     sentAt: encodeText(msg.sentAt, convo.secret),
     timestamp: encodeText(msg.timestamp, convo.secret)
+    //contentType: encodeText(msg.contentType, convo.secret)
   }))
   return saveJson(
     convo.filename,
@@ -132,8 +135,11 @@ export async function deleteConversation(id){
   const filename = conversations[id].filename
   delete conversations[id]
   await saveJson('conversations.json', conversations)
-  await deleteJson(filename)
-  await deleteJson(`conversation_${id}.json`)
+  const { contacts } = await getContacts()
+  delete contacts[id]
+  await saveJson('contacts.json', contacts)
+  //await deleteJson(filename)
+  //await deleteJson(`conversation_${id}.json`)
 }
 
 export async function getIncomingMessagesForMeta(metadata) {
