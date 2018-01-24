@@ -61,7 +61,7 @@ export async function sendMessage(convoId, message) {
 
   var boundary = getMessageTimeBoundary(convo.messages)
   var outbox = await getJson(convo.filename, {username: identity().username})
-  outbox.messages = decodeOutbox(outbox.messages, convo.secret)
+
   if(boundary != null){outbox.messages = purgeOutbox(outbox.messages, boundary)}
   //right now this is naive, and only checks the sender's conversations
   // TODO add read receipts for more efficiency
@@ -71,21 +71,9 @@ export async function sendMessage(convoId, message) {
   outbox.messages.push(message)
 
   // TODO is this right?
-  if(convoId != identity().username){console.log("No Equal");await saveOutgoingMessages(convo, outbox.messages)}
+  if(convoId != identity().username){await saveOutgoingMessages(convo, outbox.messages)}
   //await saveOutgoingMessages(convo, outbox.messages)
   return saveConversationById(convoId, convo)
-}
-
-function decodeOutbox(messages, secret){
-  const decodedMessages = messages.map(msg => ({
-    ...msg,
-    content: encodeText(msg.content, secret),
-    sender: encodeText(msg.sender, secret),
-    sentAt: encodeText(msg.sentAt, secret),
-    timestamp: encodeText(msg.timestamp, secret)
-    //contentType: encodeText(msg.contentType, convo.secret)
-  }))
-  return decodedMessages
 }
 
 function getMessageTimeBoundary(messages){
@@ -126,14 +114,17 @@ export async function recvMessage(convoId, message) {
 }
 
 export function saveOutgoingMessages(convo, rawMessages, boundary) {
-  const messages = rawMessages.map(msg => ({
-    ...msg,
-    content: encodeText(msg.content, convo.secret),
-    sender: encodeText(msg.sender, convo.secret),
-    sentAt: encodeText(msg.sentAt, convo.secret),
-    timestamp: encodeText(msg.timestamp, convo.secret)
+  const messages = [...rawMessages]
+  const lastMsg = messages[messages.length - 1]
+
+  messages[messages.length - 1] = new Message({
+    ...lastMsg,
+    content: encodeText(lastMsg.content, convo.secret),
+    sender: encodeText(lastMsg.sender, convo.secret),
+    sentAt: encodeText(lastMsg.sentAt, convo.secret),
+    timestamp: encodeText(lastMsg.timestamp, convo.secret)
     //contentType: encodeText(msg.contentType, convo.secret)
-  }))
+  })
   return saveJson(
     convo.filename,
     { messages },
