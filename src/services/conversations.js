@@ -1,7 +1,7 @@
 import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
 import { getJson, saveJson, deleteJson } from './blockstack'
-import { encodeText } from './keys'
+import { encodeText, decodeText } from './keys'
 import { getContacts } from './contacts'
 
 export async function getConversations() {
@@ -61,6 +61,7 @@ export async function sendMessage(convoId, message) {
 
   var boundary = getMessageTimeBoundary(convo.messages)
   var outbox = await getJson(convo.filename, {username: identity().username})
+  outbox.messages = decodeOutbox(outbox.messages, convo.secret)
   if(boundary != null){outbox.messages = purgeOutbox(outbox.messages, boundary)}
   //right now this is naive, and only checks the sender's conversations
   // TODO add read receipts for more efficiency
@@ -73,6 +74,18 @@ export async function sendMessage(convoId, message) {
   if(convoId != identity().username){console.log("No Equal");await saveOutgoingMessages(convo, outbox.messages)}
   //await saveOutgoingMessages(convo, outbox.messages)
   return saveConversationById(convoId, convo)
+}
+
+function decodeOutbox(messages, secret){
+  const decodedMessages = messages.map(msg => ({
+    ...msg,
+    content: encodeText(msg.content, secret),
+    sender: encodeText(msg.sender, secret),
+    sentAt: encodeText(msg.sentAt, secret),
+    timestamp: encodeText(msg.timestamp, secret)
+    //contentType: encodeText(msg.contentType, convo.secret)
+  }))
+  return decodedMessages
 }
 
 function getMessageTimeBoundary(messages){
