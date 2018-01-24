@@ -56,31 +56,25 @@ export async function discoverConversation(userId) {
   return false
 }
 
-export async function discoverMessage(userId, metadata) {
-  /*************TESTING ONLY****************/
-  if(metadata == null){
-    const object = await getConversations()
-    const conversations = object.conversations
-    metadata = conversations[userId]
-  }
-  //**************************************/
-
+export async function discoverMessage(metadata) {
   const convoId = Conversation.getId(metadata)
   const incoming = await getIncomingMessagesForMeta(metadata)
 
   if (!incoming) {
-    return
+    return []
   }
 
-  for (const msg of incoming.messages) {
-    console.log(msg)
-    await recvMessage(convoId, new Message({
+  return Promise.all(incoming.messages.map(async msg => {
+    const decoded = new Message({
       ...msg,
       content: decodeText(msg.content, metadata.secret),
       sender: decodeText(msg.sender, metadata.secret),
       sentAt: decodeText(msg.sentAt, metadata.secret),
       timestamp: decodeText(msg.timestamp, metadata.secret)
-      //contentType: decodeText(msg.contentType, metadata.secret)
-    }))
-  }
+    })
+
+    await recvMessage(convoId, decoded)
+
+    return decoded
+  }))
 }

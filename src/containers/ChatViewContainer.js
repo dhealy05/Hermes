@@ -50,6 +50,7 @@ const WithRedux = connect(
       await dispatch(actions.contacts.fetchSelf())
       await dispatch(actions.chat.fetchConversationList())
     },
+    onPollMessages: () => dispatch(actions.chat.pollNewMessages()),
     onSendMessage: text => {
       if (text.trim() === '/delete') {
         dispatch(actions.chat.deleteActiveConversation())

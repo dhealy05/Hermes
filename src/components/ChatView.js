@@ -32,6 +32,16 @@ export class ChatView extends React.Component {
   messagesList = null
   justReceivedNewMessage = false
 
+  pollingTimeout = null
+
+  componentWillMount() {
+    this.pollForMessages()
+  }
+
+  componentWillUnmount() {
+    this.stopPolling()
+  }
+
   componentWillReceiveProps(next, prev) {
     const path = 'conversation.messages.length'
 
@@ -51,6 +61,23 @@ export class ChatView extends React.Component {
       this.scrollToBottom()
       this.justReceivedNewMessage = false
     }
+  }
+
+  pollForMessages = () => {
+    this.props.onPollMessages()
+
+    this.pollingTimeout = setTimeout(
+      () => this.pollForMessages(),
+      this.props.messagePollInterval
+    )
+  }
+
+  stopPolling = () => {
+    if (!this.pollingTimeout) {
+      return
+    }
+
+    clearTimeout(this.pollingTimeout)
   }
 
   scrollToBottom = () => {
@@ -127,8 +154,13 @@ ChatView.propTypes = {
   composing: PropTypes.bool,
   conversation: PropTypes.object,
   newMessageRecipients: PropTypes.arrayOf(PropTypes.object).isRequired,
+  messagePollInterval: PropTypes.number,
   onSendMessage: PropTypes.func.isRequired,
+  onPollMessages: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired
+}
+ChatView.defaultProps = {
+  messagePollInterval: 5000
 }

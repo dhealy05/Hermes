@@ -9,9 +9,10 @@ import {
   deleteConversation as deleteConversationService,
   getConversations,
   getConversationById,
-  sendMessage as saveMessageToJson
+  sendMessage as saveMessageToJson,
+  newConversation,
+  discoverMessage
 } from '../../services'
-import { newConversation } from '../../services/newConversation'
 import { identity } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -157,6 +158,29 @@ export const deleteActiveConversation = () => (dispatch, getState) => {
 export const deleteConversation = id => async dispatch => {
   await deleteConversationService(id)
   dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+}
+
+export const START_POLLING_MESSAGES = 'START_POLLING_MESSAGES'
+export const startPollingMessages = payloadAction(START_POLLING_MESSAGES)
+
+export const FINISH_POLLING_MESSAGES = 'FINISH_POLLING_MESSAGES'
+export const finishPollingMessages = payloadAction(FINISH_POLLING_MESSAGES)
+
+export const pollNewMessages = () => async (dispatch, getState) => {
+  dispatch(startPollingMessages())
+
+  const { chat: { conversationMetadata } } = getState()
+
+  for (const id in conversationMetadata) {
+    const meta = conversationMetadata[id]
+    const newMessages = await discoverMessage(meta)
+
+    if (newMessages.length) {
+      dispatch(finishLoadingConversationDetails(await getConversationById(id)))
+    }
+  }
+
+  dispatch(finishPollingMessages())
 }
 
 const loadConversationMetadata = async () => {
