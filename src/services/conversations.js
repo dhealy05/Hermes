@@ -18,7 +18,7 @@ export async function createNewConversation(
   userId,
   content,
   sharedSecret,
-  sender = identity.username()
+  sender = identity().username
 ) {
   const msg = new Message({
     sender,
