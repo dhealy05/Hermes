@@ -37,13 +37,22 @@ const composeEnhancers = devtoolsCompose
                        ? devtoolsCompose(devtoolsOptions)
                        : compose
 
+const FILTERED_ACTIONS = [
+  chat.actions.START_POLLING_MESSAGES,
+  chat.actions.FINISH_POLLING_MESSAGES
+]
+
+const logger = createLogger({
+  predicate: (getState, action) => !FILTERED_ACTIONS.includes(action.type)
+})
+
 export const store = createStore(
   reducer,
   composeEnhancers(
     applyMiddleware(
       routerMiddleware(history),
       thunk,
-      createLogger()
+      logger
     )
   )
 )

@@ -42,10 +42,10 @@ export class ChatView extends React.Component {
     this.stopPolling()
   }
 
-  componentWillReceiveProps(next, prev) {
+  componentWillReceiveProps(next) {
     const path = 'conversation.messages.length'
 
-    if (get(next, path, 0) !== get(prev, path, 0)) {
+    if (get(next, path, 0) !== get(this.props, path, 0)) {
       /*
          need to scroll to the bottom of the list when a new message is added,
          but componentWillReceiveProps is called before the new message is
