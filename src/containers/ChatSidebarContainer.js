@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { map } from 'lodash'
+import { chain } from 'lodash'
 import { Sidebar } from '../components/Sidebar'
 import { ThumbnailsList } from '../components/ThumbnailsList'
 import { actions } from '../store'
@@ -24,22 +24,26 @@ export const ChatSidebar = ({
   selectActiveConversation,
   startComposing
 }) => {
-  const thumbnails = map(conversationsById, c => {
-    const contacts = c.contacts.map(id => contactsById[id])
-    const title = contacts.map(c => c.name).join(', ')
-    const lastSender = contactsById[c.thumbnail.lastSender]
-    const lastSenderName = (lastSender && lastSender.name) || 'anon'
+  const thumbnails = chain(conversationsById)
+    .map(c => {
+      const contacts = c.contacts.map(id => contactsById[id])
+      const title = contacts.map(c => c.name).join(', ')
+      const lastSender = contactsById[c.thumbnail.lastSender]
+      const lastSenderName = (lastSender && lastSender.name) || 'anon'
 
-    return {
-      ...Conversation.getDefaultThumbnail(),
+      return {
+        ...Conversation.getDefaultThumbnail(),
 
-      id: Conversation.getId(c),
-      title,
-      lastSenderName,
+        id: Conversation.getId(c),
+        title,
+        lastSenderName,
 
-      ...c.thumbnail
-    }
-  })
+        ...c.thumbnail
+      }
+    })
+    .sortBy(c => new Date(c.timestamp))
+    .reverse()
+    .value()
 
   return (
     <Sidebar title="hermes">
