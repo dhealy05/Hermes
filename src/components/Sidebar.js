@@ -13,8 +13,9 @@ const OuterContainer = styled.div`
 `
 
 const Title = styled.div`
-  height: 24px;
-  padding: 18px;
+  // precise pixel values to line up with the header
+  height: 29px; // height of logo
+  padding: 15.5px;
   margin-top: 0;
   box-shadow: ${colors.borderLight} 0 1px 2px 0;
 `

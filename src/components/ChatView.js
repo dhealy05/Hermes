@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { get } from 'lodash'
 import * as colors from '../colors'
+import { Conversation } from '../models/conversation'
 import { AppView } from './AppView'
 import { Message } from './Message'
 import { TextInput } from './TextInput'
@@ -32,13 +33,12 @@ const MessageInput = styled(TextInput).attrs({
 
 export class ChatView extends React.Component {
   state = {
+    lastRead: null,
     msgInput: ''
   }
 
-  senderIdx = 1
-  messagesList = null
+  messagesListEl = null
   justReceivedNewMessage = false
-
   pollingTimeout = null
 
   componentWillMount() {
@@ -50,9 +50,9 @@ export class ChatView extends React.Component {
   }
 
   componentWillReceiveProps(next) {
-    const path = 'conversation.messages.length'
+    const msgsLenPath = 'conversation.messages.length'
 
-    if (get(next, path, 0) !== get(this.props, path, 0)) {
+    if (get(next, msgsLenPath, 0) !== get(this.props, msgsLenPath, 0)) {
       /*
          need to scroll to the bottom of the list when a new message is added,
          but componentWillReceiveProps is called before the new message is
@@ -60,6 +60,16 @@ export class ChatView extends React.Component {
          componentDidUpdate
        */
       this.justReceivedNewMessage = true
+    }
+
+    if (next.conversation && !next.conversation.wasRead) {
+      const lastRead = next.conversation.readAt
+      this.props.onMarkConversationAsRead()
+
+      this.setState({ lastRead })
+    } else if (!next.conversation
+               || Conversation.getId(next.conversation) !== (this.props.conversation && Conversation.getId(this.props.conversation))) {
+      this.setState({ lastRead: null })
     }
   }
 
@@ -88,11 +98,11 @@ export class ChatView extends React.Component {
   }
 
   scrollToBottom = () => {
-    if (!this.messagesList) {
+    if (!this.messagesListEl) {
       return
     }
 
-    const node = ReactDOM.findDOMNode(this.messagesList)
+    const node = ReactDOM.findDOMNode(this.messagesListEl)
     node.scrollTop = node.scrollHeight
   }
 
@@ -109,7 +119,7 @@ export class ChatView extends React.Component {
     }
   }
 
-  setMessagesList = el => this.messagesList = el
+  setMessagesList = el => this.messagesListEl = el
 
   render() {
     const {
@@ -162,6 +172,7 @@ ChatView.propTypes = {
   conversation: PropTypes.object,
   newMessageRecipients: PropTypes.arrayOf(PropTypes.object).isRequired,
   messagePollInterval: PropTypes.number,
+  onMarkConversationAsRead: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
   onPollMessages: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,

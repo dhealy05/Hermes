@@ -10,6 +10,10 @@ export async function getConversations() {
 
 //returns a promise for the given conversation
 export async function getConversationById(id) {
+  if (!id) {
+    throw new TypeError('missing required parameter `id`')
+  }
+
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
@@ -48,6 +52,14 @@ export async function createNewConversation(
 }
 
 export async function saveConversationById(id, convo) {
+  if (!id || typeof id !== 'string') {
+    throw new TypeError('missing required string parameter `id`')
+  }
+
+  if (!convo || typeof convo !== 'object') {
+    throw new TypeError('missing required object parameter `convo`')
+  }
+
   const list = await getConversations()
   list.conversations[id] = Conversation.getMetadata(convo)
   await saveJson('conversations.json', list)
@@ -114,7 +126,9 @@ export async function recvMessage(convoId, message) {
   }
 
   const convo = await getConversationById(convoId)
-  if(checkTimestamp(message, convo.messages)){console.log("got em"); return null;}
+  if (checkTimestamp(message, convo.messages)) {
+    return null
+  }
   convo.messages.unshift(message)
   convo.wasRead = false
   return saveConversationById(convoId, convo)

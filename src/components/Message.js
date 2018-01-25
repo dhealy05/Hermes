@@ -22,7 +22,7 @@ const OuterContainer = styled.div`
     & ${SenderDetails} {
       text-align: right;
     }
-  `)}
+`)}
 `
 
 const SenderAvatar = styled(Avatar)`

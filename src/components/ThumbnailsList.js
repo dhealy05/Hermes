@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import * as colors from '../colors'
 import { ContentTypes } from '../models'
 import { formatTime } from '../services/formatTime'
@@ -41,6 +41,10 @@ const Title = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   transition: font-weight 0.2s;
+
+  ${props => props.unread && css`
+    font-weight: bold;
+  `}
 `
 
 const Date = styled.div`
@@ -69,7 +73,7 @@ export const ThumbnailsList = props => {
                 image={t.pic}/>
         <TextContainer>
           <TitleContainer>
-            <Title>{t.title}</Title>
+            <Title unread={!t.wasRead}>{t.title}</Title>
             <Date>{formatTime(t.timestamp)}</Date>
           </TitleContainer>
           {preview}

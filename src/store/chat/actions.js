@@ -9,6 +9,7 @@ import {
   deleteConversation as deleteConversationService,
   getConversations,
   getConversationById,
+  saveConversationById,
   sendMessage as saveMessageToJson,
   newConversation,
   discoverMessage,
@@ -105,7 +106,7 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   dispatch(finishLoadingConversationList(conversations))
 }
 
-export const fetchConversationDetails = id => async dispatch => {
+export const fetchConversationDetails = id => async (dispatch, getState) => {
   if (!id || id === COMPOSE_CONVERSATION_ID) {
     return
   }
@@ -113,6 +114,27 @@ export const fetchConversationDetails = id => async dispatch => {
   dispatch(startLoadingConversationDetails(id))
   const convo = await getConversationById(id)
   dispatch(finishLoadingConversationDetails(convo))
+}
+
+export const MARK_CONVERSATION_AS_READ = 'MARK_CONVERSATION_AS_READ'
+
+export const markActiveConversationAsRead = () => async (dispatch, getState) => {
+  const { chat: { activeConversation } } = getState()
+
+  if (!activeConversation || activeConversation === COMPOSE_CONVERSATION_ID) {
+    return
+  }
+
+  dispatch({ type: MARK_CONVERSATION_AS_READ, payload: activeConversation })
+
+  const convo = await getConversationById(activeConversation)
+  convo.wasRead = true
+  convo.readAt = new Date().toISOString()
+
+  dispatch(finishLoadingConversationDetails(await saveConversationById(activeConversation, convo)))
+  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+
+  return convo
 }
 
 export const sendMessage = text => async (dispatch, getState) => {
@@ -178,13 +200,20 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 
   const { chat: { conversationMetadata } } = getState()
 
+  let discoveredNewMessages = false
+
   for (const id in conversationMetadata) {
     const meta = conversationMetadata[id]
     const newMessages = await discoverMessage(meta)
 
     if (newMessages.length) {
       dispatch(finishLoadingConversationDetails(await getConversationById(id)))
+      discoveredNewMessages = true
     }
+  }
+
+  if (discoveredNewMessages) {
+    dispatch(finishLoadingConversationList(await loadConversationMetadata()))
   }
 
   dispatch(finishPollingMessages())
