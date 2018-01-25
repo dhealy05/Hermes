@@ -34,7 +34,7 @@ export async function discoverConversation(userId) {
   const theirIndex = await getPublicIndexForId(userId)
 
   if (!theirIndex) {
-    return false
+    return ''
   }
 
   const sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
@@ -51,9 +51,9 @@ export async function discoverConversation(userId) {
     await saveNewOutbox(filename)
     await createNewConversation(filename, userId, text, sharedSecret, userId)
     await addContactById(userId)
-    return true
+    return userId
   }
-  return false
+  return ''
 }
 
 export async function discoverMessage(metadata) {

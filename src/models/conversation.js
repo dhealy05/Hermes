@@ -13,7 +13,9 @@ export const ConversationMetadata = Model('ConversationMetadata', {
   secret: '',
   contacts: [],
   pic: '',
-  thumbnail: {}
+  thumbnail: {},
+  readAt: '',
+  wasRead: false
 })
 
 export const Conversation = Model('Conversation', {
@@ -40,7 +42,17 @@ export const Conversation = Model('Conversation', {
   /**
    * List of messages contained in the conversation
    */
-  messages: []
+  messages: [],
+
+  /**
+   * Read receipt to calculate if read
+   */
+  readAt: '',
+
+  /**
+   * Read bool for display purposes
+   */
+  wasRead: false
 })
 
 Conversation.getId = ({ contacts }) => contacts.sort().join('-')
@@ -51,7 +63,9 @@ Conversation.getDefaultThumbnail = () => ({
   contentType: ContentTypes.Text,
   content: '',
   timestamp: new Date().toISOString(),
-  pic: 'https://lorempixel.com/64/64'
+  pic: 'https://lorempixel.com/64/64',
+  readAt: '',
+  wasRead: false
 })
 
 Conversation.getThumbnail = convo => {
@@ -77,7 +91,9 @@ Conversation.getThumbnail = convo => {
     content: firstMessage.content,
     lastSender: firstMessage.sender,
     timestamp: firstMessage.sentAt,
-    pic: convo.pic
+    pic: convo.pic,
+    readAt: convo.readAt,
+    wasRead: convo.wasRead
   }
 }
 
@@ -87,7 +103,9 @@ Conversation.getMetadata = convo => new ConversationMetadata({
   contacts: convo.contacts,
   filename: convo.filename,
   secret: convo.secret,
-  pic: convo.pic
+  pic: convo.pic,
+  readAt: convo.readAt,
+  wasRead: convo.wasRead
 })
 
 export const Message = Model('Message', {

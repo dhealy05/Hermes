@@ -11,7 +11,8 @@ import {
   getConversationById,
   sendMessage as saveMessageToJson,
   newConversation,
-  discoverMessage
+  discoverMessage,
+  discoverConversation
 } from '../../services'
 import { identity } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
@@ -166,6 +167,12 @@ export const startPollingMessages = payloadAction(START_POLLING_MESSAGES)
 export const FINISH_POLLING_MESSAGES = 'FINISH_POLLING_MESSAGES'
 export const finishPollingMessages = payloadAction(FINISH_POLLING_MESSAGES)
 
+export const START_POLLING_CONVERSATIONS = 'START_POLLING_CONVERSATIONS'
+export const startPollingConversations = payloadAction(START_POLLING_CONVERSATIONS)
+
+export const FINISH_POLLING_CONVERSATIONS = 'FINISH_POLLING_CONVERSATIONS'
+export const finishPollingConversations = payloadAction(FINISH_POLLING_CONVERSATIONS)
+
 export const pollNewMessages = () => async (dispatch, getState) => {
   dispatch(startPollingMessages())
 
@@ -181,6 +188,24 @@ export const pollNewMessages = () => async (dispatch, getState) => {
   }
 
   dispatch(finishPollingMessages())
+}
+
+export const pollNewConversations = () => async (dispatch, getState) => {
+  dispatch(startPollingConversations())
+
+  //const { chat: { conversationMetadata } } = getState()
+  var public_contacts = ["fulgid.id", "nmuth.id", "djhealy.id", "djh.id"]
+
+  for (const contact in public_contacts) {
+
+    const convoId = await discoverConversation(contact)
+
+    if (convoId != '') {
+      dispatch(finishLoadingConversationDetails(await getConversationById(convoId)))
+    }
+  }
+
+  dispatch(finishPollingConversations())
 }
 
 const loadConversationMetadata = async () => {

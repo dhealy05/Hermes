@@ -26,6 +26,10 @@ export async function createNewConversation(
     sentAt: new Date()
   })
 
+  var readAt = new Date().toISOString()
+  var wasRead = true
+  if(sender != identity().username){readAt = ''; wasRead = false}
+
   const profile = await lookupProfile(userId)
   var pic = ''
   if(profile.image != null){pic = profile.image[0].contentUrl}
@@ -35,7 +39,9 @@ export async function createNewConversation(
     contacts: [userId],
     secret: sharedSecret,
     messages: [msg],
-    pic: pic
+    pic: pic,
+    readAt: readAt,
+    wasRead: wasRead
   })
 
   return saveConversationById(Conversation.getId(convo), convo)
@@ -110,6 +116,7 @@ export async function recvMessage(convoId, message) {
   const convo = await getConversationById(convoId)
   if(checkTimestamp(message, convo.messages)){console.log("got em"); return null;}
   convo.messages.unshift(message)
+  convo.wasRead = false
   return saveConversationById(convoId, convo)
 }
 
