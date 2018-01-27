@@ -19,7 +19,7 @@ export async function getConversationById(id) {
 
 export async function createNewConversation(
   filename,
-  userId,
+  contacts,
   content,
   sharedSecret,
   sender = identity().username
@@ -34,13 +34,12 @@ export async function createNewConversation(
   var wasRead = true
   if(sender != identity().username){readAt = ''; wasRead = false}
 
-  const profile = await lookupProfile(userId)
-  var pic = ''
-  if(profile.image != null){pic = profile.image[0].contentUrl}
+  //TODO fix getPic
+  var pic = await getPicFromContacts(contacts)
 
   const convo = new Conversation({
     filename,
-    contacts: [userId],
+    contacts: contacts,
     secret: sharedSecret,
     messages: [msg],
     pic: pic,
@@ -49,6 +48,17 @@ export async function createNewConversation(
   })
 
   return saveConversationById(Conversation.getId(convo), convo)
+}
+
+export async function getPicFromContacts(contacts){
+  var pic = ''
+  for(var i = 0; i < contacts.length; i++){
+    if(contacts[i] != identity().username){
+      const profile = await lookupProfile(contacts[i])
+      if(profile.image != null){pic = profile.image[0].contentUrl}
+    }
+  }
+  return pic
 }
 
 export async function saveConversationById(id, convo) {

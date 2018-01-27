@@ -16,7 +16,7 @@ import {
   decodeText,
   saveKeysFromDiffieHellman
 } from './keys'
-import { saveLocalPublicIndex } from './identity'
+import { saveLocalPublicIndex, identity } from './identity'
 
 export async function enableDiscovery() {
   const { pubkey } = await saveKeysFromDiffieHellman()
@@ -37,7 +37,7 @@ export async function discoverConversation(userId) {
     return ''
   }
 
-  const sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
+  var sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
   for (const intro of theirIndex.introductions) {
     const theirSecret = decodeText(intro.secret, sharedSecret)
 
@@ -47,10 +47,19 @@ export async function discoverConversation(userId) {
 
     const text = decodeText(intro.text, sharedSecret)
     const filename = decodeText(intro.filename, sharedSecret)
+    const contacts = JSON.parse(decodeText(intro.contacts, sharedSecret))
+    const groupSecret = decodeText(intro.groupSecret, sharedSecret)
+
+    if(contacts.length > 2){sharedSecret = groupSecret}
 
     await saveNewOutbox(filename)
-    await createNewConversation(filename, userId, text, sharedSecret, userId)
-    await addContactById(userId)
+    await createNewConversation(filename, contacts, text, sharedSecret, userId)
+    for(var i = 0; i < contacts.length; i++){
+      if(contacts[i] != identity().username){
+        await addContactById(contacts[i])
+      }
+    }
+    //await addContactById(userId)
     return userId
   }
   return ''
