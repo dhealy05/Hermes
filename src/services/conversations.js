@@ -131,7 +131,20 @@ export async function recvMessage(convoId, message) {
   }
   convo.messages.unshift(message)
   convo.wasRead = false
+  msgAlert()
   return saveConversationById(convoId, convo)
+}
+
+function msgAlert(){
+  if(document.title == "Hermes"){
+    document.title = "(1) Hermes"
+  } else {
+    var numArray = document.title.match(/\d+/)
+    if(numArray == null || numArray.length == 0){return;}
+    var num = parseInt(numArray[0])
+    num = num + 1
+    document.title = "(" + num.toString() + ") Hermes"
+  }
 }
 
 export function saveOutgoingMessages(convo, rawMessages, boundary) {

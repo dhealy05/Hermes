@@ -6,28 +6,9 @@ import {identity, getLocalPublicIndex, saveLocalPublicIndex} from './identity'
 async function checkDiscovery(){
   var discovery = localStorage.getItem("discovery");
   if(discovery == true){return;}
-  var discoveryJson = await getJson("public_index.json", {username: identity().username} )
+  var discoveryJson = await getLocalPublicIndex()
   if(discoveryJson !== null){return;}
   enableDiscovery()
 }
 
-export async function checkNewMessages(){
-  const object = await getConversations()
-  const conversations = object.conversations
-  for(var id in conversations){
-    await discoverMessage(conversations[id], id)
-  }
-}
-
-export async function clearIntroductions(){
-  const index = getLocalPublicIndex()
-  
-}
-
-async function checkNewConversations(){
-  /* TODO
-  iterate through network IDs
-  check secrets
-  etc
-  */
-}
+//checkDiscovery()
