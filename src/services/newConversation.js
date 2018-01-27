@@ -33,10 +33,10 @@ const crypto = require('crypto')
 export async function newConversation(text, otherId, contacts) {
   if(contacts == null){contacts = [identity().username, otherId]}
 
-  if(await discoverConversation(otherId) != '' && contacts.length == 1){return true}
+  if(await discoverConversation(otherId) != '' && contacts.length == 2){return true}
 
   var existingContacts = await getJson("contacts.json")
-  if(existingContacts[otherId] != null && contacts.length == 1){return true}
+  if(existingContacts[otherId] != null && contacts.length == 2){return true}
   //this is also a naive check TODO improve
 
   const pubkey = await getPublicKeyForId(otherId)

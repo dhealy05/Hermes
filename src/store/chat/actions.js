@@ -217,11 +217,16 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 
   for (const id in conversationMetadata) {
     const meta = conversationMetadata[id]
-    const newMessages = await discoverMessage(meta)
+    
+    for(var i = 0; i < meta.contacts.length; i++){
+      if(meta.contacts[i] == identity().username){continue}
 
-    if (newMessages.length) {
-      dispatch(finishLoadingConversationDetails(await getConversationById(id)))
-      discoveredNewMessages = true
+      const newMessages = await discoverMessage(meta, meta.contacts[i])
+
+      if (newMessages.length) {
+        dispatch(finishLoadingConversationDetails(await getConversationById(id)))
+        discoveredNewMessages = true
+      }
     }
   }
 

@@ -196,10 +196,8 @@ export async function deleteConversation(id){
   //await deleteJson(`conversation_${id}.json`)
 }
 
-export async function getIncomingMessagesForMeta(metadata) {
-  const { filename, contacts } = metadata
-  const [username] = contacts // TODO: support group chat
-
+export async function getIncomingMessagesForMeta(metadata, username) {
+  const { filename } = metadata
   return getJson(filename, { username })
 }
 

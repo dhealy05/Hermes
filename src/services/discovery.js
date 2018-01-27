@@ -65,9 +65,9 @@ export async function discoverConversation(userId) {
   return ''
 }
 
-export async function discoverMessage(metadata) {
+export async function discoverMessage(metadata, username) {
   const convoId = Conversation.getId(metadata)
-  const incoming = await getIncomingMessagesForMeta(metadata)
+  const incoming = await getIncomingMessagesForMeta(metadata, username)
 
   if (!incoming) {
     return []
