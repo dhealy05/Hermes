@@ -52,7 +52,8 @@ export async function newConversation(text, otherId) {
   }
 
   const discovery = await getLocalPublicIndex()
-  discovery.introductions = [json] //testing only
+  //discovery.introductions = [json] //testing only
+  discovery.introductions.push(json)
 
   // we could use Promise.all here but we'd probably get rate-limited
   await saveLocalPublicIndex(discovery)
