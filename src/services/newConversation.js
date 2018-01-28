@@ -31,8 +31,6 @@ import {
 const crypto = require('crypto')
 
 export async function newConversation(text, otherId, contacts) {
-  console.log(otherId)
-  console.log(text)
   if(contacts == null){contacts = [identity().username, otherId]}
 
   if(await discoverConversation(otherId) != '' && contacts.length == 2){return true}
@@ -48,9 +46,6 @@ export async function newConversation(text, otherId, contacts) {
     discovery: await getLocalPublicIndex(),
     text: text
   }
-
-  console.log(contacts)
-  console.log()
 
   if(contacts.length == 2){
     introduction.groupSecret = await addContactAndIntroduction(introduction, otherId)
