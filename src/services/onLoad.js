@@ -14,7 +14,7 @@ async function checkDiscovery(){
 
 export async function showConversations(){
   console.log(await getConversations())
-  //console.log(await getLocalPublicIndex())
+  console.log(await getLocalPublicIndex())
   console.log(await getContacts())
 }
 

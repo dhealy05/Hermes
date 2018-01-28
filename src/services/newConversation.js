@@ -31,6 +31,8 @@ import {
 const crypto = require('crypto')
 
 export async function newConversation(text, otherId, contacts) {
+  console.log(otherId)
+  console.log(text)
   if(contacts == null){contacts = [identity().username, otherId]}
 
   if(await discoverConversation(otherId) != '' && contacts.length == 2){return true}
@@ -39,35 +41,54 @@ export async function newConversation(text, otherId, contacts) {
   if(existingContacts[otherId] != null && contacts.length == 2){return true}
   //this is also a naive check TODO improve
 
-  const pubkey = await getPublicKeyForId(otherId)
+  var introduction = {
+    filename: crypto.randomBytes(20).toString('base64'),
+    groupSecret: crypto.randomBytes(48).toString('base64'),
+    contacts: JSON.stringify(contacts),
+    discovery: await getLocalPublicIndex(),
+    text: text
+  }
+
+  console.log(contacts)
+  console.log()
+
+  if(contacts.length == 2){
+    introduction.groupSecret = await addContactAndIntroduction(introduction, otherId)
+  } else {
+    introductionsAndContacts(contacts, introduction)
+  }
+
+  // we could use Promise.all here but we'd probably get rate-limited
+  await saveNewOutbox(introduction.filename)
+  return createNewConversation(introduction.filename, contacts, text, introduction.groupSecret)
+}
+
+export async function introductionsAndContacts(contacts, introduction){
+  for(var i = 0; i < contacts.length; i++){
+    await addContactAndIntroduction(introduction, contacts[i])
+  }
+}
+
+export async function addContactAndIntroduction(intro, id){
+  const pubkey = await getPublicKeyForId(id)
 
   if (!pubkey) {
     return null
   }
 
   const secret = await getSharedSecret(pubkey)
-  const filename = crypto.randomBytes(20).toString('base64')
-
-  var groupSecret = crypto.randomBytes(48).toString('base64')
-  contacts = JSON.stringify(contacts)
 
   const json = {
-    filename: encodeText(filename, secret),
+    filename: encodeText(intro.filename, secret),
     secret: encodeText(secret, secret),
-    text: encodeText(text, secret),
-    contacts: encodeText(contacts, secret),
-    groupSecret: encodeText(groupSecret, secret)
+    text: encodeText(intro.text, secret),
+    contacts: encodeText(intro.contacts, secret),
+    groupSecret: encodeText(intro.groupSecret, secret)
   }
-
-  const discovery = await getLocalPublicIndex()
   //discovery.introductions = [json] //testing only
-  discovery.introductions.push(json)
+  intro.discovery.introductions.push(json)
 
-  contacts = JSON.parse(contacts)
-
-  // we could use Promise.all here but we'd probably get rate-limited
-  await saveLocalPublicIndex(discovery)
-  await saveNewOutbox(filename)
-  await addContactById(otherId)
-  return createNewConversation(filename, contacts, text, secret)
+  await saveLocalPublicIndex(intro.discovery)
+  await addContactById(id)
+  return secret
 }
