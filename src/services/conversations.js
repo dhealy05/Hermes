@@ -17,6 +17,38 @@ export async function getConversationById(id) {
   return new Conversation(await getJson(filenameFromId(id)))
 }
 
+export async function checkIfConversationExists(
+  filename,
+  contacts,
+  content,
+  sharedSecret,
+  sender = identity().username
+) {
+  const msg = new Message({
+    sender,
+    content,
+    sentAt: new Date()
+  })
+
+  var readAt = new Date().toISOString()
+  var wasRead = true
+  var pic = ''
+
+  const convo = new Conversation({
+    filename,
+    contacts: contacts,
+    secret: sharedSecret,
+    messages: [msg],
+    pic: pic,
+    readAt: readAt,
+    wasRead: wasRead
+  })
+
+  const conversations = await getConversations()
+  if(conversations[Conversation.getId(convo)] != null){return true}
+  return false
+}
+
 export async function createNewConversation(
   filename,
   contacts,
