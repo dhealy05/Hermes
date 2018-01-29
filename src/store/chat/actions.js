@@ -267,7 +267,9 @@ export const refreshConversationList = () => async (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
   const meta = await loadConversationMetadata()
 
-  for (const convo of meta) {
+  for (const convoId in meta) {
+    const convo = meta[convoId]
+
     for (const contactId of convo.contacts) {
       if (!contactsById[contactId]) {
         await dispatch(contactActions.fetchContactById(contactId))
