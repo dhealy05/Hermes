@@ -115,6 +115,13 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
 
   dispatch(startLoadingConversationDetails(id))
   const convo = await getConversationById(id)
+
+  for (const msg of convo.messages) {
+    if (msg.type === ContentTypes.Image) {
+      dispatch(fetchImageForMessage(msg, convo))
+    }
+  }
+
   dispatch(finishLoadingConversationDetails(convo))
 }
 
