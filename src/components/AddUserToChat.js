@@ -34,9 +34,10 @@ export class AddUserToChat extends React.Component {
   onKeyUp = evt => {
     if (evt.keyCode === 13) {
       const { recipients, onChange } = this.props
-      const newRecipient = this.state.searchInput
+      const newRecipientId = this.state.searchInput
+      const value = recipients.map(r => r.id).concat(newRecipientId)
 
-      onChange(recipients.concat(newRecipient))
+      onChange(value)
 
       this.setState({
         searchInput: ''

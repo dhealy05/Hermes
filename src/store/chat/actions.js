@@ -160,8 +160,7 @@ export const sendMessage = text => async (dispatch, getState) => {
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
-    const [recipient] = newMessageRecipients // TODO support group chat
-    const convo = await newConversation(text, recipient)
+    const convo = await newConversation(text, newMessageRecipients)
 
     dispatch(setConversationDetails(convo))
     dispatch(refreshConversationList())

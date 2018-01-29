@@ -30,16 +30,25 @@ import {
 
 const crypto = require('crypto')
 
-export async function newConversation(text, otherId, contacts) {
-  if(contacts == null){contacts = [identity().username, otherId]}
+export async function newConversation(text, otherIds) {
+  if (!Array.isArray(otherIds)) {
+    otherIds = [otherIds]
+  }
 
-  if(await discoverConversation(otherId) != '' && contacts.length == 2){return true}
+  const contacts = [identity().username, ...otherIds]
 
-  var existingContacts = await getJson("contacts.json")
-  if(existingContacts[otherId] != null && contacts.length == 2){return true}
-  //this is also a naive check TODO improve
+  if (contacts.length === 2 && await discoverConversation(contacts[1])) {
+    // TODO naive
+    return true
+  }
 
-  var introduction = {
+  const existingContacts = await getJson("contacts.json")
+  if (contacts.length === 2 && existingContacts[contacts[1]]) {
+    // this is also a naive check TODO improve
+    return true
+  }
+
+  const introduction = {
     filename: crypto.randomBytes(20).toString('base64'),
     groupSecret: crypto.randomBytes(48).toString('base64'),
     contacts: JSON.stringify(contacts),
@@ -47,21 +56,16 @@ export async function newConversation(text, otherId, contacts) {
     text: text
   }
 
-  if(contacts.length == 2){
-    introduction.groupSecret = await addContactAndIntroduction(introduction, otherId)
-  } else {
-    introductionsAndContacts(contacts, introduction)
+  for (const contactId of contacts) {
+    if (contactId === identity().username) {
+      continue
+    }
+
+    await addContactAndIntroduction(introduction, contactId)
   }
 
-  // we could use Promise.all here but we'd probably get rate-limited
   await saveNewOutbox(introduction.filename)
   return createNewConversation(introduction.filename, contacts, text, introduction.groupSecret)
-}
-
-export async function introductionsAndContacts(contacts, introduction){
-  for(var i = 0; i < contacts.length; i++){
-    await addContactAndIntroduction(introduction, contacts[i])
-  }
 }
 
 export async function addContactAndIntroduction(intro, id){

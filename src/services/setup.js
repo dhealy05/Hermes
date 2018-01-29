@@ -18,7 +18,8 @@ export async function ensureFilesExist() {
 export async function cleanSlate(){
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
-  var index = await getLocalPublicIndex()
+  const index = await getLocalPublicIndex()
   index.introductions = []
   await saveLocalPublicIndex(index)
+  window.location.reload()
 }
