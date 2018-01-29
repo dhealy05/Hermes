@@ -13,7 +13,9 @@ import {
   sendMessage as saveMessageToJson,
   newConversation,
   discoverMessage,
-  discoverConversation
+  discoverConversation,
+  uploadFileForOutbox,
+  retrieveFileContentForMessage
 } from '../../services'
 import { identity } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
@@ -150,17 +152,37 @@ export const markActiveConversationAsRead = () => async (dispatch, getState) => 
   return convo
 }
 
-export const sendMessage = text => async (dispatch, getState) => {
+export const sendText = text => async (dispatch, getState) => {
   if (text.length === 0) {
     return
   }
 
+  return dispatch(sendRawMessage(new Message({
+    sender: identity().username,
+    type: ContentTypes.Text,
+    timestamp: new Date().toISOString(),
+    content: text
+  })))
+}
+
+export const sendFile = file => async (dispatch, getState) => {
+  const message = new Message({
+    sender: identity().username,
+    timestamp: new Date().toISOString(),
+    type: ContentTypes.Image,
+    content: file
+  })
+
+  return dispatch(sendRawMessage(message))
+}
+
+export const sendRawMessage = message => async (dispatch, getState) => {
   const { chat: { activeConversation,
                   conversationDetails,
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
-    const convo = await newConversation(text, newMessageRecipients)
+    const convo = await newConversation(message.content, newMessageRecipients)
 
     dispatch(setConversationDetails(convo))
     dispatch(refreshConversationList())
@@ -169,13 +191,12 @@ export const sendMessage = text => async (dispatch, getState) => {
 
   const convo = conversationDetails[activeConversation]
 
-  const message = new Message({
-    sender: identity().username,
-    contentType: ContentTypes.Text,
-    timestamp: new Date().toISOString(),
-    content: text
-  })
+  if (message.content instanceof File) {
+    // kind of hacky, but it works for now
+    message.content = await uploadFileForOutbox(activeConversation, message.content)
+  }
 
+  dispatch(fetchImageForMessage(message, convo))
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
   dispatch(refreshConversationList())
 }
@@ -222,13 +243,19 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 
   for (const id in conversationMetadata) {
     const meta = conversationMetadata[id]
-    
+
     for(var i = 0; i < meta.contacts.length; i++){
       if(meta.contacts[i] == identity().username){continue}
 
       const newMessages = await discoverMessage(meta, meta.contacts[i])
 
       if (newMessages.length) {
+        for (const msg of newMessages) {
+          if (msg.type === ContentTypes.Image) {
+            dispatch(fetchImageForMessage(msg, meta))
+          }
+        }
+
         dispatch(finishLoadingConversationDetails(await getConversationById(id)))
         discoveredNewMessages = true
       }
@@ -281,6 +308,30 @@ export const refreshConversationList = () => async (dispatch, getState) => {
   }
 
   dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+}
+
+export const START_LOADING_FILE_CONTENT = 'START_LOADING_FILE_CONTENT'
+export const startLoadingFileContent = payloadAction(START_LOADING_FILE_CONTENT)
+
+export const FINISH_LOADING_FILE_CONTENT = 'FINISH_LOADING_FILE_CONTENT'
+export const finishLoadingFileContent = payloadAction(FINISH_LOADING_FILE_CONTENT)
+
+export const fetchImageForMessage = message => async (dispatch, getState) => {
+  const { chat: { activeConversation,
+                  conversationMetadata } } = getState()
+
+  if (!activeConversation
+      || activeConversation === COMPOSE_CONVERSATION_ID) {
+    return
+  }
+
+  const filename = message.content
+
+  dispatch(startLoadingFileContent({ filename }))
+
+  const data = await retrieveFileContentForMessage(message, conversationMetadata[activeConversation])
+
+  dispatch(finishLoadingFileContent({ filename, data }))
 }
 
 const loadConversationMetadata = async () => {

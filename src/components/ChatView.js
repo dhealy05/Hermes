@@ -4,11 +4,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { get } from 'lodash'
 import * as colors from '../colors'
-import { Conversation } from '../models/conversation'
+import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
 import { Message } from './Message'
-import { TextInput } from './TextInput'
 import { AddUserToChat } from './AddUserToChat'
+import { NewMessageInput } from './NewMessageInput'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -21,14 +21,6 @@ const MessagesContainer = styled.div`
     width: 3px;
     background-color: ${colors.white};
   }
-`
-
-const MessageInput = styled(TextInput).attrs({
-  unstyled: true,
-  //layer: 2
-})`
-  margin: 0;
-  margin-top: 0;
 `
 
 export class ChatView extends React.Component {
@@ -127,8 +119,10 @@ export class ChatView extends React.Component {
       composing,
       conversation,
       contacts,
+      fileContents,
       newMessageRecipients,
       onSignOut,
+      onPickImage,
       onSetNewMessageRecipients,
       sidebar
     } = this.props
@@ -136,14 +130,22 @@ export class ChatView extends React.Component {
     let messageContents = []
 
     if (conversation) {
-      messageContents = conversation.messages.map(({ sender, content, sentAt }, i) => (
-        // TODO figure out proper way to tell if the sender is the current user
-        <Message key={i}
-                 direction={sender === identity.username ? 'right' : 'left'}
-                 sender={contacts[sender]}
-                 timestamp={sentAt}
-                 content={content}/>
-      ))
+      messageContents = conversation.messages.map(({ sender, content: rawContent, type, sentAt }, i) => {
+        let content = rawContent
+
+        if (type === ContentTypes.Image) {
+          content = fileContents[rawContent]
+        }
+
+        return (
+          <Message key={i}
+                   direction={sender === identity.username ? 'right' : 'left'}
+                   sender={contacts[sender]}
+                   timestamp={sentAt}
+                   contentType={type}
+                   content={content}/>
+        )
+      })
     } else if (composing) {
       messageContents = (
         <AddUserToChat recipients={newMessageRecipients}
@@ -157,11 +159,11 @@ export class ChatView extends React.Component {
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
         </MessagesContainer>
-        <MessageInput fullWidth
-                      placeholder="type your message"
-                      value={this.state.msgInput}
-                      onChange={this.onMsgInputChange}
-                      onKeyUp={this.onMsgInputKeyUp}/>
+        <NewMessageInput onPickImage={onPickImage}
+                         placeholder="type your message"
+                         value={this.state.msgInput}
+                         onChange={this.onMsgInputChange}
+                         onKeyUp={this.onMsgInputKeyUp}/>
       </AppView>
     )
   }
@@ -170,12 +172,15 @@ ChatView.propTypes = {
   identity: PropTypes.object.isRequired,
   composing: PropTypes.bool,
   conversation: PropTypes.object,
+  contacts: PropTypes.object.isRequired,
+  fileContents: PropTypes.object.isRequired,
   newMessageRecipients: PropTypes.arrayOf(PropTypes.object).isRequired,
   messagePollInterval: PropTypes.number,
   onMarkConversationAsRead: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
   onPollMessages: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
+  onPickImage: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired
 }

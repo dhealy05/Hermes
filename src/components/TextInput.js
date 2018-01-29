@@ -40,11 +40,12 @@ export const TextInput = ({
   fullWidth,
   layer,
   label,
+  unstyled,
   ...other
 }) => (
   <Outer className={className} fullWidth={fullWidth}>
     { label ? <Label>{label}</Label> : null }
-    <Inner layer={layer} fullWidth={fullWidth}>
+    <Inner layer={layer} fullWidth={fullWidth} unstyled={unstyled}>
       <Input fullWidth={fullWidth} {...other}/>
     </Inner>
   </Outer>

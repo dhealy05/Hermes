@@ -31,6 +31,10 @@ import {
 const crypto = require('crypto')
 
 export async function newConversation(text, otherIds) {
+  if (typeof text !== 'string') {
+    throw new TypeError('first message must be a string right now')
+  }
+
   if (!Array.isArray(otherIds)) {
     otherIds = [otherIds]
   }
@@ -53,7 +57,7 @@ export async function newConversation(text, otherIds) {
     groupSecret: crypto.randomBytes(48).toString('base64'),
     contacts: JSON.stringify(contacts),
     discovery: await getLocalPublicIndex(),
-    text: text
+    text
   }
 
   for (const contactId of contacts) {

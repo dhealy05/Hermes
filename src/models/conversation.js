@@ -3,7 +3,8 @@ import { Model } from './model'
 export const CURRENT_THUMBNAIL_VERSION = 1
 
 export const ContentTypes = {
-  Text: 1
+  Text: 1,
+  Image: 2
   //TODO: change this to a string so it can be encoded in transit
 }
 

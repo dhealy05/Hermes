@@ -1,6 +1,7 @@
+import * as crypto from 'crypto'
 import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
-import { getJson, saveJson, deleteJson } from './blockstack'
+import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
 import { getContacts } from './contacts'
 
@@ -136,6 +137,34 @@ export async function sendMessage(convoId, message) {
   return saveConversationById(convoId, convo)
 }
 
+export async function uploadFileForOutbox(convoId, file) {
+  if (!(file instanceof File)) {
+    throw new TypeError('must pass File instance to uploadFile')
+  }
+
+  const convo = await getConversationById(convoId)
+  const dataUrl = await readFileAsDataUrl(file)
+  const filename = crypto.randomBytes(72).toString('base64')
+
+  await saveFile(filename, encodeText(dataUrl, convo.secret), { isPublic: true })
+
+  return filename
+}
+
+export async function retrieveFileContentForMessage(message, convoMetadata) {
+  const encoded = await getFile(message.content, { username: message.sender, decrypt: false })
+  return decodeText(encoded, convoMetadata.secret)
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+  })
+}
+
 function getMessageTimeBoundary(messages){
   for(var i = 0; i < messages.length; i++){
     if(messages[i].sender != identity().username){
@@ -224,8 +253,8 @@ export async function deleteConversation(id){
   const { contacts } = await getContacts()
   delete contacts[id]
   await saveJson('contacts.json', contacts)
-  //await deleteJson(filename)
-  //await deleteJson(`conversation_${id}.json`)
+  //await deleteFile(filename)
+  //await deleteFile(`conversation_${id}.json`)
 }
 
 export async function getIncomingMessagesForMeta(metadata, username) {

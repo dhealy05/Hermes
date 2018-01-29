@@ -1,32 +1,49 @@
+import { identity } from 'lodash'
 import * as blockstack from 'blockstack'
 
-export const getJson = async (filename, { username = null, ...options } = {}) => {
+export const getJson = async (filename, options) => {
+  return JSON.parse(await getFile(filename, options))
+}
+
+export const getFile = async (filename, { username = null, ...options } = {}) => {
   if (!username) {
-    return JSON.parse(await blockstack.getFile(filename, { decrypt: true, ...options }))
+    return blockstack.getFile(filename, { decrypt: true, ...options })
   }
 
   console.debug(`reading ${filename} from user ${username}`)
+
   const publicOptions = {
     username,
     app: 'http://localhost:3000' // TODO put this in configuration instead of a constant
     //app: 'https://hihermes.co',
   }
-  //if(blockstack.lookupProfile(username, "http://localhost:6270/v1/names/")===null){return null}
-  if(username.indexOf(".id") == -1){return null}
-  return JSON.parse(await blockstack.getFile(filename, { ...publicOptions, ...options }))
-}
 
-export const saveJson = async (filename, json, { isPublic = false, ...options } = {}) => {
-  if (isPublic) {
-    console.debug(`saving to ${filename} [PUBLIC FILE]:`, json)
-    return blockstack.putFile(filename, JSON.stringify(json), { encrypt: false, ...options })
+  if (username.indexOf('.id') === -1) {
+    username = `${username}.id`
   }
 
-  console.debug(`saving to ${filename}:`, json)
-  await blockstack.putFile(filename, JSON.stringify(json), { encrypt: true, ...options })
-  return json
+  return await blockstack.getFile(filename, { ...publicOptions, ...options })
 }
 
-export const deleteJson = async filename => {
+export const saveJson = async (filename, json, options = {}) => {
+  return saveFile(filename, json, { ...options, serialize: JSON.stringify })
+}
+
+export const saveFile = async (
+  filename,
+  data,
+  { isPublic = false, serialize = identity, ...options } = {}
+) => {
+  if (isPublic) {
+    console.debug(`saving to ${filename} [PUBLIC FILE]:`, data)
+    return blockstack.putFile(filename, serialize(data), { encrypt: false, ...options })
+  }
+
+  console.debug(`saving to ${filename}:`, data)
+  await blockstack.putFile(filename, serialize(data), { encrypt: true, ...options })
+  return data
+}
+
+export const deleteFile = async filename => {
   return blockstack.deleteFile(filename)
 }

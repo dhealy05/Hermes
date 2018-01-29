@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import moment from 'moment'
 import * as colors from '../colors'
+import { ContentTypes } from '../models'
 import { formatTime } from '../services/formatTime'
 import { Avatar } from './Avatar'
+import { Loader } from './Loader'
 
 const OuterContainer = styled.div`
   display: flex;
@@ -50,7 +52,31 @@ const Content = styled.div`
   text-align: justify;
 `
 
-export const Message = ({ direction = 'left', sender, timestamp, content }) => {
+const MessageContent = ({ contentType, content }) => {
+  if (contentType === ContentTypes.Text) {
+    return <Content>{content}</Content>
+  }
+
+  if (contentType === ContentTypes.Image && (!content || content.loading)) {
+    return <Loader/>
+  } else if (contentType === ContentTypes.Image) {
+    return <img src={content.data}/>
+  }
+
+  return null
+}
+MessageContent.propTypes = {
+  contentType: PropTypes.any.isRequired,
+  content: PropTypes.string.isRequired
+}
+
+export const Message = ({
+  direction = 'left',
+  sender,
+  timestamp,
+  content,
+  contentType
+}) => {
   const time = formatTime(timestamp)
   const avatar = sender && sender.pic
   const name = (sender && sender.name) || sender.id
@@ -63,7 +89,7 @@ export const Message = ({ direction = 'left', sender, timestamp, content }) => {
           <SenderName>{name}</SenderName>
           <Timestamp>{time}</Timestamp>
         </SenderDetails>
-        <Content>{content}</Content>
+        <MessageContent contentType={contentType} content={content}/>
       </MessageText>
     </OuterContainer>
   )
@@ -79,7 +105,8 @@ Message.propTypes = {
     PropTypes.instanceOf(Date),
     PropTypes.instanceOf(moment)
   ]).isRequired,
-  content: PropTypes.string.isRequired
+  contentType: MessageContent.propTypes.contentType,
+  content: MessageContent.propTypes.content
 }
 Message.defaultProps = {
   direction: 'left'

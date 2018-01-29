@@ -22,6 +22,7 @@ const WithRedux = connect(
                       && state.chat.conversationDetails[state.chat.activeConversation]
 
     const contacts = state.contacts.contactsById
+    const fileContents = state.chat.fileContents
 
     const loading = state.chat.loadingConversationMetadata
                  || state.contacts.loading
@@ -40,6 +41,7 @@ const WithRedux = connect(
       conversation,
       loading,
       contacts,
+      fileContents,
       newMessageRecipients
     }
   },
@@ -58,8 +60,9 @@ const WithRedux = connect(
         return
       }
 
-      dispatch(actions.chat.sendMessage(text))
+      dispatch(actions.chat.sendText(text))
     },
+    onPickImage: file => dispatch(actions.chat.sendFile(file)),
     onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids))
   })
 )

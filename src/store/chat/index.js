@@ -11,7 +11,8 @@ const initialState = {
   activeConversation: null,
   conversationMetadata: {},
   conversationDetails: {},
-  newMessageRecipients: []
+  newMessageRecipients: [],
+  fileContents: {}
 }
 
 export const reducer = (state = initialState, action) => {
@@ -75,6 +76,25 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         newMessageRecipients: action.payload
+      }
+    case actions.START_LOADING_FILE_CONTENT:
+      return {
+        ...state,
+        fileContents: {
+          ...state.fileContents,
+          [action.payload.filename]: { loading: true }
+        }
+      }
+    case actions.FINISH_LOADING_FILE_CONTENT:
+      return {
+        ...state,
+        fileContents: {
+          ...state.fileContents,
+          [action.payload.filename]: {
+            loading: false,
+            ...action.payload
+          }
+        }
       }
     default:
       return state

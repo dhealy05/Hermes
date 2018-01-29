@@ -1,4 +1,5 @@
-import { Conversation, Message } from '../models'
+import { ContentTypes, Conversation, Message } from '../models'
+import { getFile } from './blockstack'
 import {
   createNewConversation,
   getConversations,
