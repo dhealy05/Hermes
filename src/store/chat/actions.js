@@ -132,7 +132,7 @@ export const markActiveConversationAsRead = () => async (dispatch, getState) => 
   convo.readAt = new Date().toISOString()
 
   dispatch(finishLoadingConversationDetails(await saveConversationById(activeConversation, convo)))
-  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+  dispatch(refreshConversationList())
 
   return convo
 }
@@ -151,7 +151,7 @@ export const sendMessage = text => async (dispatch, getState) => {
     const convo = await newConversation(text, recipient)
 
     dispatch(setConversationDetails(convo))
-    dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+    dispatch(refreshConversationList())
     return
   }
 
@@ -165,7 +165,7 @@ export const sendMessage = text => async (dispatch, getState) => {
   })
 
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
-  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+  dispatch(refreshConversationList())
 }
 
 export const deleteActiveConversation = () => (dispatch, getState) => {
@@ -180,7 +180,7 @@ export const deleteActiveConversation = () => (dispatch, getState) => {
 
 export const deleteConversation = id => async dispatch => {
   await deleteConversationService(id)
-  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+  dispatch(refreshConversationList())
 }
 
 export const START_POLLING_MESSAGES = 'START_POLLING_MESSAGES'
@@ -198,6 +198,8 @@ export const finishPollingConversations = payloadAction(FINISH_POLLING_CONVERSAT
 export const pollNewMessages = () => async (dispatch, getState) => {
   dispatch(startPollingMessages())
 
+  dispatch(pollNewConversations())
+
   const { chat: { conversationMetadata } } = getState()
 
   let discoveredNewMessages = false
@@ -213,7 +215,7 @@ export const pollNewMessages = () => async (dispatch, getState) => {
   }
 
   if (discoveredNewMessages) {
-    dispatch(finishLoadingConversationList(await loadConversationMetadata()))
+    dispatch(refreshConversationList())
   }
 
   dispatch(finishPollingMessages())
@@ -222,19 +224,40 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 export const pollNewConversations = () => async (dispatch, getState) => {
   dispatch(startPollingConversations())
 
-  //const { chat: { conversationMetadata } } = getState()
-  var public_contacts = ["fulgid.id", "nmuth.id", "djhealy.id", "djh.id"]
+  const { chat: { conversationDetails } } = getState()
+  const public_contacts = ["fulgid.id", "nmuth.id", "djhealy.id", "djh.id"]
 
-  for (const contact in public_contacts) {
+  let discoveredNewConversation = false
 
+  for (const contact of public_contacts) {
     const convoId = await discoverConversation(contact)
 
-    if (convoId != '') {
-      dispatch(finishLoadingConversationDetails(await getConversationById(convoId)))
+    if (convoId && !conversationDetails[convoId]) {
+      dispatch(fetchConversationDetails(convoId))
+      discoveredNewConversation = true
     }
   }
 
+  if (discoveredNewConversation) {
+    dispatch(refreshConversationList())
+  }
+
   dispatch(finishPollingConversations())
+}
+
+export const refreshConversationList = () => async (dispatch, getState) => {
+  const { contacts: { contactsById } } = getState()
+  const meta = await loadConversationMetadata()
+
+  for (const convo of meta) {
+    for (const contactId of convo.contacts) {
+      if (!contactsById[contactId]) {
+        await dispatch(contactActions.fetchContactById(contactId))
+      }
+    }
+  }
+
+  dispatch(finishLoadingConversationList(await loadConversationMetadata()))
 }
 
 const loadConversationMetadata = async () => {

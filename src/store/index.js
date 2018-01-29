@@ -39,7 +39,9 @@ const composeEnhancers = devtoolsCompose
 
 const FILTERED_ACTIONS = [
   chat.actions.START_POLLING_MESSAGES,
-  chat.actions.FINISH_POLLING_MESSAGES
+  chat.actions.FINISH_POLLING_MESSAGES,
+  chat.actions.START_POLLING_CONVERSATIONS,
+  chat.actions.FINISH_POLLING_CONVERSATIONS
 ]
 
 const logger = createLogger({
