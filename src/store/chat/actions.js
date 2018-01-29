@@ -207,10 +207,14 @@ export const startPollingConversations = payloadAction(START_POLLING_CONVERSATIO
 export const FINISH_POLLING_CONVERSATIONS = 'FINISH_POLLING_CONVERSATIONS'
 export const finishPollingConversations = payloadAction(FINISH_POLLING_CONVERSATIONS)
 
-export const pollNewMessages = () => async (dispatch, getState) => {
-  dispatch(startPollingMessages())
+let conversationPollCounter = 0
 
-  dispatch(pollNewConversations())
+export const pollNewMessages = () => async (dispatch, getState) => {
+  if (++conversationPollCounter >= 10) {
+    await dispatch(pollNewConversations())
+  }
+
+  dispatch(startPollingMessages())
 
   const { chat: { conversationMetadata } } = getState()
 
