@@ -45,7 +45,7 @@ export async function checkIfConversationExists(
   })
 
   const conversations = await getConversations()
-  if(conversations[Conversation.getId(convo)] != null){return true}
+  if(conversations.conversations[Conversation.getId(convo)] != null){return true}
   return false
 }
 
