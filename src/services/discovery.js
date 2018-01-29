@@ -75,7 +75,7 @@ export async function discoverMessage(metadata, username) {
     return []
   }
 
-  return Promise.all(incoming.messages.map(async msg => {
+  return (await Promise.all(incoming.messages.map(async msg => {
     const decoded = new Message({
       ...msg,
       content: decodeText(msg.content, metadata.secret),
@@ -84,8 +84,13 @@ export async function discoverMessage(metadata, username) {
       timestamp: decodeText(msg.timestamp, metadata.secret)
     })
 
-    await recvMessage(convoId, decoded)
+    const convo = await recvMessage(convoId, decoded)
+
+    if (!convo) {
+      return null
+    }
 
     return decoded
-  }))
+  })))
+    .filter(msg => !!msg) // strip nulls
 }
