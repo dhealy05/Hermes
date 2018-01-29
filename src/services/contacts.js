@@ -10,10 +10,12 @@ export async function addContactById(id) {
   const profile = await blockstack.lookupProfile(id)
   var pic = ''
   if(profile.image != null){pic = profile.image[0].contentUrl}
+  var name = profile.name
+  if(name == null){name = id}
 
   const contact = new Contact({
     id,
-    name: profile.name,
+    name: name,
     pic
   })
   return saveContactDataById(id, contact)

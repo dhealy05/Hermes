@@ -118,6 +118,17 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
 
 export const MARK_CONVERSATION_AS_READ = 'MARK_CONVERSATION_AS_READ'
 
+function removeMsgAlert(){
+  var numArray = document.title.match(/\d+/)
+  if(numArray == null || numArray.length == 0){return;}
+  var num = parseInt(numArray[0])
+  if(num == null){return;}
+  if(num == 1){document.title = "Hermes"; return;}
+  num = num - 1
+  document.title = "(" + num.toString() + ") Hermes"
+}
+
+
 export const markActiveConversationAsRead = () => async (dispatch, getState) => {
   const { chat: { activeConversation } } = getState()
 
@@ -130,6 +141,8 @@ export const markActiveConversationAsRead = () => async (dispatch, getState) => 
   const convo = await getConversationById(activeConversation)
   convo.wasRead = true
   convo.readAt = new Date().toISOString()
+
+  removeMsgAlert()
 
   dispatch(finishLoadingConversationDetails(await saveConversationById(activeConversation, convo)))
   dispatch(refreshConversationList())
@@ -206,11 +219,16 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 
   for (const id in conversationMetadata) {
     const meta = conversationMetadata[id]
-    const newMessages = await discoverMessage(meta)
+    
+    for(var i = 0; i < meta.contacts.length; i++){
+      if(meta.contacts[i] == identity().username){continue}
 
-    if (newMessages.length) {
-      dispatch(finishLoadingConversationDetails(await getConversationById(id)))
-      discoveredNewMessages = true
+      const newMessages = await discoverMessage(meta, meta.contacts[i])
+
+      if (newMessages.length) {
+        dispatch(finishLoadingConversationDetails(await getConversationById(id)))
+        discoveredNewMessages = true
+      }
     }
   }
 

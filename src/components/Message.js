@@ -53,7 +53,7 @@ const Content = styled.div`
 export const Message = ({ direction = 'left', sender, timestamp, content }) => {
   const time = formatTime(timestamp)
   const avatar = sender && sender.pic
-  const name = (sender && sender.name) || 'anon'
+  const name = (sender && sender.name) || sender.id
 
   return (
     <OuterContainer direction={direction}>

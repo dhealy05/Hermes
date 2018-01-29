@@ -19,7 +19,7 @@ export async function getConversationById(id) {
 
 export async function createNewConversation(
   filename,
-  userId,
+  contacts,
   content,
   sharedSecret,
   sender = identity().username
@@ -34,13 +34,12 @@ export async function createNewConversation(
   var wasRead = true
   if(sender != identity().username){readAt = ''; wasRead = false}
 
-  const profile = await lookupProfile(userId)
-  var pic = ''
-  if(profile.image != null){pic = profile.image[0].contentUrl}
+  //TODO fix getPic
+  var pic = await getPicFromContacts(contacts)
 
   const convo = new Conversation({
     filename,
-    contacts: [userId],
+    contacts: contacts,
     secret: sharedSecret,
     messages: [msg],
     pic: pic,
@@ -49,6 +48,17 @@ export async function createNewConversation(
   })
 
   return saveConversationById(Conversation.getId(convo), convo)
+}
+
+export async function getPicFromContacts(contacts){
+  var pic = ''
+  for(var i = 0; i < contacts.length; i++){
+    if(contacts[i] != identity().username){
+      const profile = await lookupProfile(contacts[i])
+      if(profile.image != null){pic = profile.image[0].contentUrl}
+    }
+  }
+  return pic
 }
 
 export async function saveConversationById(id, convo) {
@@ -131,7 +141,20 @@ export async function recvMessage(convoId, message) {
   }
   convo.messages.unshift(message)
   convo.wasRead = false
+  msgAlert()
   return saveConversationById(convoId, convo)
+}
+
+function msgAlert(){
+  if(document.title == "Hermes"){
+    document.title = "(1) Hermes"
+  } else {
+    var numArray = document.title.match(/\d+/)
+    if(numArray == null || numArray.length == 0){return;}
+    var num = parseInt(numArray[0])
+    num = num + 1
+    document.title = "(" + num.toString() + ") Hermes"
+  }
 }
 
 export function saveOutgoingMessages(convo, rawMessages, boundary) {
@@ -173,10 +196,8 @@ export async function deleteConversation(id){
   //await deleteJson(`conversation_${id}.json`)
 }
 
-export async function getIncomingMessagesForMeta(metadata) {
-  const { filename, contacts } = metadata
-  const [username] = contacts // TODO: support group chat
-
+export async function getIncomingMessagesForMeta(metadata, username) {
+  const { filename } = metadata
   return getJson(filename, { username })
 }
 
