@@ -31,6 +31,8 @@ var dotenvFiles = [
 // https://github.com/motdotla/dotenv
 dotenvFiles.forEach(dotenvFile => {
   if (fs.existsSync(dotenvFile)) {
+    console.info('loading config from', dotenvFile)
+
     require('dotenv').config({
       path: dotenvFile,
     });
