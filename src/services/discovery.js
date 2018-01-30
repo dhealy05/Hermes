@@ -54,7 +54,7 @@ export async function discoverConversation(userId) {
 
     if(contacts.length > 2){sharedSecret = groupSecret}
 
-    if(await checkIfConversationExists(filename, contacts, text, sharedSecret, userId)){return ''}
+    if(await checkIfConversationExists(filename, contacts, text, sharedSecret, userId)){continue}
 
     await saveNewOutbox(filename)
     await createNewConversation(filename, contacts, text, sharedSecret, userId)
