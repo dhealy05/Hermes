@@ -42,10 +42,9 @@ export class AddUserToChat extends React.Component {
         newRecipientId = `${newRecipientId}.id`
       }
 
-      // TODO uncomment to re-enable group chat
-      // const value = recipients.map(r => r.id).concat(newRecipientId)
+      const value = recipients.map(r => r.id).concat(newRecipientId)
 
-      onChange([newRecipientId])
+      onChange(value)
 
       this.setState({
         searchInput: ''
