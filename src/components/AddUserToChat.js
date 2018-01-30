@@ -20,6 +20,7 @@ const SelectedUsersContainer = styled.div`
 `
 
 const SearchInput = styled(TextInput)`
+  width: 15em;
 `
 
 export class AddUserToChat extends React.Component {
@@ -34,10 +35,17 @@ export class AddUserToChat extends React.Component {
   onKeyUp = evt => {
     if (evt.keyCode === 13) {
       const { recipients, onChange } = this.props
-      const newRecipientId = this.state.searchInput
-      const value = recipients.map(r => r.id).concat(newRecipientId)
 
-      onChange(value)
+      let newRecipientId = this.state.searchInput
+
+      if (!newRecipientId.endsWith('.id')) {
+        newRecipientId = `${newRecipientId}.id`
+      }
+
+      // TODO uncomment to re-enable group chat
+      // const value = recipients.map(r => r.id).concat(newRecipientId)
+
+      onChange([newRecipientId])
 
       this.setState({
         searchInput: ''
@@ -52,7 +60,7 @@ export class AddUserToChat extends React.Component {
     return (
       <Container>
         <SearchInput fullWidth
-                     placeholder="enter an id..."
+                     placeholder="enter an id to chat with..."
                      value={searchInput}
                      onChange={this.onInputChange}
                      onKeyUp={this.onKeyUp} />

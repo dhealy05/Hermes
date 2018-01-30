@@ -12,6 +12,7 @@ const initialState = {
   conversationMetadata: {},
   conversationDetails: {},
   newMessageRecipients: [],
+  sendingNewConversation: false,
   fileContents: {}
 }
 
@@ -95,6 +96,16 @@ export const reducer = (state = initialState, action) => {
             ...action.payload
           }
         }
+      }
+    case actions.START_SENDING_NEW_CONVERSATION:
+      return {
+        ...state,
+        sendingNewConversation: true
+      }
+    case actions.FINISH_SENDING_NEW_CONVERSATION:
+      return {
+        ...state,
+        sendingNewConversation: false
       }
     default:
       return state

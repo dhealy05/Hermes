@@ -46,10 +46,10 @@ export const ChatSidebar = ({
     .value()
 
   return (
-    <Sidebar title="hermes">
+    <Sidebar title="hermes"
+             onComposeMessage={startComposing}>
       <ThumbnailsList thumbnails={thumbnails}
-                      onSelectConversation={selectActiveConversation}
-                      onNewMessage={startComposing}/>
+                      onSelectConversation={selectActiveConversation}/>
     </Sidebar>
   )
 }

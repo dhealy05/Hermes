@@ -35,6 +35,8 @@ const WithRedux = connect(
       newMessageRecipients = state.chat.newMessageRecipients.map(id => contacts[id])
     }
 
+    const sendingNewConversation = state.chat.sendingNewConversation
+
     return {
       identity,
       composing,
@@ -42,7 +44,8 @@ const WithRedux = connect(
       loading,
       contacts,
       fileContents,
-      newMessageRecipients
+      newMessageRecipients,
+      sendingNewConversation
     }
   },
   dispatch => ({

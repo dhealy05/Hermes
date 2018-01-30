@@ -41,15 +41,12 @@ export async function newConversation(text, otherIds) {
 
   const contacts = [identity().username, ...otherIds]
 
-  if (contacts.length === 2 && await discoverConversation(contacts[1])) {
-    // TODO naive
-    return true
-  }
+  if (contacts.length === 2) {
+    const discovered = await discoverConversation(contacts[1])
 
-  const existingContacts = await getJson("contacts.json")
-  if (contacts.length === 2 && existingContacts[contacts[1]]) {
-    // this is also a naive check TODO improve
-    return true
+    if (discovered) {
+      return discovered
+    }
   }
 
   const introduction = {

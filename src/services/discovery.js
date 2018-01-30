@@ -36,7 +36,7 @@ export async function discoverConversation(userId) {
   const theirIndex = await getPublicIndexForId(userId)
 
   if (!theirIndex) {
-    return ''
+    return null
   }
 
   var sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
@@ -57,16 +57,19 @@ export async function discoverConversation(userId) {
     if(await checkIfConversationExists(filename, contacts, text, sharedSecret, userId)){return ''}
 
     await saveNewOutbox(filename)
-    await createNewConversation(filename, contacts, text, sharedSecret, userId)
-    for(var i = 0; i < contacts.length; i++){
-      if(contacts[i] != identity().username){
+
+    const conversation = await createNewConversation(filename, contacts, text, sharedSecret, userId)
+
+    for (var i = 0; i < contacts.length; i++){
+      if (contacts[i] !== identity().username) {
         await addContactById(contacts[i])
       }
     }
-    //await addContactById(userId)
-    return userId
+
+    return conversation
   }
-  return ''
+
+  return null
 }
 
 export async function discoverMessage(metadata, username) {

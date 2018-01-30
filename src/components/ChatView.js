@@ -9,6 +9,7 @@ import { AppView } from './AppView'
 import { Message } from './Message'
 import { AddUserToChat } from './AddUserToChat'
 import { NewMessageInput } from './NewMessageInput'
+import { Loader } from './Loader'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -121,6 +122,7 @@ export class ChatView extends React.Component {
       contacts,
       fileContents,
       newMessageRecipients,
+      sendingNewConversation,
       onSignOut,
       onPickImage,
       onSetNewMessageRecipients,
@@ -147,10 +149,10 @@ export class ChatView extends React.Component {
         )
       })
     } else if (composing) {
-      messageContents = (
-        <AddUserToChat recipients={newMessageRecipients}
-                       onChange={onSetNewMessageRecipients}/>
-      )
+      messageContents = sendingNewConversation
+                      ? <Loader/>
+                      : <AddUserToChat recipients={newMessageRecipients}
+                                       onChange={onSetNewMessageRecipients}/>
     }
 
     return (
@@ -175,6 +177,7 @@ ChatView.propTypes = {
   contacts: PropTypes.object.isRequired,
   fileContents: PropTypes.object.isRequired,
   newMessageRecipients: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sendingNewConversation: PropTypes.bool,
   messagePollInterval: PropTypes.number,
   onMarkConversationAsRead: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,

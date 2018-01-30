@@ -183,16 +183,30 @@ export const sendFile = file => async (dispatch, getState) => {
   return dispatch(sendRawMessage(message))
 }
 
+export const START_SENDING_NEW_CONVERSATION = 'START_SENDING_NEW_CONVERSATION'
+export const startSendingNewConversation = payloadAction(START_SENDING_NEW_CONVERSATION)
+
+export const FINISH_SENDING_NEW_CONVERSATION = 'FINISH_SENDING_NEW_CONVERSATION'
+export const finishSendingNewConversation = payloadAction(FINISH_SENDING_NEW_CONVERSATION)
+
 export const sendRawMessage = message => async (dispatch, getState) => {
   const { chat: { activeConversation,
                   conversationDetails,
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
+    dispatch(startSendingNewConversation())
+
     const convo = await newConversation(message.content, newMessageRecipients)
 
     dispatch(setConversationDetails(convo))
-    dispatch(refreshConversationList())
+    dispatch(setActiveConversation(Conversation.getId(convo)))
+
+    // TODO this timeout is necessary because sometimes it takes some time for
+    // the metadata to be properly saved
+    setTimeout(() => dispatch(refreshConversationList()), 100)
+
+    dispatch(finishSendingNewConversation())
     return
   }
 
@@ -239,7 +253,8 @@ let conversationPollCounter = 0
 
 export const pollNewMessages = () => async (dispatch, getState) => {
   if (++conversationPollCounter >= 10) {
-    await dispatch(pollNewConversations())
+    // TODO uncomment to re-enable conversation polling
+    // await dispatch(pollNewConversations())
   }
 
   dispatch(startPollingMessages())
