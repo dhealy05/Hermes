@@ -79,7 +79,7 @@ export const Message = ({
 }) => {
   const time = formatTime(timestamp)
   const avatar = sender && sender.pic
-  const name = (sender && sender.name) || sender.id
+  const name = (sender && sender.name) || (sender && sender.id) || 'Anonymous'
 
   return (
     <OuterContainer direction={direction}>
