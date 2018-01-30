@@ -84,18 +84,16 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   const { chat: { activeConversation, conversationDetails },
           contacts: { contactsById } } = getState()
 
-  await Promise.all(
-    map(conversations, convo => Promise.all(
-      convo.contacts.map(contactId => {
-        const cached = contactsById[contactId]
-        if (cached) {
-          return cached
-        }
+  await Promise.all(map(conversations, convo => Promise.all(
+    convo.contacts.map(contactId => {
+      const cached = contactsById[contactId]
+      if (cached) {
+        return cached
+      }
 
-        return dispatch(contactActions.fetchContactById(contactId))
-      }))
-    )
-  )
+      return dispatch(contactActions.fetchContactById(contactId))
+    }))
+  ))
 
   if (!activeConversation
       || !conversationDetails[activeConversation]
@@ -189,9 +187,17 @@ export const sendRawMessage = message => async (dispatch, getState) => {
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
-    const convo = await newConversation(message.content, newMessageRecipients)
+    let conversation
 
-    dispatch(setConversationDetails(convo))
+    if (newMessageRecipients.length === 1) {
+      const result = await dispatch(contactActions.addNewContact(newMessageRecipients[0], message))
+      conversation = result.conversation
+    } else {
+      await Promise.all(newMessageRecipients.map(r => dispatch(contactActions.addNewContact(r))))
+      conversation = await newConversation(message, newMessageRecipients)
+    }
+
+    dispatch(setConversationDetails(conversation))
     dispatch(refreshConversationList())
     return
   }

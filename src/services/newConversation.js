@@ -1,4 +1,5 @@
 import {
+  ContentTypes,
   Conversation,
   Message
 } from '../models'
@@ -30,9 +31,44 @@ import {
 
 const crypto = require('crypto')
 
-export async function newConversation(text, otherIds) {
-  if (typeof text !== 'string') {
-    throw new TypeError('first message must be a string right now')
+export async function addContactWithConversation(contactId, firstMessage = null) {
+  const myId = identity().username
+  const contact = await addContactById(contactId)
+
+  const { conversations } = await getConversations()
+
+  const convoId = Conversation.getId({ contacts: [contact.id,
+                                                  myId] })
+
+  if (conversations[convoId]) {
+    return {
+      contact,
+      conversation: conversations[convoId]
+    }
+  }
+
+  if (await discoverConversation(contact.id)) {
+    return {
+      contact,
+      conversation: (await getConversations())[convoId]
+    }
+  }
+
+  firstMessage = firstMessage || new Message({
+    sender: 'SYSTEM',
+    sentAt: new Date().toISOString(),
+    content: 'You are now connected on Hermes'
+  })
+
+  return {
+    contact,
+    conversation: await newConversation(firstMessage, [contactId])
+  }
+}
+
+export async function newConversation(msg, otherIds) {
+  if (!(msg instanceof Message)) {
+    throw new TypeError('message must be a Message')
   }
 
   if (!Array.isArray(otherIds)) {
@@ -52,6 +88,12 @@ export async function newConversation(text, otherIds) {
     return true
   }
 
+  let text = msg.content
+
+  if (msg.type === ContentTypes.Image) {
+    text = 'sent an image'
+  }
+
   const introduction = {
     filename: crypto.randomBytes(20).toString('base64'),
     groupSecret: crypto.randomBytes(48).toString('base64'),
@@ -69,7 +111,7 @@ export async function newConversation(text, otherIds) {
   }
 
   await saveNewOutbox(introduction.filename)
-  return createNewConversation(introduction.filename, contacts, text, introduction.groupSecret)
+  return createNewConversation(introduction.filename, contacts, msg, introduction.groupSecret)
 }
 
 export async function addContactAndIntroduction(intro, id){

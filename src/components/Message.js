@@ -7,6 +7,7 @@ import { ContentTypes } from '../models'
 import { formatTime } from '../services/formatTime'
 import { Avatar } from './Avatar'
 import { Loader } from './Loader'
+import { SystemMessage } from './SystemMessage'
 
 const OuterContainer = styled.div`
   display: flex;
@@ -14,16 +15,16 @@ const OuterContainer = styled.div`
   margin-top: 14px;
 
   ${props => ((props.direction === 'right') && css`
-    flex-direction: row-reverse;
+flex-direction: row-reverse;
 
-    & ${SenderAvatar} {
-      margin-right: 0;
-      margin-left: 24px;
-    }
+                     & ${SenderAvatar} {
+                       margin-right: 0;
+                       margin-left: 24px;
+                     }
 
-    & ${SenderDetails} {
-      text-align: right;
-    }
+                     & ${SenderDetails} {
+                       text-align: right;
+                     }
 `)}
 `
 
@@ -70,13 +71,19 @@ MessageContent.propTypes = {
   content: PropTypes.string.isRequired
 }
 
-export const Message = ({
-  direction = 'left',
-  sender,
-  timestamp,
-  content,
-  contentType
-}) => {
+export const Message = props => {
+  const {
+    direction = 'left',
+    sender,
+    timestamp,
+    content,
+    contentType
+  } = props
+
+  if (sender.id === 'SYSTEM') {
+    return <SystemMessage {...props}/>
+  }
+
   const time = formatTime(timestamp)
   const avatar = sender && sender.pic
   const name = (sender && sender.name) || sender.id

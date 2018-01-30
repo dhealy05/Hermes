@@ -36,10 +36,11 @@ export async function discoverConversation(userId) {
   const theirIndex = await getPublicIndexForId(userId)
 
   if (!theirIndex) {
-    return ''
+    return null
   }
 
-  var sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
+  let sharedSecret = await getSharedSecret(theirIndex.pubkey.data)
+
   for (const intro of theirIndex.introductions) {
     const theirSecret = decodeText(intro.secret, sharedSecret)
 
@@ -52,21 +53,31 @@ export async function discoverConversation(userId) {
     const contacts = JSON.parse(decodeText(intro.contacts, sharedSecret))
     const groupSecret = decodeText(intro.groupSecret, sharedSecret)
 
-    if(contacts.length > 2){sharedSecret = groupSecret}
+    if (contacts.length > 2) {
+      sharedSecret = groupSecret
+    }
 
-    if(await checkIfConversationExists(filename, contacts, text, sharedSecret, userId)){continue}
+    if (await checkIfConversationExists(filename,
+                                        contacts,
+                                        text,
+                                        sharedSecret,
+                                        userId)) {
+      continue
+    }
 
     await saveNewOutbox(filename)
     await createNewConversation(filename, contacts, text, sharedSecret, userId)
-    for(var i = 0; i < contacts.length; i++){
-      if(contacts[i] != identity().username){
-        await addContactById(contacts[i])
+
+    for (const contact of contacts) {
+      if (contacts != identity().username) {
+        await addContactById(contacts)
       }
     }
-    //await addContactById(userId)
+
     return userId
   }
-  return ''
+
+  return null
 }
 
 export async function discoverMessage(metadata, username) {

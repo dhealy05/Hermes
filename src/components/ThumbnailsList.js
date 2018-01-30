@@ -10,6 +10,7 @@ const List = styled.ul`
   font-size: 14px;
   list-style: none;
   padding: 0;
+  margin-top: 0;
 `
 
 const ListItem = styled.li`
@@ -82,6 +83,18 @@ export const ThumbnailsList = props => {
     )
   })
 
+  const addContact = (
+    <ListItem key="add_contact"
+              onClick={props.onAddContact}>
+      {/* TODO replace with a plus button graphic */}
+      <Avatar size={48}
+              image="https://lorempixel.com/64/64"/>
+      <TextContainer>
+        add a contact
+      </TextContainer>
+    </ListItem>
+  )
+
   const newMessage = (
     <ListItem key="new_message"
               onClick={props.onNewMessage}>
@@ -96,6 +109,7 @@ export const ThumbnailsList = props => {
 
   return (
     <List>
+      {addContact}
       {newMessage}
       {items}
     </List>

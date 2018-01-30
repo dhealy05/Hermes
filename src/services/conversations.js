@@ -46,36 +46,32 @@ export async function checkIfConversationExists(
   })
 
   const conversations = await getConversations()
-  if(conversations.conversations[Conversation.getId(convo)] != null){return true}
-  return false
+
+  return conversations.conversations[Conversation.getId(convo)] || null
 }
 
 export async function createNewConversation(
   filename,
   contacts,
-  content,
+  message,
   sharedSecret,
   sender = identity().username
 ) {
-  const msg = new Message({
-    sender,
-    content,
-    sentAt: new Date()
-  })
+  let readAt = new Date().toISOString()
+  let wasRead = true
 
-  var readAt = new Date().toISOString()
-  var wasRead = true
-  if(sender != identity().username){readAt = ''; wasRead = false}
-
-  //TODO fix getPic
-  var pic = await getPicFromContacts(contacts)
+  if (message.sender != identity().username) {
+    readAt = ''
+    wasRead = false
+  }
 
   const convo = new Conversation({
     filename,
     contacts: contacts,
     secret: sharedSecret,
-    messages: [msg],
-    pic: pic,
+    messages: [message],
+    // TODO fix getPic
+    pic: await getPicFromContacts(contacts),
     readAt: readAt,
     wasRead: wasRead
   })

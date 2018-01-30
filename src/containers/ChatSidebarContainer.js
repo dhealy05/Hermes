@@ -14,7 +14,12 @@ const WithRedux = connect(
   }),
   dispatch => ({
     selectActiveConversation: id => dispatch(actions.chat.setActiveConversation(id)),
-    startComposing: () => dispatch(actions.chat.startComposing())
+    startComposing: () => dispatch(actions.chat.startComposing()),
+    addContact: async () => {
+      const id = prompt('user id')
+      const { conversation } = await dispatch(actions.contacts.addNewContact(id))
+      await dispatch(actions.chat.setActiveConversation(Conversation.getId(conversation)))
+    }
   })
 )
 
@@ -22,7 +27,8 @@ export const ChatSidebar = ({
   conversationsById,
   contactsById,
   selectActiveConversation,
-  startComposing
+  startComposing,
+  addContact
 }) => {
   const thumbnails = chain(conversationsById)
     .map(c => {
@@ -49,7 +55,8 @@ export const ChatSidebar = ({
     <Sidebar title="hermes">
       <ThumbnailsList thumbnails={thumbnails}
                       onSelectConversation={selectActiveConversation}
-                      onNewMessage={startComposing}/>
+                      onNewMessage={startComposing}
+                      onAddContact={addContact}/>
     </Sidebar>
   )
 }

@@ -6,7 +6,13 @@ export const namespace = 'contacts'
 
 const initialState = {
   loading: false,
-  contactsById: {}
+  contactsById: {
+    SYSTEM: new Contact({
+      id: 'SYSTEM',
+      name: 'Hermes'
+    })
+  },
+  addingNewContact: false
 }
 
 export const reducer = (state = initialState, action) => {
@@ -44,6 +50,16 @@ export const reducer = (state = initialState, action) => {
           ...state.contactsById,
           [action.payload.id]: new Contact(action.payload.contact)
         }
+      }
+    case actions.START_ADDING_NEW_CONTACT:
+      return {
+        ...state,
+        addingNewContact: true
+      }
+    case actions.FINISH_ADDING_NEW_CONTACT:
+      return {
+        ...state,
+        addingNewContact: false
       }
     default:
       return state

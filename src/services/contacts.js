@@ -1,4 +1,5 @@
 import * as blockstack from 'blockstack'
+import { get } from 'lodash'
 import { Contact } from '../models/contact'
 import { getJson, saveJson } from './blockstack'
 
@@ -8,16 +9,16 @@ export async function getContacts() {
 
 export async function addContactById(id) {
   const profile = await blockstack.lookupProfile(id)
-  var pic = ''
-  if(profile.image != null){pic = profile.image[0].contentUrl}
-  var name = profile.name
-  if(name == null){name = id}
+
+  const name = get(profile, 'name', id)
+  const pic = get(profile, 'image[0].contentUrl', '')
 
   const contact = new Contact({
     id,
     name: name,
     pic
   })
+
   return saveContactDataById(id, contact)
 }
 
