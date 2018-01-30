@@ -263,6 +263,9 @@ module.exports = {
     // Otherwise React will be compiled in the very slow development mode.
     new webpack.DefinePlugin(env.stringified),
     // Minify the code.
+    // TODO this is disabled because blockstack has a dependency (uri-js) that
+    // makes it explode, and exclusion doesn't seem to work
+    /*
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
@@ -283,6 +286,7 @@ module.exports = {
       },
       sourceMap: shouldUseSourceMap,
     }),
+    */
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
       filename: cssFilename,

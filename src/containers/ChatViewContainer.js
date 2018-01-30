@@ -3,11 +3,12 @@ import {
   compose,
   lifecycle,
   branch,
-  renderNothing,
+  renderComponent,
   withProps
 } from 'recompose'
 import { connect } from 'react-redux'
 import { ChatView } from '../components/ChatView'
+import { Loader } from '../components/Loader'
 import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
 import { actions } from '../store'
 import { WithAuthChallenge } from './WithAuthChallenge'
@@ -76,7 +77,7 @@ const WithSidebar = withProps({
 
 const WithLoader = branch(
   props => props.loading,
-  renderNothing
+  renderComponent(Loader)
 )
 
 const WithDataOnLoad = lifecycle({
