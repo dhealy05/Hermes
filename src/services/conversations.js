@@ -57,6 +57,10 @@ export async function createNewConversation(
   sharedSecret,
   sender = identity().username
 ) {
+  if (!(message instanceof Message)) {
+    throw new TypeError('message must be a Message')
+  }
+
   let readAt = new Date().toISOString()
   let wasRead = true
 

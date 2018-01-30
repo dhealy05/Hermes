@@ -288,6 +288,10 @@ export const pollNewConversations = () => async (dispatch, getState) => {
   let discoveredNewConversation = false
 
   for (const contactId in contactsById) {
+    if (!contactId.endsWith('.id')) {
+      continue
+    }
+
     const contact = contactsById[contact]
     const convoId = await discoverConversation(contact)
 

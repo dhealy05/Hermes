@@ -68,9 +68,9 @@ export async function discoverConversation(userId) {
     await saveNewOutbox(filename)
     await createNewConversation(filename, contacts, text, sharedSecret, userId)
 
-    for (const contact of contacts) {
-      if (contacts != identity().username) {
-        await addContactById(contacts)
+    for (const contactId of contacts) {
+      if (contactId !== identity().username) {
+        await addContactById(contactId)
       }
     }
 
