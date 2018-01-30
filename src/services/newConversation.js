@@ -57,16 +57,19 @@ export async function newConversation(text, otherIds) {
     text
   }
 
+  var finalSecret = introduction.groupSecret
+
   for (const contactId of contacts) {
     if (contactId === identity().username) {
       continue
     }
 
-    await addContactAndIntroduction(introduction, contactId)
+    const regularSecret = await addContactAndIntroduction(introduction, contactId)
+    if(contacts.length == 2){finalSecret = regularSecret}
   }
 
   await saveNewOutbox(introduction.filename)
-  return createNewConversation(introduction.filename, contacts, text, introduction.groupSecret)
+  return createNewConversation(introduction.filename, contacts, text, finalSecret)
 }
 
 export async function addContactAndIntroduction(intro, id){
