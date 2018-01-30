@@ -1,6 +1,6 @@
 import { Conversation } from '../models/conversation'
 import { getJson, saveJson } from './blockstack'
-import { checkNewMessages } from './onLoad'
+import { checkDiscovery } from './onLoad'
 import { getLocalPublicIndex, saveLocalPublicIndex } from './identity'
 
 export async function ensureFilesExist() {
@@ -12,7 +12,7 @@ export async function ensureFilesExist() {
     await saveJson('contacts.json', { contacts: {} })
   }
 
-  //checkNewMessages()
+  await checkDiscovery()
 }
 
 export async function cleanSlate(){
