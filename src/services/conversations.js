@@ -153,6 +153,11 @@ export async function uploadFileForOutbox(convoId, file) {
 
 export async function retrieveFileContentForMessage(message, convoMetadata) {
   const encoded = await getFile(message.content, { username: message.sender, decrypt: false })
+
+  if (!encoded) {
+    return null
+  }
+
   return decodeText(encoded, convoMetadata.secret)
 }
 

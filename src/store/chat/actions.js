@@ -323,12 +323,18 @@ export const startLoadingFileContent = payloadAction(START_LOADING_FILE_CONTENT)
 export const FINISH_LOADING_FILE_CONTENT = 'FINISH_LOADING_FILE_CONTENT'
 export const finishLoadingFileContent = payloadAction(FINISH_LOADING_FILE_CONTENT)
 
-export const fetchImageForMessage = message => async (dispatch, getState) => {
-  const { chat: { activeConversation,
-                  conversationMetadata } } = getState()
+export const fetchImageForMessage = (message, convoOrId = null) => async (dispatch, getState) => {
+  let convo = convoOrId
 
-  if (!activeConversation
-      || activeConversation === COMPOSE_CONVERSATION_ID) {
+  if (typeof convo !== 'object') {
+    const { chat: { activeConversation,
+                    conversationMetadata } } = getState()
+
+    convoOrId = convoOrId || activeConversation
+    convo = conversationMetadata[convoOrId]
+  }
+
+  if (!convo) {
     return
   }
 
@@ -336,7 +342,7 @@ export const fetchImageForMessage = message => async (dispatch, getState) => {
 
   dispatch(startLoadingFileContent({ filename }))
 
-  const data = await retrieveFileContentForMessage(message, conversationMetadata[activeConversation])
+  const data = await retrieveFileContentForMessage(message, convo)
 
   dispatch(finishLoadingFileContent({ filename, data }))
 }
