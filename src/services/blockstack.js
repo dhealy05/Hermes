@@ -14,8 +14,7 @@ export const getFile = async (filename, { username = null, ...options } = {}) =>
 
   const publicOptions = {
     username,
-    app: 'http://localhost:3000' // TODO put this in configuration instead of a constant
-    //app: 'https://hihermes.co',
+    app: process.env.REACT_APP_PUBLIC_URL
   }
 
   if (username.indexOf('.id') === -1) {
