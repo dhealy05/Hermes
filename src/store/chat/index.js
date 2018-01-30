@@ -64,14 +64,6 @@ export const reducer = (state = initialState, action) => {
         }
       }
     }
-    case actions.SET_CONVERSATION_DETAILS:
-      return {
-        ...state,
-        conversationDetails: {
-          ...state.conversationDetails,
-          [Conversation.getId(action.payload)]: action.payload
-        }
-      }
     case actions.SET_NEW_MESSAGE_RECIPIENTS:
       return {
         ...state,

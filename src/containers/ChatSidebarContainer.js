@@ -17,8 +17,8 @@ const WithRedux = connect(
     startComposing: () => dispatch(actions.chat.startComposing()),
     addContact: async () => {
       const id = prompt('user id')
-      const { conversation } = await dispatch(actions.contacts.addNewContact(id))
-      await dispatch(actions.chat.setActiveConversation(Conversation.getId(conversation)))
+      const { conversationId } = await dispatch(actions.contacts.addNewContact(id))
+      await dispatch(actions.chat.setActiveConversation(conversationId))
     }
   })
 )

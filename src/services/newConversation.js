@@ -41,6 +41,7 @@ export async function addContactWithConversation(contactId, firstMessage = null)
                                                   myId] })
 
   if (conversations[convoId]) {
+    console.info(`conversation ${convoId} already exists in private cache`)
     return {
       contact,
       conversation: conversations[convoId]
@@ -48,6 +49,7 @@ export async function addContactWithConversation(contactId, firstMessage = null)
   }
 
   if (await discoverConversation(contact.id)) {
+    console.info(`discovered conversation ${convoId} from ${contact.id}`)
     return {
       contact,
       conversation: (await getConversations())[convoId]
@@ -60,9 +62,11 @@ export async function addContactWithConversation(contactId, firstMessage = null)
     content: 'You are now connected on Hermes'
   })
 
+  const conversation = await newConversation(firstMessage, [contactId])
+
   return {
     contact,
-    conversation: await newConversation(firstMessage, [contactId])
+    conversation
   }
 }
 

@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { Contact } from '../../models'
+import { Conversation, Contact } from '../../models'
 import {
   addContactById,
   addContactWithConversation,
@@ -60,9 +60,12 @@ export const finishAddingNewContact = payloadAction(FINISH_ADDING_NEW_CONTACT)
 export const addNewContact = (id, firstMessage = null) => async dispatch => {
   dispatch(startAddingNewContact(id))
   const { contact, conversation } = await addContactWithConversation(id, firstMessage)
-  dispatch(finishLoadingContactById({ id, contact, conversation }))
+  dispatch(finishLoadingContactById({ id, contact }))
   dispatch(finishAddingNewContact(id))
   dispatch(chatActions.refreshConversationList())
 
-  return { contact, conversation }
+  return {
+    contact,
+    conversationId: Conversation.getId(conversation)
+  }
 }

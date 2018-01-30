@@ -58,9 +58,6 @@ export const startLoadingConversationDetails = payloadAction(START_LOADING_CONVE
 export const FINISH_LOADING_CONVERSATION_DETAILS = 'FINISH_LOADING_CONVERSATION_DETAILS'
 export const finishLoadingConversationDetails = payloadAction(FINISH_LOADING_CONVERSATION_DETAILS)
 
-export const SET_CONVERSATION_DETAILS = 'SET_CONVERSATION_DETAILS'
-export const setConversationDetails = payloadAction(SET_CONVERSATION_DETAILS)
-
 export const SET_NEW_MESSAGE_RECIPIENTS = 'SET_NEW_MESSAGE_RECIPIENTS'
 export const setNewMessageRecipients = ids => (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
@@ -187,17 +184,17 @@ export const sendRawMessage = message => async (dispatch, getState) => {
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
-    let conversation
+    let conversationId
 
     if (newMessageRecipients.length === 1) {
       const result = await dispatch(contactActions.addNewContact(newMessageRecipients[0], message))
-      conversation = result.conversation
+      conversationId = result.conversationId
     } else {
       await Promise.all(newMessageRecipients.map(r => dispatch(contactActions.addNewContact(r))))
-      conversation = await newConversation(message, newMessageRecipients)
+      conversationId = Conversation.getId(await newConversation(message, newMessageRecipients))
     }
 
-    dispatch(setConversationDetails(conversation))
+    dispatch(finishLoadingConversationDetails(await getConversationById(conversationId)))
     dispatch(refreshConversationList())
     return
   }
@@ -210,7 +207,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   }
 
   dispatch(fetchImageForMessage(message, convo))
-  dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
+  dispatch(finishLoadingConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
   dispatch(refreshConversationList())
 }
 
@@ -244,7 +241,7 @@ export const finishPollingConversations = payloadAction(FINISH_POLLING_CONVERSAT
 let conversationPollCounter = 0
 
 export const pollNewMessages = () => async (dispatch, getState) => {
-  if (++conversationPollCounter >= 10) {
+  if (++conversationPollCounter >= 5) {
     await dispatch(pollNewConversations())
   }
 
@@ -285,12 +282,13 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 export const pollNewConversations = () => async (dispatch, getState) => {
   dispatch(startPollingConversations())
 
-  const { chat: { conversationDetails } } = getState()
-  const public_contacts = ["fulgid.id", "nmuth.id", "djhealy.id", "djh.id"]
+  const { chat: { conversationDetails },
+          contacts: { contactsById } } = getState()
 
   let discoveredNewConversation = false
 
-  for (const contact of public_contacts) {
+  for (const contactId in contactsById) {
+    const contact = contactsById[contact]
     const convoId = await discoverConversation(contact)
 
     if (convoId && !conversationDetails[convoId]) {
