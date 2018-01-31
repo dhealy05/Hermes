@@ -7,14 +7,15 @@ export const getJson = async (filename, options) => {
 
 export const getFileLocal = async (filename, { username = null, ...options } = {}) => {
   if (!username) {
-    return blockstack.getFile(filename, { decrypt: true, ...options })
+    return blockstack.getFile(filename, { decrypt: true, zoneFileLookupURL: 'https://core.blockstack.org/v1/names/',  ...options })
   }
 
   console.debug(`reading ${filename} from user ${username}`)
 
   const publicOptions = {
     username,
-    app: process.env.REACT_APP_PUBLIC_URL
+    app: process.env.REACT_APP_PUBLIC_URL,
+    zoneFileLookupURL: 'https://core.blockstack.org/v1/names/'
   }
 
   if (username.indexOf('.id') === -1) {
