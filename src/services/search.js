@@ -1,16 +1,17 @@
-import * as blockstack from 'blockstack'
+/*import * as blockstack from 'blockstack'
+import {lookupProfileNonLocal} from './identity'
 const request = require('request')
 var filenames = []
 
 export async function appIndex(){
-  /*console.log("Indexing")
+  console.log("Indexing")
   for(var i = 300; i < 390; i++){
     var x = await getPage(i)
     console.log(x)
     console.log(i + 1)
   }
   console.log("PUBLIC FILE NAMES")
-  console.log(filenames)*/
+  console.log(filenames)
   var test = blockstack.lookupProfile("djh.id", "http://core.blockstack.org/v1/names/")
   test.then(object=>{console.log(object)})
 }
@@ -77,4 +78,4 @@ function saveID(id){
   //var newID = new Parse.Object("IDs")
   //newID.set("blockstackID", id)
   //newID.save()
-}
+}*/
