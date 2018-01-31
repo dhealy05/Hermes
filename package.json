@@ -60,7 +60,7 @@
   },
   "scripts": {
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "start": "NODE_ENV=production npm run build && serve build",
+    "start": "NODE_ENV=production npm run build && serve build --cors",
     "dev": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
