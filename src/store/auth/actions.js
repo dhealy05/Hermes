@@ -10,7 +10,7 @@ export const checkAuth = dispatch => {
   if (blockstack.isUserSignedIn()) {
     dispatch(setIdentity(identity()))
   } else if (blockstack.isSignInPending()) {
-    blockstack.handlePendingSignIn('http://localhost:6270/v1/names/')
+    blockstack.handlePendingSignIn('http://core.blockstack.org/v1/names/')
       .then(userData => {
         window.location = window.location.origin
       })

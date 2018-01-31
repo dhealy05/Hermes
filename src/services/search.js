@@ -11,16 +11,16 @@ export async function appIndex(){
   }
   console.log("PUBLIC FILE NAMES")
   console.log(filenames)*/
-  var test = blockstack.lookupProfile("djh.id", "http://localhost:6270/v1/names/")
+  var test = blockstack.lookupProfile("djh.id", "http://core.blockstack.org/v1/names/")
   test.then(object=>{console.log(object)})
 }
 
 async function getPage(page){
   return new Promise((resolve, reject) => {
     var pageString = page.toString()
-    var url = "http://localhost:6270/v1/names?page=" + pageString
+    var url = "http://core.blockstack.org/v1/names?page=" + pageString
     const requestData = {
-      //uri: 'http://localhost:6270/v2/blockchains/bitcoin/name_count',
+      //uri: 'http://core.blockstack.org/v2/blockchains/bitcoin/name_count',
       uri: url,
       method: 'GET'
     }
@@ -47,7 +47,7 @@ function reflect(promise){
 function searchPage(array, callback){
   var promises = []
   for(var i = 0; i < array.length; i++){
-    var p = blockstack.lookupProfile(array[i], "http://localhost:6270/v1/names/")
+    var p = blockstack.lookupProfile(array[i], "http://core.blockstack.org/v1/names/")
     promises.push(p)
   }
   Promise.all(promises.map(reflect)).then(function(values){

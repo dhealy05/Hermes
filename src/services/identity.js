@@ -15,5 +15,5 @@ export const saveLocalPublicIndex = data => saveJson(
 )
 
 export async function lookupProfile(id){
-  return await blockstack.lookupProfile(id, "http://localhost:6270/v1/names/")
+  return await blockstack.lookupProfile(id, "http://core.blockstack.org/v1/names/")
 }
