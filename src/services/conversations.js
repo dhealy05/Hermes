@@ -1,6 +1,6 @@
 import * as crypto from 'crypto'
 import { ContentTypes, Conversation, Message } from '../models'
-import { identity, lookupProfile } from './identity'
+import { identity, lookupProfileNonLocal } from './identity'
 import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
 import { getContacts } from './contacts'
@@ -87,7 +87,7 @@ export async function getPicFromContacts(contacts){
   var pic = ''
   for(var i = 0; i < contacts.length; i++){
     if(contacts[i] != identity().username){
-      const profile = await lookupProfile(contacts[i])
+      const profile = await lookupProfileNonLocal(contacts[i])
       if(profile.image != null){pic = profile.image[0].contentUrl}
     }
   }
