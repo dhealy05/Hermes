@@ -1,13 +1,14 @@
 import * as blockstack from 'blockstack'
 import { Contact } from '../models/contact'
 import { getJson, saveJson } from './blockstack'
+import {lookupProfileNonLocal} from './identity'
 
 export async function getContacts() {
   return await getJson('contacts.json')
 }
 
 export async function addContactById(id) {
-  const profile = await blockstack.lookupProfile(id)
+  const profile = await lookupProfileNonLocal(id)
   var pic = ''
   if(profile.image != null){pic = profile.image[0].contentUrl}
   var name = profile.name
