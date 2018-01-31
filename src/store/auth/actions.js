@@ -23,6 +23,10 @@ export const redirectToSignIn = dispatch => {
 }
 
 export const signOut = dispatch => {
-  blockstack.signUserOut(window.location.origin)
+  var redirect = window.location.origin
+  if (process.env.NODE_ENV === 'production') {
+    redirect = "https://www.hihermes.co"
+  }
+  blockstack.signUserOut(redirect)
   dispatch(setIdentity(null))
 }

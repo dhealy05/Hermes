@@ -55,12 +55,12 @@ export class NewMessageInput extends React.Component {
         <Input fullWidth
                placeholder="type your message"
                {...other}/>
-        {/* TODO uncomment to re-enable images
+        { //TODO uncomment to re-enable images
             <ButtonContainer>
             <IconButton icon="insert_photo"
             onClick={this.pickImage}/>
             </ButtonContainer>
-          */}
+          }
       </Container>
     )
   }
