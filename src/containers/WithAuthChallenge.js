@@ -16,10 +16,10 @@ SignInButtonBase.propTypes = {
 
 const SignInButton = lifecycle({
   componentDidMount() {
-    if (process.env.NODE_ENV === 'production') {
+    /*if (process.env.NODE_ENV === 'production') {
       // don't show the button in prod
       this.props.redirectToSignIn()
-    }
+    }*/
   }
 })(SignInButtonBase)
 
