@@ -1,7 +1,7 @@
 import * as crypto from 'crypto'
 import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfileNonLocal } from './identity'
-import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
+import { getJson, saveJson, getFileLocal, saveFile, deleteFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
 import { getContacts } from './contacts'
 
@@ -152,7 +152,7 @@ export async function uploadFileForOutbox(convoId, file) {
 }
 
 export async function retrieveFileContentForMessage(message, convoMetadata) {
-  const encoded = await getFile(message.content, { username: message.sender, decrypt: false })
+  const encoded = await getFileLocal(message.content, { username: message.sender, decrypt: false })
 
   if (!encoded) {
     return null
