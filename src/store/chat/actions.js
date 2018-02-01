@@ -15,9 +15,11 @@ import {
   discoverMessage,
   discoverConversation,
   uploadFileForOutbox,
-  retrieveFileContentForMessage
+  retrieveFileContentForMessage,
+  identity,
+  lookupProfile,
+  isUserOnHermes
 } from '../../services'
-import { identity } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
 
@@ -205,9 +207,29 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
     // TODO this timeout is necessary because sometimes it takes some time for
     // the metadata to be properly saved
-    setTimeout(() => dispatch(refreshConversationList()), 100)
+    setTimeout(() => dispatch(refreshConversationList()), 200)
 
     dispatch(finishSendingNewConversation())
+
+    // show an alert if the user you just messaged hasn't set up hermes yet
+
+    let usersNotOnHermes = [] 
+
+    for (const id of newMessageRecipients) {
+      const profile = await lookupProfile(id)
+
+      if (!(await isUserOnHermes(profile))) {
+        usersNotOnHermes.push(profile)
+      }
+    }
+
+    if (usersNotOnHermes.length > 0) {
+      const names = usersNotOnHermes.map(p => p.name).join(', ')
+      const message = `You sent a message to some users who haven't yet signed up for Hermes: ${names}`
+
+      // TODO show a notification, not an alert
+      alert(message)
+    }
     return
   }
 
