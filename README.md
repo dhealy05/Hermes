@@ -102,5 +102,56 @@ any attack that does not completely cut off the internet; and even there, we
 are hopeful for the prospect of better developed mesh networks in the near future.
 
 **Notes on Scalability and Discovery**
+**Discovery and Scalability: The Bottleneck**
+
+We will forthrightly state that the most pressing problem for scaling Hermes
+successfully is in the field of new conversation discovery. New conversation discovery
+boils down to one question: from whence do you draw the set of names to poll for
+introductions? As constructed, Hermes has what we like to think of as an extremely
+strong spam filter; you will only receive messages from contacts you choose to add.
+Within the scope of this bounty we find this to be a reasonable solution. However,
+to truly function as messaging for the decentralized web, Hermes may need a larger
+scope. There are several interesting areas for further exploration regarding scalability
+and discovery. These include:
+
+-Search Indices. Search indices are the likely answer to some Blockstack scalability problems. However, given that any metadata is encrypted, it may be difficult to apply to this problem. Anything that exposed an intro to the wider network would, by definition,
+expose it to surveillance.
+
+-Friends of Friends (The Gossip Strategy). Users may choose whether or not to list
+a contact as public or private. Friends could add other friends to their contact
+list, and those friends, etc. This would reduce the set in an organic way, and likely
+account for some use cases; networks would probably group by industry, region, language,
+etc., with a correspondingly higher likelihood of messaging within those networks.
+
+-Name Mining. Simply keeping up to date with the names on the network is a challenge
+for any Blockstack application. Name mining could obviate the need for central
+servers and keep name discovery within the Gaia network.
+
+-Gradation Strategies. Going from centralized to decentralized is difficult. Going
+from decentralized to centralized is considerably easier. Rather than offering a
+one size fits all solution, Hermes may allow users to use a less secure, more
+centralized offering, with the option of transitioning should the need arise.
+
 
 **Paid Messages and Bitcoin Transactions**
+
+On signing in, users generate a Bitcoin address using their application private
+key. Their public address is stored in their public_index.json file and their
+private key held privately, similar to the configuration for messaging.
+
+Users may earn Bitcoin through reading messages, and pay Bitcoin in order to
+increase their likelihood of receiving a quality response. The technical details
+are as follows: Alice sends a message (in most cases likely an introduction) with a content type signifying a paid Bitcoin transaction, and stating the amount of Bitcoin on offer. However, they do not send any Bitcoin. Bob, reading the message, will see
+the amount of Bitcoin he is being offered and, if he likes what he sees, he will
+respond. On opening Bob's response, Alice will automatically create a transaction
+and send the specified amount to Bob.
+
+In the future, the ability to rate paid responses will likely be an interesting
+feature to A. incentivize quality responses and B. create a market for cold emailing.
+
+For this build, we are generating wallets using bitcoinjs-lib and getting TX data and broadcasting transactions via the Blockchain.Info API. Although this is an external
+server and central point of failure, we feel it is a worthwhile compromise while
+we wait for Blockstack.js to expose transaction generation (which is on the near
+term roadmap). The user experience will also likely be very much enhanced when
+the Hermes wallet is not different from the Blockstack wallet. Lastly, using Stacks
+will be an interesting application.
