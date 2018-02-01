@@ -199,6 +199,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
     const convo = await newConversation(message.content, newMessageRecipients)
 
+    dispatch(setNewMessageRecipients([]))
     dispatch(setConversationDetails(convo))
     dispatch(setActiveConversation(Conversation.getId(convo)))
 
