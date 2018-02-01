@@ -62,7 +62,8 @@
   },
   "scripts": {
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "start": "node scripts/start.js",
+    "heroku-postbuild": "npm run build",
+    "start": "NODE_ENV=production serve build --cors",
     "dev": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
