@@ -33,7 +33,9 @@ export async function enableDiscovery() {
 }
 
 export async function discoverConversation(userId) {
+  console.log(userId)
   const theirIndex = await getPublicIndexForId(userId)
+  console.log(theirIndex)
 
   if (!theirIndex) {
     return null

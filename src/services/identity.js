@@ -15,6 +15,5 @@ export const saveLocalPublicIndex = data => saveJson(
 )
 
 export async function lookupProfileNonLocal(id){
-  console.log("Being Called")
   return await blockstack.lookupProfile(id, "https://core.blockstack.org/v1/names/")
 }

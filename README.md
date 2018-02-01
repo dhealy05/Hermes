@@ -1,23 +1,106 @@
-**Hermes—Decentralized, Serverless Chat using Blockstack**
+**Hermes—Decentralized, Encrypted, Serverless Chat with Blockstack**
 
-There are countless examples of governments, corporations and other actors monitoring, surveilling and restricting communications channels. Dchat makes direct peer to peer communications possible, using no external servers or central points of failure, using Blockstack’s Atlas and Gaia routing and storage architecture, with the Bitcoin blockchain as the source of truth. Users own their own data, sharing only with whom they choose, thereby solving the problem of surveillance.
+There are countless examples of governments, corporations and other actors monitoring, surveilling and restricting communications channels. Hermes makes direct peer to peer communications possible, using no external servers or central points of failure, using Blockstack’s Atlas and Gaia routing and storage architecture, with the Bitcoin blockchain as the source of truth. Users own their own data, shared only with whom they choose, thereby solving the problem of surveillance.
 
-**Discovery**
+Below we describe Hermes' capabilities in greater detail, to provide context for
+our architectural decisions. Particular attention has been paid to decentralization,
+security and censorship-resistance, as we believe those areas are core to Hermes'
+long term value proposition. When choosing between tradeoffs on the decentralization-
+scalability continuum, our design philosophy has been to choose the former. We are
+optimistic that Blockstack will continue to evolve in a scalable way.
 
-With Blockstack.js, it is possible to query a Blockstack ID for a given app and see any publicly readable file associated with this ID. It is also possible to query the local Blockstack Core Node for a list of all Blockstack IDs on the Bitcoin blockchain. From these two simple components, server less communications are possible.
+**Note on Cryptographic Methods**
 
-When a user signs on to Dchat for the first time, the app will generate a private key and a public key for them: the Discovery keys. We will save the private key as a private encrypted file on that user’s Gaia storage, and the public key as a public, unencrypted file readable by anyone. The public key is saved with a common naming convention, e.g. Discovery.json.
+Wherever we have used cryptography, we have either used Blockstack's native encryption
+or the NodeJS Crypto module. For brevity, in this document we will describe
+pseudo-random functions as random.
 
-Consider two Dchat users, Dan and Lea. To send Lea a message, Dan must query her Blockstack ID and the file “Discovery.json.” Dan now has Lea’s public key. Dan composes a message and encrypts it with Lea’s public key. He (or rather, his instance of Dchat) also generates a second private key and public key, the Conversation key. He also generates a pseudorandom identifier, the ConversationID. He encrypts his message to Lea, the Conversation key, and the ConversationID, and saves them all to a publicly readable file, again with a common naming convention, e.g. Introductions.json. This file consists of an array of encrypted strings; Dan’s message to Lea is pushed to the array. Dan also saves his conversation attempt to a private file, Conversations.json, with the ConversationID stored there.
+**Public and Private Keys**
 
-How does Lea know that Dan has tried to begin a conversation? As mentioned before, we can query the local Blockstack Core Node for all the Blockstack IDs on the network. On opening Dchat, Lea will iterate through each Blockstack ID, and query each one for Introductions.json. If it exists, she will iterate through the array of strings, and attempt to decrypt each one using her private Discovery key. If she can decrypt it, the message was intended for her! Now, Lea has the Blockstack ID of whoever initiated the conversation, the content of the message, and the Conversation keys and ID. She writes a response to Dan, encrypts it with the Conversation public key, and saves it publicly named after the ConversationID.
+On logging into Hermes for the first time, a user is assigned a private and public
+key. The public key is saved to a public file, public_index.json. The private key
+is encrypted and saved privately.
 
-How does Dan receive the response? In addition to polling the blockchain for new conversations, Dan is polling his existing conversations for new messages. He queries Lea’s Blockstack ID for a public file named with the ConversationID. When he finds it, he decrypts it using the Conversation key. Now he can update his conversation state with her new message.
+**Beginning a Conversation Between Two People**
 
-Now that they are communicating, Dan deletes his message to Lea from Introductions.json.
+To begin a conversation, Alice enters the Blockstack ID of Bob, the person with who
+she wishes to communicate. She fetches Bob's public_index.json, and computes their
+shared secret using his public key. She then encrypts the secret itself, a message,
+and a randomly generated filename (a base64 string of length 20), and saves this information as an 'Introduction' in her public_index.json.
 
-**Potential Concerns**
+Privately, Alice saves this information to her 'conversations.json', her encrypted
+list of who she is talking to, their shared secret, and the filename. Additionally, she privately saves 'bob.id_convo', the history of their conversation, and she
+publicly saves a new 'Outbox' under the filename.
 
-It’s not clear to me how much of the conversation should be publicly available. Since each party to the conversation will need to store their own copy anyways, it may be that the mutually-publicly readable conversation should have only the most recent 25 messages or something, in case of some kind of attack.
+**Discovering a Conversation Between Two People**
 
-Polling the blockchain may be difficult and time consuming. This is a space where optimization will be important. With that said, logically it makes sense to me that in a server less app, the client will need to do significantly more work.
+To discover Alice's introduction, Bob must iterate through a set of Blockstack IDs,
+check each for a public_index.json, compute a shared secret, and attempt to decrypt any extant introductions. If Bob finds that his computed secret matches the decrypted
+value of Alice's encrypted public secret, he knows the introduction was intended
+for him.
+
+Bob then decrypts the rest of the message, and saves the necessary data: the Blockstack
+ID of the sender, the secret, and the decrypted filename. He saves his own Outbox
+under the filename, and his private alice.id_convo.
+
+**Beginning and Discovering a Conversation Between More Than Two People**
+
+This process is the same as between two people, with one crucial difference. Say
+Alice wants to message Bob and Cathy. She follow the same process described above
+for each, encrypted a message with their respective secrets, but will also include
+in her Introduction an encoded 'Group Secret', a randomly generated string.
+Rather than saving the computed, shared secret, participants in group messages
+save the decrypted Group Secret, and use that for future encryption and decryption.
+
+For discovery, Bob and Cathy must each separately discover Alice's introduction,
+and follow the steps outlines above.
+
+**Sending and Receiving Messages**
+
+Upon initiating and discovering the conversation, respectively, Alice and Bob not
+only created an Outbox, but began polling each other's public data for a matching
+filename. To send a message, Alice need only encrypt it using the shared secret,
+and save it to her Outbox, as well as to her bob.id_convo. Bob, polling eagerly,
+will decrypt it and save the message to his alice.id_convo.
+
+**Images and Other Large Files**
+
+While text is included in the body of any given Message, images and other large
+files are encrypted and saved publicly by the sender. The Message contains not
+the file itself, but the filename (again a randomly generated string).
+
+**Notes on Security and Robustness of the Hermes Messaging System**
+
+Hermes' goals with respect to security and robustness are threefold. The first two relate to privacy: to keep message content readable only to their intended recipients,
+and to conceal any metadata about messages being sent. The last concerns scalable
+censorship resistance, specifically the ability for the network to persist in the face of
+organized state attack.
+
+Message content privacy is the simplest of the three. Since only the participants in a
+conversation hold the keys to that conversation, encrypted messages are safe save
+from computationally expensive brute force attack. Additionally, messages are unlikely
+to be intercepted.
+
+Metadata privacy is accomplished via the system of mutual random Outbox filenames.
+The intention here is to obfuscate the participants in a conversation for any
+would be snooper. If the Outbox naming convention was, say, bob.id_convo, someone
+could poll Alice's public files to see if she had started a conversation with Bob;
+if they were to discover an encrypted message, rather than a 404 error, although they
+might not be able to read it, they would realize a conversation had begun. As constructed,
+even if an attacker were to guess the filename from a set of 20^64 and successfully
+break the encryption, they would not know the intended recipient.
+
+Censorship resistance is derived from Hermes (and Blockstack's) decentralized
+system. As constructed, for messaging to take place Hermes' only interaction
+with an outside server need be a connection to a Blockstack Core Node. Right now,
+that node is core.blockstack.org--hard to distinguish from a centralized system.
+However, future versions of Hermes will support the ability for users to choose
+a different node (once there are more available) and to run their own, locally.
+Further, we intend to release a desktop version of Hermes, so that cutting off
+hihermes.co does not cut off Hermes proper. Our goal is that Hermes can withstand
+any attack that does not completely cut off the internet; and even there, we
+are hopeful for the prospect of better developed mesh networks in the near future.
+
+**Notes on Scalability and Discovery**
+
+**Paid Messages and Bitcoin Transactions**
