@@ -5,10 +5,17 @@ import {enableDiscovery, discoverMessage} from './discovery'
 import {identity, getLocalPublicIndex, saveLocalPublicIndex} from './identity'
 
 export async function checkDiscovery(){
-  var discovery = localStorage.getItem("discovery");
-  if(discovery == true){return;}
-  var discoveryJson = await getLocalPublicIndex()
-  if(discoveryJson !== null){return;}
+  const discovery = localStorage.getItem("discovery");
+  if (discovery) {
+    return
+  }
+
+  const keys = await getJson('keys.json')
+
+  if (keys !== null) {
+    return
+  }
+
   await enableDiscovery()
 }
 
@@ -17,5 +24,3 @@ export async function showConversations(){
   console.log(await getLocalPublicIndex())
   console.log(await getContacts())
 }
-
-//checkDiscovery()
