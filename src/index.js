@@ -13,7 +13,7 @@ window.__HERMES = services
 
 applyGlobalStyles()
 
-store.dispatch(actions.auth.checkAuth)
+store.dispatch(actions.auth.checkAuth())
 
 ReactDOM.render(
   <Provider store={store}>

@@ -6,27 +6,29 @@ export const SET_IDENTITY = 'SET_USER_INFO'
 export const setIdentity = payloadAction(SET_IDENTITY)
 
 export const CHECK_AUTH = 'CHECK_AUTH'
-export const checkAuth = dispatch => {
+export const checkAuth = () => async dispatch => {
+  const origin = window.location.origin
+
   if (blockstack.isUserSignedIn()) {
     dispatch(setIdentity(identity()))
-  } else if (blockstack.isSignInPending()) {
-    blockstack.handlePendingSignIn('https://core.blockstack.org/v1/names/')
-      .then(userData => {
-        window.location = window.location.origin
-      })
+    return
   }
+
+  if (blockstack.isSignInPending()) {
+    const userData = await blockstack.handlePendingSignIn('https://core.blockstack.org/v1/names')
+    window.location = origin
+    return
+  }
+  
+  blockstack.redirectToSignIn(origin, `${origin}/manifest.json`, ['store_write', 'publish_data'])
+
+  // get rid of this window to avoid duplicating hermes
+  // (which can lead to weird auth errors)
+  setTimeout(() => {
+    window.location = 'https://www.hihermes.co'
+  }, 500)
 }
 
-export const redirectToSignIn = dispatch => {
-  const origin = window.location.origin
-  blockstack.redirectToSignIn(origin, origin + '/manifest.json', ['store_write', 'publish_data'])
-}
-
-export const signOut = dispatch => {
-  var redirect = window.location.origin
-  if (process.env.NODE_ENV === 'production') {
-    redirect = "https://www.hihermes.co"
-  }
-  blockstack.signUserOut(redirect)
-  dispatch(setIdentity(null))
+export const signOut = () => dispatch => {
+  blockstack.signUserOut('https://www.hihermes.co')
 }

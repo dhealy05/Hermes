@@ -11,7 +11,6 @@ import { ChatView } from '../components/ChatView'
 import { Loader } from '../components/Loader'
 import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
 import { actions } from '../store'
-import { WithAuthChallenge } from './WithAuthChallenge'
 import { ChatSidebarContainer } from './ChatSidebarContainer'
 
 const WithRedux = connect(
@@ -67,7 +66,8 @@ const WithRedux = connect(
       dispatch(actions.chat.sendText(text))
     },
     onPickImage: file => dispatch(actions.chat.sendFile(file)),
-    onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids))
+    onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids)),
+    onSignOut: () => dispatch(actions.auth.signOut())
   })
 )
 
@@ -87,7 +87,6 @@ const WithDataOnLoad = lifecycle({
 })
 
 export const ChatViewContainer = compose(
-  WithAuthChallenge,
   WithRedux,
   WithSidebar,
   WithDataOnLoad,
