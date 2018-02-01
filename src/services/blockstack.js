@@ -34,12 +34,23 @@ export const saveFile = async (
   data,
   { isPublic = false, serialize = identity, ...options } = {}
 ) => {
+  // don't want to log e.g. an entire 5MB image file
+  let dataForLogging = data
+
+  if (typeof data === 'string')  {
+    dataForLogging = data.slice(0, 1024)
+
+    if (dataForLogging.length !== data.length) {
+      dataForLogging += `... (1024 of ${data.length} bytes total)`
+    }
+  }
+
   if (isPublic) {
-    console.debug(`saving to ${filename} [PUBLIC FILE]:`, data)
+    console.debug(`saving to ${filename} [PUBLIC FILE]:`, dataForLogging)
     return blockstack.putFile(filename, serialize(data), { encrypt: false, ...options })
   }
 
-  console.debug(`saving to ${filename}:`, data)
+  console.debug(`saving to ${filename}:`, dataForLogging)
   await blockstack.putFile(filename, serialize(data), { encrypt: true, ...options })
   return data
 }
