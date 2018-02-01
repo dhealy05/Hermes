@@ -50,8 +50,11 @@ export async function discoverConversation(userId) {
     }
 
     const text = decodeText(intro.text, sharedSecret)
+    console.log(text)
     const filename = decodeText(intro.filename, sharedSecret)
+    console.log(filename)
     const contacts = JSON.parse(decodeText(intro.contacts, sharedSecret))
+    console.log(contacts)
     const groupSecret = decodeText(intro.groupSecret, sharedSecret)
 
     if(contacts.length > 2){sharedSecret = groupSecret}
