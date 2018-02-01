@@ -32,7 +32,14 @@ const SenderAvatar = styled(Avatar)`
 `
 
 const MessageText = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   max-width: 66%;
+
+  ${props => ((props.direction === 'right') && css`
+    align-items: flex-end;
+  `)}
 `
 
 const SenderDetails = styled.div`
@@ -52,6 +59,10 @@ const Content = styled.div`
   text-align: justify;
 `
 
+const ImageMessage = styled.img`
+  max-width: 66%;
+`
+
 const MessageContent = ({ contentType, content }) => {
   if (contentType === ContentTypes.Text) {
     return <Content>{content}</Content>
@@ -60,7 +71,7 @@ const MessageContent = ({ contentType, content }) => {
   if (contentType === ContentTypes.Image && (!content || content.loading)) {
     return <Loader/>
   } else if (contentType === ContentTypes.Image) {
-    return <img src={content.data}/>
+    return <ImageMessage src={content.data}/>
   }
 
   return null
@@ -84,7 +95,7 @@ export const Message = ({
   return (
     <OuterContainer direction={direction}>
       <SenderAvatar image={avatar}/>
-      <MessageText>
+      <MessageText direction={direction}>
         <SenderDetails>
           <SenderName>{name}</SenderName>
           <Timestamp>{time}</Timestamp>
