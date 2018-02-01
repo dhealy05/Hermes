@@ -149,8 +149,8 @@ and send the specified amount to Bob.
 In the future, the ability to rate paid responses will likely be an interesting
 feature to A. incentivize quality responses and B. create a market for cold emailing.
 
-For this build, we are generating wallets using bitcoinjs-lib and getting TX data and broadcasting transactions via the Blockchain.Info API. Although this is an external
-server and central point of failure, we feel it is a worthwhile compromise while
+For this build, we are generating wallets and transactions using bitcoinjs-lib
+and getting and broadcasting transactions via the Blockchain.Info API. Although this is an external server and central point of failure, we feel it is a worthwhile compromise while
 we wait for Blockstack.js to expose transaction generation (which is on the near
 term roadmap). The user experience will also likely be very much enhanced when
 the Hermes wallet is not different from the Blockstack wallet. Lastly, using Stacks
