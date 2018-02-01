@@ -23,12 +23,19 @@ const OuterContainer = styled(Paper).attrs({
   box-shadow: ${colors.borderLight} 0 1px 2px 0;
 `
 
-export const TopNav = ({ onSignOut, className }) => (
+const Title = styled.div`
+  flex-grow: 10;
+  text-align: center;
+`
+
+export const TopNav = ({ onSignOut, title, className }) => (
   <OuterContainer className={className}>
+    { title ? <Title>{title}</Title> : null }
     <Button onClick={onSignOut} icon="exit_to_app"/>
   </OuterContainer>
 )
 TopNav.propTypes = {
+  title: PropTypes.string,
   onSignOut: PropTypes.func
 }
 TopNav.defaultProps = {

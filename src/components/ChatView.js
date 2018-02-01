@@ -119,6 +119,7 @@ export class ChatView extends React.Component {
       identity,
       composing,
       conversation,
+      conversationTitle,
       contacts,
       fileContents,
       newMessageRecipients,
@@ -157,7 +158,8 @@ export class ChatView extends React.Component {
 
     return (
       <AppView onSignOut={onSignOut}
-               sidebar={sidebar}>
+               sidebar={sidebar}
+               title={conversationTitle}>
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
         </MessagesContainer>
@@ -185,7 +187,8 @@ ChatView.propTypes = {
   onSignOut: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
-  sidebar: PropTypes.element.isRequired
+  sidebar: PropTypes.element.isRequired,
+  conversationTitle: PropTypes.string.isRequired
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000

@@ -9,9 +9,41 @@ import {
 import { connect } from 'react-redux'
 import { ChatView } from '../components/ChatView'
 import { Loader } from '../components/Loader'
+import { identity } from '../services'
 import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
 import { actions } from '../store'
 import { ChatSidebarContainer } from './ChatSidebarContainer'
+
+function getTitleForConversation(convo, contactsById) {
+  if (!convo) {
+    return ''
+  }
+
+  const myId = identity().username
+
+  let names = convo.contacts
+    .filter(id => id !== myId)
+    .map(id => {
+      const contact = contactsById[id]
+
+      if (!contact) {
+        return id
+      }
+
+      return contact.name
+    })
+
+  names = ['You', ...names]
+
+  if (names.length < 3) {
+    return names.join(' and ')
+  }
+
+  const commaNames = names.slice(0, names.length - 1).join(', ')
+  const finalName = names[names.length - 1]
+
+  return `${commaNames}, and ${finalName}`
+}
 
 const WithRedux = connect(
   state => {
@@ -29,6 +61,11 @@ const WithRedux = connect(
                  || (!conversation && !composing)
                  || conversation && conversation.loading
 
+    const metadata = state.chat.conversationMetadata[state.chat.activeConversation]
+    const conversationTitle = (composing || !conversation)
+                            ? 'New Conversation'
+                            : getTitleForConversation(metadata, contacts)
+
     let newMessageRecipients = []
 
     if (composing) {
@@ -41,6 +78,7 @@ const WithRedux = connect(
       identity,
       composing,
       conversation,
+      conversationTitle,
       loading,
       contacts,
       fileContents,
