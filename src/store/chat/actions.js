@@ -200,8 +200,8 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
 
     // show an alert if the user you just messaged hasn't set up hermes yet
-    var message = await checkHermes(newMessageRecipients)
-    if(message != ''){swal(message); dispatch(setNewMessageRecipients([])); return}
+    var errorMessage = await checkHermes(newMessageRecipients)
+    if(errorMessage != ''){swal(errorMessage); dispatch(setNewMessageRecipients([])); return}
 
     dispatch(startSendingNewConversation())
 

@@ -243,10 +243,13 @@ export function saveOutgoingMessages(convo, outbox) {
   )
 }
 
-export function saveNewOutbox(filename){
+export async function saveNewOutbox(filename, secret){
+  const statusInfo = await getJson('status.json')
+  var statusPage = encodeText(statusInfo.filename, secret)
+  var statusSecret = encodeText(statusInfo.secret, secret)
   return saveJson(
     filename,
-    { messages: [], typing: '' },
+    { messages: [], typing: '', statusPage: statusPage, statusSecret: statusSecret},
     { isPublic: true }
   )
 }

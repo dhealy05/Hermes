@@ -65,10 +65,10 @@ export async function newConversation(text, otherIds) {
     }
 
     const regularSecret = await addContactAndIntroduction(introduction, contactId)
-    if(contacts.length == 2){finalSecret = regularSecret; console.log("Achieved")}
+    if(contacts.length == 2){finalSecret = regularSecret;}
   }
 
-  await saveNewOutbox(introduction.filename)
+  await saveNewOutbox(introduction.filename, finalSecret)
   return createNewConversation(introduction.filename, contacts, text, finalSecret)
 }
 

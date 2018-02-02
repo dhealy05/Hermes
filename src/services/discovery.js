@@ -16,10 +16,14 @@ import {
 import {
   getSharedSecret,
   decodeText,
+  encodeText,
   saveKeysFromDiffieHellman
 } from './keys'
 import { saveLocalPublicIndex, identity } from './identity'
 import { checkTyping } from './statusIndicators'
+import { saveJson } from './blockstack'
+
+const crypto = require('crypto')
 
 export async function enableDiscovery() {
   const { pubkey } = await saveKeysFromDiffieHellman()
@@ -31,6 +35,16 @@ export async function enableDiscovery() {
 
   await saveLocalPublicIndex(discovery)
   localStorage.setItem('discovery', true)
+  enableStatusPage()
+}
+
+export async function enableStatusPage(){
+  var filename = crypto.randomBytes(48).toString('base64')
+  var secret = crypto.randomBytes(48).toString('base64')
+  await saveJson("status.json", {filename: filename, secret: secret})
+  var lastSeen = new Date().toISOString()
+  var encoded = encodeText(lastSeen, secret)
+  await saveJson(filename, {lastSeen: encoded}, {isPublic: true})
 }
 
 export async function discoverConversation(userId) {
@@ -57,7 +71,7 @@ export async function discoverConversation(userId) {
 
     if(await checkIfConversationExists(filename, contacts, text, sharedSecret, userId)){continue}
 
-    await saveNewOutbox(filename)
+    await saveNewOutbox(filename, sharedSecret)
 
     const conversation = await createNewConversation(filename, contacts, text, sharedSecret, userId)
 
