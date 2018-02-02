@@ -19,6 +19,7 @@ import {
   saveKeysFromDiffieHellman
 } from './keys'
 import { saveLocalPublicIndex, identity } from './identity'
+import { checkTyping } from './statusIndicators'
 
 export async function enableDiscovery() {
   const { pubkey } = await saveKeysFromDiffieHellman()
@@ -33,9 +34,7 @@ export async function enableDiscovery() {
 }
 
 export async function discoverConversation(userId) {
-  console.log(userId)
   const theirIndex = await getPublicIndexForId(userId)
-  console.log(theirIndex)
 
   if (!theirIndex) {
     return null
@@ -50,11 +49,8 @@ export async function discoverConversation(userId) {
     }
 
     const text = decodeText(intro.text, sharedSecret)
-    console.log(text)
     const filename = decodeText(intro.filename, sharedSecret)
-    console.log(filename)
     const contacts = JSON.parse(decodeText(intro.contacts, sharedSecret))
-    console.log(contacts)
     const groupSecret = decodeText(intro.groupSecret, sharedSecret)
 
     if(contacts.length > 2){sharedSecret = groupSecret}
@@ -84,6 +80,9 @@ export async function discoverMessage(metadata, username) {
   if (!incoming) {
     return []
   }
+
+  var typing = checkTyping(decodeText(incoming.typing, metadata.secret))
+  //console.log(typing)
 
   return (await Promise.all(incoming.messages.map(async msg => {
     const decoded = new Message({

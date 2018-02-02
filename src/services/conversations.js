@@ -1,7 +1,7 @@
 import * as crypto from 'crypto'
 import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
-import { getJson, saveJson, getFileLocal, saveFile, deleteFile } from './blockstack'
+import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
 import { getContacts } from './contacts'
 
@@ -132,7 +132,7 @@ export async function sendMessage(convoId, message) {
   outbox.messages.push(message)
 
   // TODO is this right?
-  if(convoId != identity().username){await saveOutgoingMessages(convo, outbox.messages)}
+  if(convoId != identity().username){await saveOutgoingMessages(convo, outbox)}
   //await saveOutgoingMessages(convo, outbox.messages)
   return saveConversationById(convoId, convo)
 }
@@ -152,7 +152,7 @@ export async function uploadFileForOutbox(convoId, file) {
 }
 
 export async function retrieveFileContentForMessage(message, convoMetadata) {
-  const encoded = await getFileLocal(message.content, { username: message.sender, decrypt: false })
+  const encoded = await getFile(message.content, { username: message.sender, decrypt: false })
 
   if (!encoded) {
     return null
@@ -223,7 +223,8 @@ function msgAlert(){
   }
 }
 
-export function saveOutgoingMessages(convo, rawMessages, boundary) {
+export function saveOutgoingMessages(convo, outbox) {
+  const rawMessages = outbox.messages
   const messages = [...rawMessages]
   const lastMsg = messages[messages.length - 1]
 
@@ -237,7 +238,7 @@ export function saveOutgoingMessages(convo, rawMessages, boundary) {
   })
   return saveJson(
     convo.filename,
-    { messages },
+    { messages: messages, typing: '' },
     { isPublic: true }
   )
 }
@@ -245,7 +246,7 @@ export function saveOutgoingMessages(convo, rawMessages, boundary) {
 export function saveNewOutbox(filename){
   return saveJson(
     filename,
-    { messages: [] },
+    { messages: [], typing: '' },
     { isPublic: true }
   )
 }

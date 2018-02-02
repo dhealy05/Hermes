@@ -65,7 +65,7 @@ export async function newConversation(text, otherIds) {
     }
 
     const regularSecret = await addContactAndIntroduction(introduction, contactId)
-    if(contacts.length == 2){finalSecret = regularSecret}
+    if(contacts.length == 2){finalSecret = regularSecret; console.log("Achieved")}
   }
 
   await saveNewOutbox(introduction.filename)

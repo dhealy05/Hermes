@@ -2,10 +2,10 @@ import { identity } from 'lodash'
 import * as blockstack from 'blockstack'
 
 export const getJson = async (filename, options) => {
-  return JSON.parse(await getFileLocal(filename, options))
+  return JSON.parse(await getFile(filename, options))
 }
 
-export const getFileLocal = async (filename, { username = null, ...options } = {}) => {
+export const getFile = async (filename, { username = null, ...options } = {}) => {
   if (!username) {
     return blockstack.getFile(filename, { decrypt: true, zoneFileLookupURL: 'https://core.blockstack.org/v1/names/',  ...options })
   }
