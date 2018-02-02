@@ -19,7 +19,6 @@ import {
   identity,
   lookupProfile,
   isUserOnHermes,
-  checkTyping,
   setTyping
 } from '../../services'
 import * as contactActions from '../contacts/actions'
@@ -242,21 +241,21 @@ export const broadcastTyping = throttle(() => (dispatch, getState) => {
   }
 
   const { chat: { activeConversation,
-  conversationMetadata } } = getState()
+                  conversationMetadata } } = getState()
 
   if (!activeConversation
       || activeConversation === COMPOSE_CONVERSATION_ID
       || !conversationMetadata[activeConversation]) {
     return
   }
-  
+
   setTypingPromise = setTyping(conversationMetadata[activeConversation])
     .then(x => {
       setTypingPromise = null
       return x
     })
   return setTypingPromise
-}, 250)
+}, 5000) // typing indicator is good for 30 seconds so we don't have to call setTyping very often
 
 async function checkHermes(newMessageRecipients){
   let usersNotOnHermes = []
@@ -332,10 +331,14 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 
       const {
         messages: newMessages,
-        typing: lastTypeDate
+        typing
       } = await discoverMessages(meta, contactId)
 
-      const typing = checkTyping(lastTypeDate)
+      dispatch(setContactTyping({
+        conversationId: id,
+        contactId,
+        typing
+      }))
 
       if (newMessages.length) {
         for (const msg of newMessages) {
@@ -344,11 +347,6 @@ export const pollNewMessages = () => async (dispatch, getState) => {
           }
         }
 
-        dispatch(setContactTyping({
-          conversationId: id,
-          contactId,
-          typing
-        }))
         dispatch(finishLoadingConversationDetails(await getConversationById(id)))
         discoveredNewMessages = true
       }
