@@ -22,6 +22,7 @@ import {
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
+import swal from 'sweetalert'
 
 export const COMPOSE_CONVERSATION_ID = 'compose'
 
@@ -200,7 +201,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
     // show an alert if the user you just messaged hasn't set up hermes yet
     var message = await checkHermes(newMessageRecipients)
-    if(message != ''){alert(message); dispatch(setNewMessageRecipients([])); return}
+    if(message != ''){swal(message); dispatch(setNewMessageRecipients([])); return}
 
     dispatch(startSendingNewConversation())
 
@@ -244,8 +245,7 @@ async function checkHermes(newMessageRecipients){
 
   if (usersNotOnHermes.length > 0) {
     const names = usersNotOnHermes.map(p => p.name).join(', ')
-    const message = `You sent a message to some users who haven't yet signed up for Hermes: ${names}`
-    console.log(message)
+    const message = `Oops! ${names} hasn't signed on to Hermes yet. We'll let you know when they do :)`
     // TODO show a notification, not an alert
     return message
   }
