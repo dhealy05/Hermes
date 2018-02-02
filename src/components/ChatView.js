@@ -130,6 +130,7 @@ export class ChatView extends React.Component {
       sendingNewConversation,
       onSignOut,
       onPickImage,
+      onTyping,
       onSetNewMessageRecipients,
       sidebar
     } = this.props
@@ -172,6 +173,7 @@ export class ChatView extends React.Component {
           <NewMessageInput onPickImage={onPickImage}
                            placeholder="type your message"
                            value={this.state.msgInput}
+                           onTyping={onTyping}
                            onChange={this.onMsgInputChange}
                            onKeyUp={this.onMsgInputKeyUp}/>
         </MessageInputContainer>
@@ -193,6 +195,7 @@ ChatView.propTypes = {
   onPollMessages: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
+  onTyping: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired,
   conversationTitle: PropTypes.string.isRequired

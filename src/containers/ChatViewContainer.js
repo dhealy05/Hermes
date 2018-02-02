@@ -107,7 +107,8 @@ const WithRedux = connect(
     },
     onPickImage: file => dispatch(actions.chat.sendFile(file)),
     onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids)),
-    onSignOut: () => dispatch(actions.auth.signOut())
+    onSignOut: () => dispatch(actions.auth.signOut()),
+    onTyping: () => dispatch(actions.chat.broadcastTyping())
   })
 )
 

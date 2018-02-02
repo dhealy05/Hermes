@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { omit } from 'lodash'
 import * as colors from '../colors'
 import { IconButton } from './IconButton'
 import { Paper } from './Paper'
@@ -38,12 +39,22 @@ export class NewMessageInput extends React.Component {
     evt.target.value = null
   }
 
+  onTextChange = evt => {
+    this.props.onTyping()
+
+    if (this.props.onChange) {
+      this.props.onChange(evt)
+    }
+  }
+
   setFileInputEl = ref => this.fileInputEl = ref
 
   render() {
-    const {
+    let {
       ...other
     } = this.props
+
+    other = omit(other, 'onChange')
 
     return (
       <Container>
@@ -54,6 +65,7 @@ export class NewMessageInput extends React.Component {
                ref={this.setFileInputEl}/>
         <Input fullWidth
                placeholder="type your message"
+               onChange={this.onTextChange}
                {...other}/>
         { //TODO uncomment to re-enable images
             <ButtonContainer>
@@ -66,5 +78,7 @@ export class NewMessageInput extends React.Component {
   }
 }
 NewMessageInput.propTypes = {
-  onPickImage: PropTypes.func.isRequired
+  onPickImage: PropTypes.func.isRequired,
+  onTyping: PropTypes.func.isRequired,
+  onChange: PropTypes.func
 }

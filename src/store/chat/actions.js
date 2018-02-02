@@ -1,4 +1,4 @@
-import { map } from 'lodash'
+import { map, throttle } from 'lodash'
 import {
   ContentTypes,
   Conversation,
@@ -19,7 +19,8 @@ import {
   identity,
   lookupProfile,
   isUserOnHermes,
-  checkTyping
+  checkTyping,
+  setTyping
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -232,6 +233,30 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
   dispatch(refreshConversationList())
 }
+
+// cache promise from setTyping to avoid sending multiple simultaneous requests
+let setTypingPromise = null
+export const broadcastTyping = throttle(() => (dispatch, getState) => {
+  if (setTypingPromise) {
+    return setTypingPromise
+  }
+
+  const { chat: { activeConversation,
+  conversationMetadata } } = getState()
+
+  if (!activeConversation
+      || activeConversation === COMPOSE_CONVERSATION_ID
+      || !conversationMetadata[activeConversation]) {
+    return
+  }
+  
+  setTypingPromise = setTyping(conversationMetadata[activeConversation])
+    .then(x => {
+      setTypingPromise = null
+      return x
+    })
+  return setTypingPromise
+}, 250)
 
 async function checkHermes(newMessageRecipients){
   let usersNotOnHermes = []
