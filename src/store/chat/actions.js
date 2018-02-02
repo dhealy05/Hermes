@@ -12,13 +12,14 @@ import {
   saveConversationById,
   sendMessage as saveMessageToJson,
   newConversation,
-  discoverMessage,
+  discoverMessages,
   discoverConversation,
   uploadFileForOutbox,
   retrieveFileContentForMessage,
   identity,
   lookupProfile,
-  isUserOnHermes
+  isUserOnHermes,
+  checkTyping
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -273,6 +274,9 @@ export const startPollingMessages = payloadAction(START_POLLING_MESSAGES)
 export const FINISH_POLLING_MESSAGES = 'FINISH_POLLING_MESSAGES'
 export const finishPollingMessages = payloadAction(FINISH_POLLING_MESSAGES)
 
+export const SET_CONTACT_TYPING = 'SET_CONTACT_TYPING'
+export const setContactTyping = payloadAction(SET_CONTACT_TYPING)
+
 export const START_POLLING_CONVERSATIONS = 'START_POLLING_CONVERSATIONS'
 export const startPollingConversations = payloadAction(START_POLLING_CONVERSATIONS)
 
@@ -296,10 +300,17 @@ export const pollNewMessages = () => async (dispatch, getState) => {
   for (const id in conversationMetadata) {
     const meta = conversationMetadata[id]
 
-    for(var i = 0; i < meta.contacts.length; i++){
-      if(meta.contacts[i] == identity().username){continue}
+    for (const contactId of meta.contacts) {
+      if (contactId == identity().username) {
+        continue
+      }
 
-      const newMessages = await discoverMessage(meta, meta.contacts[i])
+      const {
+        messages: newMessages,
+        typing: lastTypeDate
+      } = await discoverMessages(meta, contactId)
+
+      const typing = checkTyping(lastTypeDate)
 
       if (newMessages.length) {
         for (const msg of newMessages) {
@@ -308,6 +319,11 @@ export const pollNewMessages = () => async (dispatch, getState) => {
           }
         }
 
+        dispatch(setContactTyping({
+          conversationId: id,
+          contactId,
+          typing
+        }))
         dispatch(finishLoadingConversationDetails(await getConversationById(id)))
         discoveredNewMessages = true
       }

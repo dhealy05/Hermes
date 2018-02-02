@@ -10,6 +10,7 @@ const initialState = {
   loadingConversationMetadata: false,
   activeConversation: null,
   conversationMetadata: {},
+  typingIndicators: {},
   conversationDetails: {},
   newMessageRecipients: [],
   sendingNewConversation: false,
@@ -107,6 +108,21 @@ export const reducer = (state = initialState, action) => {
         ...state,
         sendingNewConversation: false
       }
+    case actions.SET_CONTACT_TYPING: {
+      const { conversationId, contactId, typing } = action.payload
+      const indicatorForConvo = state.typingIndicators[conversationId]
+
+      return {
+        ...state,
+        typingIndicators: {
+          ...state.typingIndicators,
+          [conversationId]: {
+            ...state.typingIndicators[conversationId],
+            [contactId]: typing
+          }
+        }
+      }
+    }
     default:
       return state
   }

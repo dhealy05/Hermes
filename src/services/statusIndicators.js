@@ -9,7 +9,10 @@ export async function setTyping(convo){
 }
 
 export function checkTyping(typing){
-  if(typing == ''){return false}
+  if (!typing) {
+    return false
+  }
+
   var lastTyped = new Date(typing)
   var thirty_secs = 30 * 1000;
   if(((new Date) - lastTyped) < thirty_secs){return true}

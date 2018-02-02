@@ -10,6 +10,7 @@ import { Message } from './Message'
 import { AddUserToChat } from './AddUserToChat'
 import { NewMessageInput } from './NewMessageInput'
 import { Loader } from './Loader'
+import { TypingIndicator } from './TypingIndicator'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -23,6 +24,8 @@ const MessagesContainer = styled.div`
     background-color: ${colors.white};
   }
 `
+
+const MessageInputContainer = styled.div``
 
 export class ChatView extends React.Component {
   state = {
@@ -121,6 +124,7 @@ export class ChatView extends React.Component {
       conversation,
       conversationTitle,
       contacts,
+      typing,
       fileContents,
       newMessageRecipients,
       sendingNewConversation,
@@ -163,11 +167,14 @@ export class ChatView extends React.Component {
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
         </MessagesContainer>
-        <NewMessageInput onPickImage={onPickImage}
-                         placeholder="type your message"
-                         value={this.state.msgInput}
-                         onChange={this.onMsgInputChange}
-                         onKeyUp={this.onMsgInputKeyUp}/>
+        <MessageInputContainer>
+          <TypingIndicator names={typing}/>
+          <NewMessageInput onPickImage={onPickImage}
+                           placeholder="type your message"
+                           value={this.state.msgInput}
+                           onChange={this.onMsgInputChange}
+                           onKeyUp={this.onMsgInputKeyUp}/>
+        </MessageInputContainer>
       </AppView>
     )
   }

@@ -1,7 +1,7 @@
 import {saveJson, getJson} from './blockstack'
 import {getConversations} from './conversations'
 import {getContacts} from './contacts'
-import {enableDiscovery, discoverMessage} from './discovery'
+import { enableDiscovery } from './discovery'
 import {identity, getLocalPublicIndex, saveLocalPublicIndex} from './identity'
 
 export async function checkDiscovery(){

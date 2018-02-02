@@ -7,11 +7,13 @@ import {
   withProps
 } from 'recompose'
 import { connect } from 'react-redux'
+import { chain, get } from 'lodash'
 import { ChatView } from '../components/ChatView'
 import { Loader } from '../components/Loader'
 import { identity } from '../services'
 import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
 import { actions } from '../store'
+import { formatListOfNames } from '../util'
 import { ChatSidebarContainer } from './ChatSidebarContainer'
 
 function getTitleForConversation(convo, contactsById) {
@@ -21,7 +23,7 @@ function getTitleForConversation(convo, contactsById) {
 
   const myId = identity().username
 
-  let names = convo.contacts
+  const names = convo.contacts
     .filter(id => id !== myId)
     .map(id => {
       const contact = contactsById[id]
@@ -33,25 +35,18 @@ function getTitleForConversation(convo, contactsById) {
       return contact.name
     })
 
-  names = ['You', ...names]
-
-  if (names.length < 3) {
-    return names.join(' and ')
-  }
-
-  const commaNames = names.slice(0, names.length - 1).join(', ')
-  const finalName = names[names.length - 1]
-
-  return `${commaNames}, and ${finalName}`
+  return formatListOfNames(['You', ...names])
 }
 
 const WithRedux = connect(
   state => {
     const identity = state.auth.identity
 
-    const composing = state.chat.activeConversation === COMPOSE_CONVERSATION_ID
-    const conversation = state.chat.activeConversation
-                      && state.chat.conversationDetails[state.chat.activeConversation]
+    const activeConversation = state.chat.activeConversation
+
+    const composing = activeConversation === COMPOSE_CONVERSATION_ID
+    const conversation = activeConversation
+                      && state.chat.conversationDetails[activeConversation]
 
     const contacts = state.contacts.contactsById
     const fileContents = state.chat.fileContents
@@ -61,10 +56,16 @@ const WithRedux = connect(
                  || (!conversation && !composing)
                  || conversation && conversation.loading
 
-    const metadata = state.chat.conversationMetadata[state.chat.activeConversation]
+    const metadata = state.chat.conversationMetadata[activeConversation]
     const conversationTitle = (composing || !conversation)
                             ? 'New Conversation'
                             : getTitleForConversation(metadata, contacts)
+
+    const typing = chain(state.chat.typingIndicators[activeConversation] || {})
+      .map((isTyping, contactId) => ({ isTyping, contactId }))
+      .filter(({ isTyping }) => !!isTyping)
+      .map(({ contactId }) => get(contacts, `['${contactId}'].name`, contactId))
+      .value()
 
     let newMessageRecipients = []
 
@@ -81,6 +82,7 @@ const WithRedux = connect(
       conversationTitle,
       loading,
       contacts,
+      typing,
       fileContents,
       newMessageRecipients,
       sendingNewConversation

@@ -87,7 +87,7 @@ export async function discoverConversation(userId) {
   return null
 }
 
-export async function discoverMessage(metadata, username) {
+export async function discoverMessages(metadata, username) {
   const convoId = Conversation.getId(metadata)
   const incoming = await getIncomingMessagesForMeta(metadata, username)
 
@@ -95,10 +95,9 @@ export async function discoverMessage(metadata, username) {
     return []
   }
 
-  var typing = checkTyping(decodeText(incoming.typing, metadata.secret))
-  //console.log(typing)
+  const typing = checkTyping(decodeText(incoming.typing, metadata.secret))
 
-  return (await Promise.all(incoming.messages.map(async msg => {
+  const messages = (await Promise.all(incoming.messages.map(async msg => {
     const decoded = new Message({
       ...msg,
       content: decodeText(msg.content, metadata.secret),
@@ -116,4 +115,9 @@ export async function discoverMessage(metadata, username) {
     return decoded
   })))
     .filter(msg => !!msg) // strip nulls
+
+  return {
+    messages,
+    typing
+  }
 }
