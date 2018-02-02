@@ -23,5 +23,8 @@ export async function isUserOnHermes(idOrProfile) {
                 ? await lookupProfile(idOrProfile)
                 : idOrProfile
 
-  return !!profile.apps[window.location.origin]
+  if(profile.apps == null){return false}
+  if(profile.apps[window.location.origin] == null){return false}
+  return true
+  //return !!profile.apps[window.location.origin]
 }

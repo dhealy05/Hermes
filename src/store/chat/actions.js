@@ -197,6 +197,11 @@ export const sendRawMessage = message => async (dispatch, getState) => {
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
+
+    // show an alert if the user you just messaged hasn't set up hermes yet
+    var message = await checkHermes(newMessageRecipients)
+    if(message != ''){alert(message); dispatch(setNewMessageRecipients([])); return}
+
     dispatch(startSendingNewConversation())
 
     const convo = await newConversation(message.content, newMessageRecipients)
@@ -211,25 +216,6 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
     dispatch(finishSendingNewConversation())
 
-    // show an alert if the user you just messaged hasn't set up hermes yet
-
-    let usersNotOnHermes = [] 
-
-    for (const id of newMessageRecipients) {
-      const profile = await lookupProfile(id)
-
-      if (!(await isUserOnHermes(profile))) {
-        usersNotOnHermes.push(profile)
-      }
-    }
-
-    if (usersNotOnHermes.length > 0) {
-      const names = usersNotOnHermes.map(p => p.name).join(', ')
-      const message = `You sent a message to some users who haven't yet signed up for Hermes: ${names}`
-
-      // TODO show a notification, not an alert
-      alert(message)
-    }
     return
   }
 
@@ -243,6 +229,27 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
   dispatch(refreshConversationList())
+}
+
+async function checkHermes(newMessageRecipients){
+  let usersNotOnHermes = []
+
+  for (const id of newMessageRecipients) {
+    const profile = await lookupProfile(id)
+
+    if (!(await isUserOnHermes(profile))) {
+      usersNotOnHermes.push(profile)
+    }
+  }
+
+  if (usersNotOnHermes.length > 0) {
+    const names = usersNotOnHermes.map(p => p.name).join(', ')
+    const message = `You sent a message to some users who haven't yet signed up for Hermes: ${names}`
+    console.log(message)
+    // TODO show a notification, not an alert
+    return message
+  }
+  return ''
 }
 
 export const deleteActiveConversation = () => (dispatch, getState) => {

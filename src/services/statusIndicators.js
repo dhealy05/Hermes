@@ -1,6 +1,6 @@
 import { identity } from './identity'
 import { getJson, saveJson} from './blockstack'
-import { encodeText, decodeText } from './keys'
+import { encodeText } from './keys'
 
 export async function setTyping(convo){
   var outbox = await getJson(convo.filename, {username: identity().username})

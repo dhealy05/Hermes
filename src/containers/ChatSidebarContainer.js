@@ -29,7 +29,7 @@ export const ChatSidebar = ({
       const contacts = c.contacts.map(id => contactsById[id])
       const title = contacts.map(c => c.name).join(', ')
       const lastSender = contactsById[c.thumbnail.lastSender]
-      const lastSenderName = (lastSender && lastSender.name) || 'anon'
+      const lastSenderName = (lastSender && lastSender.name) || 'Anonymous'
 
       return {
         ...Conversation.getDefaultThumbnail(),
