@@ -92,7 +92,10 @@ export async function discoverMessages(metadata, username) {
   const incoming = await getIncomingMessagesForMeta(metadata, username)
 
   if (!incoming) {
-    return []
+    return {
+      messages: [],
+      typing: ''
+    }
   }
 
   const typing = checkTyping(decodeText(incoming.typing, metadata.secret))
