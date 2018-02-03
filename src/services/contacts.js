@@ -17,12 +17,14 @@ export async function addContactById(id) {
   const contact = new Contact({
     id,
     name: name,
-    pic
+    pic,
+    statusPage: '',
+    statusSecret: ''
   })
   return saveContactDataById(id, contact)
 }
 
-async function saveContactDataById(id, contact) {
+export async function saveContactDataById(id, contact) {
   const { contacts } = await getContacts()
   contacts[id] = contact
   await saveContactsFile(contacts)
