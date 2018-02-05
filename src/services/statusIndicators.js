@@ -23,10 +23,11 @@ export function checkTyping(typing){
 
 export async function updateStatus(){
   const info = await getJson('status.json')
-  const status = await getJson(info.filename, {username: identity().username})
+  var status = await getJson(info.filename, {username: identity().username})
   var lastSeen = new Date().toISOString()
   var encoded = encodeText(lastSeen, info.secret)
-  await saveJson(info.filename, {lastSeen: encoded}, {isPublic: true})
+  status.lastSeen = encoded
+  await saveJson(info.filename, status, {isPublic: true})
 }
 
 export async function getMyStatus(){

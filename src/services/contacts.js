@@ -1,7 +1,8 @@
 import * as blockstack from 'blockstack'
 import { Contact } from '../models/contact'
 import { getJson, saveJson } from './blockstack'
-import {lookupProfile} from './identity'
+import {lookupProfile, identity} from './identity'
+import {encodeText} from './keys'
 
 export async function getContacts() {
   return await getJson('contacts.json')
@@ -21,6 +22,7 @@ export async function addContactById(id) {
     statusPage: '',
     statusSecret: ''
   })
+  addFriendsOnlyContactById(id)
   return saveContactDataById(id, contact)
 }
 
@@ -59,4 +61,12 @@ export async function getPublicKeyForId(id) {
   }
 
   return index.pubkey.data
+}
+
+export async function addFriendsOnlyContactById(id){
+  const info = await getJson('status.json')
+  var status = await getJson(info.filename, {username: identity().username})
+  var encoded = encodeText(id, info.secret)
+  status.contacts.push(encoded)
+  await saveJson(info.filename, status, {isPublic: true})
 }

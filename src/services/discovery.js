@@ -48,7 +48,7 @@ export async function enableStatusPage(){
   await saveJson("status.json", {filename: filename, secret: secret})
   var lastSeen = new Date().toISOString()
   var encoded = encodeText(lastSeen, secret)
-  await saveJson(filename, {lastSeen: encoded}, {isPublic: true})
+  await saveJson(filename, {lastSeen: encoded, posts: [], contacts: []}, {isPublic: true})
 }
 
 export async function discoverConversation(userId) {
@@ -110,7 +110,10 @@ export async function discoverMessages(metadata, username) {
       content: decodeText(msg.content, metadata.secret),
       sender: decodeText(msg.sender, metadata.secret),
       sentAt: decodeText(msg.sentAt, metadata.secret),
-      timestamp: decodeText(msg.timestamp, metadata.secret)
+      timestamp: decodeText(msg.timestamp, metadata.secret),
+      expirationDate: decodeText(msg.expirationDate, metadata.secret),
+      isPaid: decodeText(msg.isPaid, metadata.secret),
+      value: decodeText(msg.value, metadata.secret)
     })
 
     const convo = await recvMessage(convoId, decoded)

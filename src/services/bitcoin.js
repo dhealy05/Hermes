@@ -119,7 +119,8 @@ export async function getNetworkFee(bytes) {
     .then((response) => response.text())
     .then((responseText) => JSON.parse(responseText))
     .then((responseJson) => {
-      const satoshisPerByte = responseJson.fastestFee
+      //const satoshisPerByte = responseJson.fastestFee
+      const satoshisPerByte = responseJson.hourFee
       const fee = bytes * satoshisPerByte
       resolve(fee)
     })
@@ -138,7 +139,10 @@ export async function broadcastTransaction(hex){
 }
 
 export function btcToSatoshis(amountInBtc) {
-  return amountInBtc * SATOSHIS_IN_BTC
+  console.log(amountInBtc)
+  var final = amountInBtc * SATOSHIS_IN_BTC
+  console.log(final)
+  return final
 }
 
 export function satoshisToBtc(amountInSatoshis) {
