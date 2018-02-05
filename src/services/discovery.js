@@ -22,14 +22,18 @@ import {
 import { saveLocalPublicIndex, identity } from './identity'
 import { checkTyping } from './statusIndicators'
 import { saveJson } from './blockstack'
+import { getPublicAddress } from './bitcoin'
 
 const crypto = require('crypto')
 
 export async function enableDiscovery() {
   const { pubkey } = await saveKeysFromDiffieHellman()
 
+  const bitcoinAddress = getPublicAddress()
+
   const discovery = {
     pubkey,
+    bitcoinAddress,
     introductions: []
   }
 
