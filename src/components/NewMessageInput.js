@@ -6,6 +6,7 @@ import * as colors from '../colors'
 import { IconButton } from './IconButton'
 import { Paper } from './Paper'
 import { TextInput } from './TextInput'
+import { EmojiPicker } from './EmojiPicker'
 
 const Container = styled(Paper)`
   width: 100%;
@@ -51,6 +52,7 @@ export class NewMessageInput extends React.Component {
 
   render() {
     let {
+      onToggleEmojiPicker,
       ...other
     } = this.props
 
@@ -67,17 +69,18 @@ export class NewMessageInput extends React.Component {
                placeholder="type your message"
                onChange={this.onTextChange}
                {...other}/>
-        { //TODO uncomment to re-enable images
-            <ButtonContainer>
-            <IconButton icon="insert_photo"
-            onClick={this.pickImage}/>
-            </ButtonContainer>
-          }
+        <ButtonContainer>
+          <IconButton icon="tag_faces"
+                      onClick={onToggleEmojiPicker}/>
+          <IconButton icon="insert_photo"
+                      onClick={this.pickImage}/>
+        </ButtonContainer>
       </Container>
     )
   }
 }
 NewMessageInput.propTypes = {
+  onToggleEmojiPicker: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
   onChange: PropTypes.func

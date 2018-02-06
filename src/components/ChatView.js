@@ -102,16 +102,10 @@ export class ChatView extends React.Component {
     node.scrollTop = node.scrollHeight
   }
 
-  onMsgInputChange = evt => {
-    this.setState({ msgInput: evt.target.value })
-  }
-
   onMsgInputKeyUp = evt => {
     if (evt.keyCode === 13) {
-      this.props.onSendMessage(this.state.msgInput)
-      this.setState({
-        msgInput: ''
-      })
+      this.props.onSendMessage(this.props.messageInputValue)
+      this.props.onMessageInputChange('')
     }
   }
 
@@ -132,7 +126,11 @@ export class ChatView extends React.Component {
       onPickImage,
       onTyping,
       onSetNewMessageRecipients,
-      sidebar
+      sidebar,
+      emojiPicker,
+      onToggleEmojiPicker,
+      messageInputValue,
+      onMessageInputChange
     } = this.props
 
     let messageContents = []
@@ -164,6 +162,7 @@ export class ChatView extends React.Component {
     return (
       <AppView onSignOut={onSignOut}
                sidebar={sidebar}
+               emojiPicker={emojiPicker}
                title={conversationTitle}>
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
@@ -171,10 +170,11 @@ export class ChatView extends React.Component {
         <MessageInputContainer>
           <TypingIndicator names={typing}/>
           <NewMessageInput onPickImage={onPickImage}
+                           onToggleEmojiPicker={onToggleEmojiPicker}
                            placeholder="type your message"
-                           value={this.state.msgInput}
+                           value={messageInputValue}
                            onTyping={onTyping}
-                           onChange={this.onMsgInputChange}
+                           onChange={onMessageInputChange}
                            onKeyUp={this.onMsgInputKeyUp}/>
         </MessageInputContainer>
       </AppView>
@@ -198,7 +198,11 @@ ChatView.propTypes = {
   onTyping: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired,
-  conversationTitle: PropTypes.string.isRequired
+  emojiPicker: PropTypes.element.isRequired,
+  conversationTitle: PropTypes.string.isRequired,
+  onToggleEmojiPicker: PropTypes.func.isRequired,
+  messageInputValue: PropTypes.string.isRequired,
+  onMessageInputChange: PropTypes.func.isRequired
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000

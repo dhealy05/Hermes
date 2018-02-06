@@ -31,11 +31,13 @@ const MainOutlet = styled.div`
 export const AppView = ({
   onSignOut,
   sidebar,
+  emojiPicker,
   title,
   children
 }) => (
   <Layout>
     {sidebar ? sidebar : <Sidebar title="hermes"/>}
+    {emojiPicker ? emojiPicker : null}
     <MainOutletContainer>
       <TopNav title={title} onSignOut={onSignOut}/>
       <MainOutlet>
@@ -48,5 +50,6 @@ export const AppView = ({
 AppView.propTypes = {
   title: PropTypes.string,
   sidebar: PropTypes.element,
+  emojiPicker: PropTypes.element,
   onSignOut: PropTypes.func
 }

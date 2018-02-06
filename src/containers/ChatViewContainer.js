@@ -15,6 +15,7 @@ import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
 import { actions } from '../store'
 import { formatListOfNames } from '../util'
 import { ChatSidebarContainer } from './ChatSidebarContainer'
+import { EmojiPickerContainer } from './EmojiPickerContainer'
 
 function getTitleForConversation(convo, contactsById) {
   if (!convo) {
@@ -75,6 +76,8 @@ const WithRedux = connect(
 
     const sendingNewConversation = state.chat.sendingNewConversation
 
+    const messageInputValue = state.chat.messageInputValue
+
     return {
       identity,
       composing,
@@ -85,7 +88,8 @@ const WithRedux = connect(
       typing,
       fileContents,
       newMessageRecipients,
-      sendingNewConversation
+      sendingNewConversation,
+      messageInputValue
     }
   },
   dispatch => ({
@@ -107,13 +111,21 @@ const WithRedux = connect(
     },
     onPickImage: file => dispatch(actions.chat.sendFile(file)),
     onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids)),
+    onToggleEmojiPicker: () => dispatch(actions.emoji.setPickerActive(true)),
     onSignOut: () => dispatch(actions.auth.signOut()),
-    onTyping: () => dispatch(actions.chat.broadcastTyping())
+    onTyping: () => dispatch(actions.chat.broadcastTyping()),
+    onMessageInputChange: evt => {
+      const value = typeof evt === 'string'
+                  ? evt
+                  : evt.target.value
+      dispatch(actions.chat.setMessageInputValue(value))
+    }
   })
 )
 
-const WithSidebar = withProps({
-  sidebar: <ChatSidebarContainer/>
+const WithContainerChildren = withProps({
+  sidebar: <ChatSidebarContainer/>,
+  emojiPicker: <EmojiPickerContainer/>
 })
 
 const WithLoader = branch(
@@ -129,7 +141,7 @@ const WithDataOnLoad = lifecycle({
 
 export const ChatViewContainer = compose(
   WithRedux,
-  WithSidebar,
+  WithContainerChildren,
   WithDataOnLoad,
   WithLoader
 )(ChatView)

@@ -1,4 +1,5 @@
 import { Conversation } from '../../models'
+import { actions as emojiActions } from '../emoji'
 import * as _actions from './actions'
 import * as _selectors from './selectors'
 
@@ -14,11 +15,22 @@ const initialState = {
   conversationDetails: {},
   newMessageRecipients: [],
   sendingNewConversation: false,
-  fileContents: {}
+  fileContents: {},
+  messageInputValue: ''
 }
 
 export const reducer = (state = initialState, action) => {
   switch(action.type) {
+    case emojiActions.PICK_EMOJI:
+      return {
+        ...state,
+        messageInputValue: state.messageInputValue + action.payload.native
+      }
+    case actions.SET_MESSAGE_INPUT_VALUE:
+      return {
+        ...state,
+        messageInputValue: action.payload
+      }
     case actions.SET_ACTIVE_CONVERSATION:
       return {
         ...state,

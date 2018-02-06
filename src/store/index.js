@@ -11,19 +11,22 @@ import { routerReducer, routerMiddleware } from 'react-router-redux'
 import * as auth from './auth'
 import * as chat from './chat'
 import * as contacts from './contacts'
+import * as emoji from './emoji'
 import * as baseActions from './actions'
 
 export const actions = {
   ...baseActions,
   auth: auth.actions,
   chat: chat.actions,
-  contacts: contacts.actions
+  contacts: contacts.actions,
+  emoji: emoji.actions,
 }
 
 const reducer = combineReducers({
   [auth.namespace]: auth.reducer,
   [chat.namespace]: chat.reducer,
   [contacts.namespace]: contacts.reducer,
+  [emoji.namespace]: emoji.reducer,
   router: routerReducer
 })
 
