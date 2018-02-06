@@ -12,5 +12,11 @@ export const Contact = Model('Contact', {
   name: '',
 
   //picture of the contact
-  pic: ''
+  pic: '',
+
+  //
+  statusPage: '',
+
+  //
+  statusSecret: ''
 })

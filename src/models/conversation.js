@@ -125,5 +125,11 @@ export const Message = Model('Message', {
    */
   content: '',
 
-  sentAt: new Date().toISOString()
+  sentAt: new Date().toISOString(),
+
+  expirationDate: '',
+
+  isPaid: '0',
+
+  value: '0.00'
 })

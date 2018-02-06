@@ -3,8 +3,11 @@ import {getConversations} from './conversations'
 import {getContacts} from './contacts'
 import { enableDiscovery } from './discovery'
 import {identity, getLocalPublicIndex, saveLocalPublicIndex} from './identity'
+import { updateStatus } from './statusIndicators'
+
 
 export async function checkDiscovery(){
+  updateStatus()
   const discovery = localStorage.getItem("discovery");
   if (discovery) {
     return
