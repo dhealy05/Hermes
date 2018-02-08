@@ -6,6 +6,7 @@ import {
   Message
 } from '../../models'
 import {
+  acknowledgeConversation,
   deleteConversation as deleteConversationService,
   getConversations,
   getConversationById,
@@ -310,12 +311,13 @@ export const startPollingConversations = payloadAction(START_POLLING_CONVERSATIO
 export const FINISH_POLLING_CONVERSATIONS = 'FINISH_POLLING_CONVERSATIONS'
 export const finishPollingConversations = payloadAction(FINISH_POLLING_CONVERSATIONS)
 
-let conversationPollCounter = 0
+const NEW_CONVERSATION_POLL_INTERVAL = 5
+let conversationPollCounter = NEW_CONVERSATION_POLL_INTERVAL
 
 export const pollNewMessages = () => async (dispatch, getState) => {
-  if (++conversationPollCounter >= 10) {
-    // TODO uncomment to re-enable conversation polling
-    // await dispatch(pollNewConversations())
+  if (++conversationPollCounter >= NEW_CONVERSATION_POLL_INTERVAL) {
+    conversationPollCounter = 0
+    await dispatch(pollNewConversations())
   }
 
   dispatch(startPollingMessages())
@@ -372,11 +374,16 @@ export const pollNewConversations = () => async (dispatch, getState) => {
   let discoveredNewConversation = false
 
   for (const contact of public_contacts) {
-    const convoId = await discoverConversation(contact)
+    const convo = await discoverConversation(contact)
 
-    if (convoId && !conversationDetails[convoId]) {
-      dispatch(fetchConversationDetails(convoId))
-      discoveredNewConversation = true
+    if (!convo || conversationDetails[convo]) {
+      continue
+    }
+
+    discoveredNewConversation = true
+
+    if (convo.trusted) {
+      dispatch(fetchConversationDetails(convo))
     }
   }
 
@@ -385,6 +392,26 @@ export const pollNewConversations = () => async (dispatch, getState) => {
   }
 
   dispatch(finishPollingConversations())
+}
+
+export const acceptActiveConversation = () => async (dispatch, getState) => {
+  const { chat: { activeConversation,
+                  conversationMetadata } } = getState()
+
+  const convo = conversationMetadata[activeConversation]
+
+  if (!convo || convo.trusted) {
+    return
+  }
+
+  dispatch(finishLoadingConversationDetails(await acknowledgeConversation(convo)))
+}
+
+export const declineActiveConversation = () => async (dispatch, getState) => {
+  const { chat: { activeConversation,
+                  conversationMetadata } } = getState()
+
+  alert('declined')
 }
 
 export const refreshConversationList = () => async (dispatch, getState) => {

@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { get } from 'lodash'
+import { chain, get } from 'lodash'
 import * as colors from '../colors'
 import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
@@ -11,6 +11,7 @@ import { AddUserToChat } from './AddUserToChat'
 import { NewMessageInput } from './NewMessageInput'
 import { Loader } from './Loader'
 import { TypingIndicator } from './TypingIndicator'
+import { NewConversationInvitation } from './NewConversationInvitation'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -130,12 +131,14 @@ export class ChatView extends React.Component {
       emojiPicker,
       onToggleEmojiPicker,
       messageInputValue,
-      onMessageInputChange
+      onMessageInputChange,
+      onAcceptConversation,
+      onDeclineConversation
     } = this.props
 
     let messageContents = []
 
-    if (conversation) {
+    if (conversation && conversation.trusted) {
       messageContents = conversation.messages.map(({ sender, content: rawContent, type, sentAt }, i) => {
         let content = rawContent
 
@@ -152,6 +155,17 @@ export class ChatView extends React.Component {
                    content={content}/>
         )
       })
+    } else if (conversation && !conversation.trusted) {
+      const others = chain(conversation.contacts)
+        .filter(c => c !== identity.username)
+        .map(c => contacts[c])
+        .value()
+
+      messageContents = (
+        <NewConversationInvitation others={others}
+                                   onAccept={onAcceptConversation}
+                                   onDecline={onDeclineConversation}/>
+      )
     } else if (composing) {
       messageContents = sendingNewConversation
                       ? <Loader/>
@@ -202,7 +216,9 @@ ChatView.propTypes = {
   conversationTitle: PropTypes.string.isRequired,
   onToggleEmojiPicker: PropTypes.func.isRequired,
   messageInputValue: PropTypes.string.isRequired,
-  onMessageInputChange: PropTypes.func.isRequired
+  onMessageInputChange: PropTypes.func.isRequired,
+  onAcceptConversation: PropTypes.func.isRequired,
+  onDeclineConversation: PropTypes.func.isRequired,
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000

@@ -8,7 +8,7 @@ export async function getContacts() {
   return await getJson('contacts.json')
 }
 
-export async function addContactById(id, trusted) {
+export async function addContactById(id, trusted = false) {
   const profile = await lookupProfile(id)
   var pic = ''
   if(profile.image != null){pic = profile.image[0].contentUrl}

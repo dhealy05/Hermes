@@ -3,7 +3,12 @@ import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
 import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
-import { getContacts, saveContactDataById, addFriendsOnlyContactById } from './contacts'
+import {
+  addContactById,
+  getContacts,
+  saveContactDataById,
+  addFriendsOnlyContactById
+} from './contacts'
 
 export async function getConversations() {
   return getJson('conversations.json')
@@ -262,18 +267,28 @@ export async function saveNewOutbox(filename, secret){
 //args: conversation data for filename and secret, and to resave as TRUSTED
 //UNTRUSTED CONTACTS ONLY
 //TODO: Pass in the objects from Redux or whatever, not the IDs--dont download
-export async function acknowledgeConversation(contactIDs, conversationID){
-  const conversation = await getConversationById(conversationID)
-  const contacts = await getContacts()
+export async function acknowledgeConversation(conversationOrId) {
+  const conversation = typeof conversationOrId === 'string'
+                     ? await getConversationById(conversationOrId)
+                     : await getConversationById(Conversation.getId(conversationOrId))
+
+  const { contacts: existingContacts } = await getContacts()
   await saveNewOutbox(conversation.filename, conversation.secret)
-  for(var i = 0; i < contactIDs.length; i++){
-    var contactObject = contacts.contacts[contactIDs[i]]
-    contactObject.trusted = true
-    await saveContactDataById(contactIDs[i], contactObject)
-    await addFriendsOnlyContactById(contactIDs[i])
+
+  for (const contactId of conversation.contacts) {
+    if (contactId === identity().username) {
+      continue
+    }
+
+    const contact = existingContacts[contactId] || await addContactById(contactId, true)
+    contact.trusted = true
+
+    await saveContactDataById(contactId, contact)
+    await addFriendsOnlyContactById(contactId)
   }
+
   conversation.trusted = true
-  saveConversationById(Conversation.getId(conversation), conversation)
+  return saveConversationById(Conversation.getId(conversation), conversation)
 }
 
 export async function deleteConversation(id){

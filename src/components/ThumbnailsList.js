@@ -62,9 +62,13 @@ const TextPreview = styled.div`
 
 export const ThumbnailsList = props => {
   const items = props.thumbnails.map(t => {
-    const preview = t.contentType === ContentTypes.Text
-                  ? <TextPreview>{t.lastSenderName}: {t.content}</TextPreview>
-                  : null
+    let preview = null
+
+    if (t.trusted === false) {
+      preview = <TextPreview>{t.lastSenderName} wants to connect</TextPreview>
+    } else if (t.contentType === ContentTypes.Text) {
+      preview = <TextPreview>{t.lastSenderName}: {t.content}</TextPreview>
+    }
 
     return (
       <ListItem key={t.id}
@@ -95,7 +99,8 @@ ThumbnailsList.propTypes = {
     contentType: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
     lastSenderName: PropTypes.string.isRequired,
-    timestamp: PropTypes.string.isRequired
+    timestamp: PropTypes.string.isRequired,
+    trusted: PropTypes.bool
   })).isRequired,
   onSelectConversation: PropTypes.func.isRequired
 }

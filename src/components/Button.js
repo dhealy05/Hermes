@@ -8,7 +8,7 @@ import { Paper } from './Paper'
 export const BaseButton = styled.button`
   display: inline-block;
   font-size: 1em;
-  background: ${colors.brand.light};
+  background: ${colors.blue};
   color: ${colors.white};
   padding: 0.5rem;
   border: 0;
@@ -21,11 +21,11 @@ export const BaseButton = styled.button`
   }
 
   &:hover {
-    background-color: ${colors.brand.medium};
+    background-color: ${colors.blue};
   }
 
   &:active {
-    background-color: ${colors.brand.dark};
+    background-color: ${colors.blue};
   }
 `
 
