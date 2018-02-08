@@ -16,7 +16,6 @@ import { NewConversationInvitation } from './NewConversationInvitation'
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
   padding: 24px;
-  overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
 

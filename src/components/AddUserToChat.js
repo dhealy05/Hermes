@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Async } from 'react-select';
+import 'react-select/dist/react-select.css';
 import { Avatar } from './Avatar'
 import { TextInput } from './TextInput'
+import { queryName } from '../services/queryNames'
 
 const Container = styled.div`
   display: flex;
@@ -19,53 +22,81 @@ const SelectedUsersContainer = styled.div`
   align-items: center;
 `
 
-const SearchInput = styled(TextInput)`
-  width: 15em;
+const Select = styled(Async)`
+  width: 35em;
 `
 
-export class AddUserToChat extends React.Component {
-  state = {
-    searchInput: ''
+const SelectValue = styled.span`
+  margin: 3px 4px;
+  border: 1px solid #648bfa;
+  padding: 0px 3px;
+  border-radius: 2px;
+`
+
+const Option = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const SelectAvatar = styled.img`
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  margin-right: .78571429rem;
+  border-radius: 500rem;
+`
+
+const EmptyAvatar = styled.div`
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  margin-right: .78571429rem;
+  border-radius: 500rem;
+  border: 1px dashed black;
+`
+
+export class AddUserToChat extends Component {
+
+  getOptions = async (input, callback) => {
+    const res = await queryName(input);
+    const options = res.results.map(({username, profile}) => {
+      const avatar = profile.image && profile.image.find(image => image.name === 'avatar')
+      return {
+        value: username,
+        label: profile.name,
+        avatar: avatar && avatar.contentUrl,
+      };
+    })
+    callback(null, { options })
   }
 
-  onInputChange = evt => {
-    this.setState({ searchInput: evt.target.value })
-  }
-
-  onKeyUp = evt => {
-    if (evt.keyCode === 13) {
-      const { recipients, onChange } = this.props
-
-      let newRecipientId = this.state.searchInput
-
-      if (!newRecipientId.endsWith('.id')) {
-        newRecipientId = `${newRecipientId}.id`
-      }
-
-      const value = recipients.map(r => r.id).concat(newRecipientId)
-
-      onChange(value)
-
-      this.setState({
-        searchInput: ''
-      })
-    }
+  handleChange = values => {
+    const { onChange } = this.props;
+    onChange(values.map(v => v.value));
   }
 
   render() {
-    const { searchInput } = this.state
+    console.log('RERENDER', this.props)
     const { recipients } = this.props
-
     return (
       <Container>
-        <SearchInput fullWidth
-                     placeholder="enter an id to chat with..."
-                     value={searchInput}
-                     onChange={this.onInputChange}
-                     onKeyUp={this.onKeyUp} />
-        <SelectedUsersContainer>
-          {recipients.map(r => r.name || r.id).join(', ')}
-        </SelectedUsersContainer>
+        <Select
+          ref="select"
+          multi={true}
+          cache={false}
+          name="recipients"
+          loadOptions={this.getOptions}
+          optionRenderer={({value, avatar}) => (
+            <Option>
+              {avatar ? <SelectAvatar src={avatar} /> : <EmptyAvatar />}
+              {value}
+            </Option>
+          )}
+          onSelectResetsInput={false} // TODO remove this when https://github.com/JedWatson/react-select/issues/2277 is fixed
+          valueComponent={SelectValue}
+          onChange={this.handleChange}
+          value={recipients.map(r => ({ value: r.id, label: r.name }))}
+        />
       </Container>
     )
   }
@@ -76,5 +107,5 @@ AddUserToChat.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   })).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired // (array of recipientIds)
 }
