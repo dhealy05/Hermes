@@ -92,6 +92,7 @@ export class AddUserToChat extends Component {
               {value}
             </Option>
           )}
+          onSelectResetsInput={false} // TODO remove this when https://github.com/JedWatson/react-select/issues/2277 is fixed
           valueComponent={SelectValue}
           onChange={this.handleChange}
           value={recipients.map(r => ({ value: r.id, label: r.name }))}
