@@ -30,6 +30,10 @@ import {
 
 const crypto = require('crypto')
 
+export async function contactRequest(id){
+  await newConversation("Please add me to your contact list!", [id])
+}
+
 export async function newConversation(text, otherIds) {
   if (typeof text !== 'string') {
     throw new TypeError('first message must be a string right now')

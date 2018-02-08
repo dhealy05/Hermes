@@ -70,7 +70,8 @@ Conversation.getDefaultThumbnail = () => ({
   timestamp: new Date().toISOString(),
   pic: 'https://lorempixel.com/64/64',
   readAt: '',
-  wasRead: false
+  wasRead: false,
+  trusted: true
 })
 
 Conversation.getThumbnail = convo => {
@@ -110,7 +111,8 @@ Conversation.getMetadata = convo => new ConversationMetadata({
   secret: convo.secret,
   pic: convo.pic,
   readAt: convo.readAt,
-  wasRead: convo.wasRead
+  wasRead: convo.wasRead,
+  trusted: convo.trusted
 })
 
 export const Message = Model('Message', {
