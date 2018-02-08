@@ -16,7 +16,8 @@ export const ConversationMetadata = Model('ConversationMetadata', {
   pic: '',
   thumbnail: {},
   readAt: '',
-  wasRead: false
+  wasRead: false,
+  trusted: true
 })
 
 export const Conversation = Model('Conversation', {
@@ -53,7 +54,10 @@ export const Conversation = Model('Conversation', {
   /**
    * Read bool for display purposes
    */
-  wasRead: false
+  wasRead: false,
+
+  //conversation contains only trusted contacts
+  trusted: true
 })
 
 Conversation.getId = ({ contacts }) => contacts.sort().join('-')

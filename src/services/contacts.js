@@ -8,7 +8,7 @@ export async function getContacts() {
   return await getJson('contacts.json')
 }
 
-export async function addContactById(id) {
+export async function addContactById(id, trusted) {
   const profile = await lookupProfile(id)
   var pic = ''
   if(profile.image != null){pic = profile.image[0].contentUrl}
@@ -20,9 +20,9 @@ export async function addContactById(id) {
     name: name,
     pic,
     statusPage: '',
-    statusSecret: ''
+    statusSecret: '',
+    trusted: trusted
   })
-  addFriendsOnlyContactById(id)
   return saveContactDataById(id, contact)
 }
 

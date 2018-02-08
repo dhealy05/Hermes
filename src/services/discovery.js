@@ -21,7 +21,7 @@ import {
 } from './keys'
 import { saveLocalPublicIndex, identity } from './identity'
 import { checkTyping } from './statusIndicators'
-import { saveJson } from './blockstack'
+import { getJson, saveJson } from './blockstack'
 import { getPublicAddress } from './bitcoin'
 
 const crypto = require('crypto')
@@ -75,20 +75,42 @@ export async function discoverConversation(userId) {
 
     if(await checkIfConversationExists(filename, contacts, text, sharedSecret, userId)){continue}
 
-    await saveNewOutbox(filename, sharedSecret)
+    const trusted = await handleContacts(contacts)
 
-    const conversation = await createNewConversation(filename, contacts, text, sharedSecret, userId)
+    const conversation = await createNewConversation(filename, contacts, text, sharedSecret, userId, trusted)
 
-    for (var i = 0; i < contacts.length; i++){
-      if (contacts[i] !== identity().username) {
-        await addContactById(contacts[i])
-      }
-    }
+    if(trusted){await saveNewOutbox(filename, sharedSecret)}
 
     return conversation
   }
 
   return null
+}
+
+export async function handleContacts(contacts){
+  const existingContacts = await getJson("contacts.json")
+  var trusted = true
+
+  for(var i = 0; i < contacts.length; i++){
+
+    if(contacts[i] == identity().username){
+      continue
+    }
+
+    var contactEntry = existingContacts.contacts[contacts[i]]
+
+    if(contactEntry == null){
+      trusted = false
+      addContactById(contacts[i], false)
+      continue;
+    }
+
+    if(contactEntry.trusted == false){
+      trusted = false
+    }
+  }
+
+  return trusted
 }
 
 export async function discoverMessages(metadata, username) {

@@ -92,6 +92,6 @@ export async function addContactAndIntroduction(intro, id){
   intro.discovery.introductions.push(json)
 
   await saveLocalPublicIndex(intro.discovery)
-  await addContactById(id)
+  await addContactById(id, true)
   return secret
 }

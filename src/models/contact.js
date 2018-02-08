@@ -18,5 +18,8 @@ export const Contact = Model('Contact', {
   statusPage: '',
 
   //
-  statusSecret: ''
+  statusSecret: '',
+
+  trusted: false,
+
 })

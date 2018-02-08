@@ -3,7 +3,7 @@ import { ContentTypes, Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
 import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
-import { getContacts } from './contacts'
+import { getContacts, saveContactDataById, addFriendsOnlyContactById } from './contacts'
 
 export async function getConversations() {
   return getJson('conversations.json')
@@ -55,7 +55,8 @@ export async function createNewConversation(
   contacts,
   content,
   sharedSecret,
-  sender = identity().username
+  sender = identity().username,
+  trusted
 ) {
   const msg = new Message({
     sender,
@@ -77,7 +78,8 @@ export async function createNewConversation(
     messages: [msg],
     pic: pic,
     readAt: readAt,
-    wasRead: wasRead
+    wasRead: wasRead,
+    trusted: trusted
   })
 
   return saveConversationById(Conversation.getId(convo), convo)
@@ -255,6 +257,23 @@ export async function saveNewOutbox(filename, secret){
     { messages: [], typing: '', statusPage: statusPage, statusSecret: statusSecret},
     { isPublic: true }
   )
+}
+
+//args: conversation data for filename and secret, and to resave as TRUSTED
+//UNTRUSTED CONTACTS ONLY
+//TODO: Pass in the objects from Redux or whatever, not the IDs--dont download
+export async function acknowledgeConversation(contactIDs, conversationID){
+  const conversation = await getConversationById(conversationID)
+  const contacts = await getContacts()
+  await saveNewOutbox(conversation.filename, conversation.secret)
+  for(var i = 0; i < contactIDs.length; i++){
+    var contactObject = contacts.contacts[contactIDs[i]]
+    contactObject.trusted = true
+    await saveContactDataById(contactIDs[i], contactObject)
+    await addFriendsOnlyContactById(contactIDs[i])
+  }
+  conversation.trusted = true
+  saveConversationById(Conversation.getId(conversation), conversation)
 }
 
 export async function deleteConversation(id){
