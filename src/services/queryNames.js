@@ -7,15 +7,15 @@ export async function queryName(query){
     uri: url,
     method: 'GET'
   }
-  request(requestData, function (error, response, body) {
-    if(response == null){console.log("Null Response"); return ''}
-    if(response.statusCode != 200){console.log("Not 200"); return ''}
-    try {
-      var resultsArray = JSON.parse(body);
-      console.log(resultsArray)
-      return resultsArray
-    } catch (e) {
-      console.log(e)
-    }
+  return new Promise((resolve, reject) => {
+    request(requestData, function (error, response, body) {
+      if (response == null) { console.log("Null Response"); resolve([]); }
+      if (response.statusCode != 200) { console.log("Not 200"); resolve([]); }
+      try {
+        resolve(JSON.parse(body))
+      } catch (e) {
+        reject(e)
+      }
+    })
   })
 }
