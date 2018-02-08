@@ -215,8 +215,7 @@ ChatView.propTypes = {
   onToggleEmojiPicker: PropTypes.func.isRequired,
   messageInputValue: PropTypes.string.isRequired,
   onMessageInputChange: PropTypes.func.isRequired,
-  onAcceptConversation: PropTypes.func.isRequired,
-  onDeclineConversation: PropTypes.func.isRequired,
+  onAcceptConversation: PropTypes.func.isRequired
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000
