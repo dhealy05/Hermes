@@ -99,7 +99,8 @@ Conversation.getThumbnail = convo => {
     timestamp: firstMessage.sentAt,
     pic: convo.pic,
     readAt: convo.readAt,
-    wasRead: convo.wasRead
+    wasRead: convo.wasRead,
+    trusted: convo.trusted
   }
 }
 
