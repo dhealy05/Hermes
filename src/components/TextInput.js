@@ -37,6 +37,7 @@ const Label = styled.label`
 
 export const TextInput = ({
   className,
+  type = 'text',
   fullWidth,
   layer,
   label,
@@ -46,11 +47,14 @@ export const TextInput = ({
   <Outer className={className} fullWidth={fullWidth}>
     { label ? <Label>{label}</Label> : null }
     <Inner layer={layer} fullWidth={fullWidth} unstyled={unstyled}>
-      <Input fullWidth={fullWidth} {...other}/>
+      <Input type={type}
+             fullWidth={fullWidth}
+             {...other}/>
     </Inner>
   </Outer>
 )
 TextInput.propTypes = {
+  type: PropTypes.string,
   layer: Paper.propTypes.layer,
   fullWidth: PropTypes.bool,
   block: PropTypes.bool

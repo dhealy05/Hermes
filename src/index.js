@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import ReactModal from 'react-modal'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import { applyGlobalStyles } from './globalStyle'
@@ -11,6 +12,8 @@ import * as services from './services'
 // expose for using the console as a poor man's REPL
 window.__HERMES = services
 
+const ROOT_ELEMENT = document.getElementById('root')
+
 applyGlobalStyles()
 
 store.dispatch(actions.auth.checkAuth())
@@ -21,7 +24,9 @@ ReactDOM.render(
       <Routes/>
     </ConnectedRouter>
   </Provider>,
-  document.getElementById('root')
+  ROOT_ELEMENT
 )
+
+ReactModal.setAppElement(ROOT_ELEMENT)
 
 registerServiceWorker()

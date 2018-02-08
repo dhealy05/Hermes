@@ -43,6 +43,7 @@ export const LinkButton = BaseButton.extend`
 `
 
 export const Button = ({
+  className,
   layer,
   linkButton,
   children,
@@ -56,7 +57,8 @@ export const Button = ({
   return (
     <Paper unstyled={unstyled}
            layer={layer}
-           popOnHover>
+           popOnHover
+           className={className}>
       <ActualButton {...other}>
         {contents}
       </ActualButton>
