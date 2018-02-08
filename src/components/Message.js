@@ -63,6 +63,12 @@ const ImageMessage = styled.img`
   max-width: 66%;
 `
 
+const PaidMessageValue = styled.div`
+  background-color: ${colors.greyLight};
+  font-size: 14px;
+  padding: 0.5em;
+`
+
 const MessageContent = ({ contentType, content }) => {
   if (contentType === ContentTypes.Text) {
     return <Content>{content}</Content>
@@ -86,7 +92,9 @@ export const Message = ({
   sender,
   timestamp,
   content,
-  contentType
+  contentType,
+  paymentStatus,
+  value
 }) => {
   const time = formatTime(timestamp)
   const avatar = sender && sender.pic
@@ -101,6 +109,9 @@ export const Message = ({
           <Timestamp>{time}</Timestamp>
         </SenderDetails>
         <MessageContent contentType={contentType} content={content}/>
+        { paymentStatus !== 'unpaid'
+          ? <PaidMessageValue>{value} BTC sent</PaidMessageValue>
+          : null }
       </MessageText>
     </OuterContainer>
   )
@@ -117,7 +128,9 @@ Message.propTypes = {
     PropTypes.instanceOf(moment)
   ]).isRequired,
   contentType: MessageContent.propTypes.contentType,
-  content: MessageContent.propTypes.content
+  content: MessageContent.propTypes.content,
+  paymentStatus: PropTypes.oneOf(['unpaid', 'paid']).isRequired,
+  value: PropTypes.string.isRequired
 }
 Message.defaultProps = {
   direction: 'left'

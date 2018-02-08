@@ -55,7 +55,8 @@ export const Modal = ({
   ...props
 }) => {
   const actionButtons = actions.map(a => (
-    <ActionButton onClick={() => onAction(a.value)}
+    <ActionButton key={a.value}
+                  onClick={() => onAction(a.value)}
                   {...a.props}>
       {a.label}
     </ActionButton>

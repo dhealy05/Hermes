@@ -138,7 +138,11 @@ export class ChatView extends React.Component {
     let messageContents = []
 
     if (conversation && conversation.trusted) {
-      messageContents = conversation.messages.map(({ sender, content: rawContent, type, sentAt }, i) => {
+      messageContents = conversation.messages.map(({ sender,
+                                                     content: rawContent,
+                                                     type,
+                                                     sentAt,
+                                                     ...other }, i) => {
         let content = rawContent
 
         if (type === ContentTypes.Image) {
@@ -147,6 +151,7 @@ export class ChatView extends React.Component {
 
         return (
           <Message key={i}
+                   {...other}
                    direction={sender === identity.username ? 'right' : 'left'}
                    sender={contacts[sender]}
                    timestamp={sentAt}
