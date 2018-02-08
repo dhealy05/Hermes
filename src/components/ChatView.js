@@ -132,8 +132,7 @@ export class ChatView extends React.Component {
       onToggleEmojiPicker,
       messageInputValue,
       onMessageInputChange,
-      onAcceptConversation,
-      onDeclineConversation
+      onAcceptConversation
     } = this.props
 
     let messageContents = []
@@ -163,8 +162,7 @@ export class ChatView extends React.Component {
 
       messageContents = (
         <NewConversationInvitation others={others}
-                                   onAccept={onAcceptConversation}
-                                   onDecline={onDeclineConversation}/>
+                                   onAccept={onAcceptConversation}/>
       )
     } else if (composing) {
       messageContents = sendingNewConversation

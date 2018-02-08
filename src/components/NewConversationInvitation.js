@@ -21,18 +21,19 @@ const formatDescription = others => {
              ? 'wants'
              : 'want'
 
-  return <Text>{names} {verb} to start a conversation.</Text>
+  return <Text>
+    {names} {verb} to start a conversation. Respond or click 'accept' to connect
+    with them.
+  </Text>
 }
 
 export const NewConversationInvitation = ({
   others,
   onAccept = () => {},
-  onDecline = () => {}
 }) => (
   <div>
     {formatDescription(others)}
     <ButtonsContainer>
-    <Button onClick={onDecline}>Decline</Button>
     <Button onClick={onAccept}>Accept</Button>
     </ButtonsContainer>
   </div>

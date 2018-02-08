@@ -199,7 +199,7 @@ export const finishSendingNewConversation = payloadAction(FINISH_SENDING_NEW_CON
 
 export const sendRawMessage = message => async (dispatch, getState) => {
   const { chat: { activeConversation,
-                  conversationDetails,
+                  conversationMetadata,
                   newMessageRecipients } } = getState()
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
@@ -225,7 +225,15 @@ export const sendRawMessage = message => async (dispatch, getState) => {
     return
   }
 
-  const convo = conversationDetails[activeConversation]
+  const convo = conversationMetadata[activeConversation]
+
+  if (!convo) {
+    throw new Error(`tried to send to nonexistent conversation ${activeConversation}`)
+  }
+
+  if (!convo.trusted) {
+    await dispatch(acceptActiveConversation())
+  }
 
   if (message.content instanceof File) {
     // kind of hacky, but it works for now
@@ -405,13 +413,6 @@ export const acceptActiveConversation = () => async (dispatch, getState) => {
   }
 
   dispatch(finishLoadingConversationDetails(await acknowledgeConversation(convo)))
-}
-
-export const declineActiveConversation = () => async (dispatch, getState) => {
-  const { chat: { activeConversation,
-                  conversationMetadata } } = getState()
-
-  alert('declined')
 }
 
 export const refreshConversationList = () => async (dispatch, getState) => {

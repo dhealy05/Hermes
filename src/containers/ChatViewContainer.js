@@ -120,8 +120,7 @@ const WithRedux = connect(
                   : evt.target.value
       dispatch(actions.chat.setMessageInputValue(value))
     },
-    onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation()),
-    onDeclineConversation: () => dispatch(actions.chat.declineActiveConversation())
+    onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation())
   })
 )
 
