@@ -77,7 +77,7 @@ const MessageContent = ({ contentType, content }) => {
   return null
 }
 MessageContent.propTypes = {
-  contentType: PropTypes.any.isRequired,
+  contentType: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired
 }
 

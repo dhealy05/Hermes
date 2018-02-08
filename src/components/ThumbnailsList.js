@@ -96,7 +96,7 @@ ThumbnailsList.propTypes = {
   thumbnails: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    contentType: PropTypes.number.isRequired,
+    contentType: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
     lastSenderName: PropTypes.string.isRequired,
     timestamp: PropTypes.string.isRequired,

@@ -133,6 +133,7 @@ export async function discoverMessages(metadata, username) {
       sender: decodeText(msg.sender, metadata.secret),
       sentAt: decodeText(msg.sentAt, metadata.secret),
       timestamp: decodeText(msg.timestamp, metadata.secret),
+      type: decodeText(msg.type, metadata.secret),
       expirationDate: decodeText(msg.expirationDate, metadata.secret),
       paymentStatus: decodeText(msg.paymentStatus, metadata.secret),
       value: decodeText(msg.value, metadata.secret)
