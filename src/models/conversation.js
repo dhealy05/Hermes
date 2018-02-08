@@ -135,7 +135,7 @@ export const Message = Model('Message', {
 
   expirationDate: '',
 
-  isPaid: '0',
+  paymentStatus: 'unpaid',
 
   value: '0.00'
 })

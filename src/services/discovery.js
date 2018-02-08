@@ -101,7 +101,7 @@ export async function handleContacts(contacts){
 
     if(contactEntry == null){
       trusted = false
-      addContactById(contacts[i], false)
+      await addContactById(contacts[i], false)
       continue;
     }
 
