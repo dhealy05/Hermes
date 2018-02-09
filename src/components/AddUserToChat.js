@@ -6,14 +6,24 @@ import 'react-select/dist/react-select.css';
 import { Avatar } from './Avatar'
 import { TextInput } from './TextInput'
 import { queryName } from '../services/queryNames'
+import { Paper } from './Paper'
+import * as colors from '../colors'
+import * as layers from '../layers'
 
-const Container = styled.div`
+const OuterContainer = styled(Paper).attrs({
+  unstyled: true,
+  layer: 1
+})`
+  flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
-  margin: 0 auto;
-  width: 30%;
+  height: 24px;
+  padding: 18px;
+  background-color: ${colors.white};
+  color: ${colors.black};
+  z-index: ${layers.TopNav};
+  box-shadow: ${colors.borderLight} 0 1px 2px 0;
 `
 
 const SelectedUsersContainer = styled.div`
@@ -23,14 +33,17 @@ const SelectedUsersContainer = styled.div`
 `
 
 const Select = styled(Async)`
-  width: 35em;
+  width: 100%;
+  height: 24px;
 `
 
 const SelectValue = styled.span`
   margin: 3px 4px;
-  border: 1px solid #648bfa;
-  padding: 0px 3px;
-  border-radius: 2px;
+  color: white;
+  background-color: #648bfa;
+  text-shadow: 1px 1px #46e;
+  padding: 0px 6px;
+  border-radius: 3px;
 `
 
 const Option = styled.span`
@@ -52,7 +65,7 @@ const EmptyAvatar = styled.div`
   height: 2em;
   margin-right: .78571429rem;
   border-radius: 500rem;
-  border: 1px dashed black;
+  border: 1px dashed #648bfa;
 `
 
 export class AddUserToChat extends Component {
@@ -76,15 +89,15 @@ export class AddUserToChat extends Component {
   }
 
   render() {
-    console.log('RERENDER', this.props)
     const { recipients } = this.props
     return (
-      <Container>
+      <OuterContainer>
         <Select
           ref="select"
           multi={true}
           cache={false}
           name="recipients"
+          placeholder="Message to..."
           loadOptions={this.getOptions}
           optionRenderer={({value, avatar}) => (
             <Option>
@@ -97,7 +110,7 @@ export class AddUserToChat extends Component {
           onChange={this.handleChange}
           value={recipients.map(r => ({ value: r.id, label: r.name }))}
         />
-      </Container>
+      </OuterContainer>
     )
   }
 }
