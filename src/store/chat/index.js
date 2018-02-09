@@ -16,7 +16,8 @@ const initialState = {
   newMessageRecipients: [],
   sendingNewConversation: false,
   fileContents: {},
-  messageInputValue: ''
+  messageInputValue: '',
+  showingInfoSidebar: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -133,6 +134,12 @@ export const reducer = (state = initialState, action) => {
             [contactId]: typing
           }
         }
+      }
+    }
+    case actions.TOGGLE_INFO_SIDEBAR: {
+      return {
+        ...state,
+        showingInfoSidebar: !state.showingInfoSidebar,
       }
     }
     default:

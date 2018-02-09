@@ -131,9 +131,10 @@ export class ChatView extends React.Component {
       onToggleEmojiPicker,
       messageInputValue,
       onMessageInputChange,
-      onAcceptConversation
+      onAcceptConversation,
+      showingInfoSidebar,
+      toggleInfoSidebar,
     } = this.props
-
     let messageContents = []
 
     if (conversation && conversation.trusted) {
@@ -179,7 +180,9 @@ export class ChatView extends React.Component {
       <AppView onSignOut={onSignOut}
                sidebar={sidebar}
                emojiPicker={emojiPicker}
-               title={conversationTitle}>
+               title={conversationTitle}
+               toggleInfoSidebar={toggleInfoSidebar}
+               showingInfoSidebar={showingInfoSidebar}>
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
         </MessagesContainer>
@@ -219,7 +222,9 @@ ChatView.propTypes = {
   onToggleEmojiPicker: PropTypes.func.isRequired,
   messageInputValue: PropTypes.string.isRequired,
   onMessageInputChange: PropTypes.func.isRequired,
-  onAcceptConversation: PropTypes.func.isRequired
+  onAcceptConversation: PropTypes.func.isRequired,
+  showingInfoSidebar: PropTypes.bool.isRequired,
+  toggleInfoSidebar: PropTypes.func.isRequired,
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000
