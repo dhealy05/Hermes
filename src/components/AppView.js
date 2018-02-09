@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Sidebar } from './Sidebar'
-import { TopNav } from './TopNav'
 
 const Layout = styled.div`
   position: absolute;
@@ -29,17 +28,16 @@ const MainOutlet = styled.div`
 `
 
 export const AppView = ({
-  onSignOut,
+  topbar,
   sidebar,
   emojiPicker,
-  title,
   children
 }) => (
   <Layout>
     {sidebar ? sidebar : <Sidebar title="hermes"/>}
     {emojiPicker ? emojiPicker : null}
     <MainOutletContainer>
-      <TopNav title={title} onSignOut={onSignOut}/>
+      {topbar}
       <MainOutlet>
         {children}
       </MainOutlet>
@@ -48,8 +46,7 @@ export const AppView = ({
 )
 
 AppView.propTypes = {
-  title: PropTypes.string,
+  topbar: PropTypes.element,
   sidebar: PropTypes.element,
   emojiPicker: PropTypes.element,
-  onSignOut: PropTypes.func
 }
