@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Async } from 'react-select';
 import 'react-select/dist/react-select.css';
-import { Avatar } from './Avatar'
-import { TextInput } from './TextInput'
 import { queryName } from '../services/queryNames'
 import { Paper } from './Paper'
 import * as colors from '../colors'
@@ -24,12 +22,6 @@ const OuterContainer = styled(Paper).attrs({
   color: ${colors.black};
   z-index: ${layers.TopNav};
   box-shadow: ${colors.borderLight} 0 1px 2px 0;
-`
-
-const SelectedUsersContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `
 
 const Select = styled(Async)`
