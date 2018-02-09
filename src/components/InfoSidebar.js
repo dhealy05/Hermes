@@ -13,10 +13,10 @@ const OuterContainer = styled.div`
   padding: 10px;
 `
 
-export const InfoSidebar = () => {
+export const InfoSidebar = ({ children }) => {
   return (
     <OuterContainer>
-      Blank INFO panel
+      {children}
     </OuterContainer>
   )
 }

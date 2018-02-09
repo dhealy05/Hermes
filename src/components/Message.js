@@ -90,6 +90,7 @@ MessageContent.propTypes = {
 export const Message = ({
   direction = 'left',
   sender,
+  onShowSenderProfile,
   timestamp,
   content,
   contentType,
@@ -102,7 +103,8 @@ export const Message = ({
 
   return (
     <OuterContainer direction={direction}>
-      <SenderAvatar image={avatar}/>
+      <SenderAvatar image={avatar}
+                    onClick={onShowSenderProfile}/>
       <MessageText direction={direction}>
         <SenderDetails>
           <SenderName>{name}</SenderName>
@@ -122,6 +124,7 @@ Message.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
+  onShowSenderProfile: PropTypes.func,
   timestamp: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(Date),

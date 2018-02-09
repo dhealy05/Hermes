@@ -120,7 +120,8 @@ const WithRedux = connect(
       dispatch(actions.chat.setMessageInputValue(value))
     },
     onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation()),
-    toggleInfoSidebar: () => dispatch(actions.sidebar.toggleSidebar())
+    showConversationSidebar: () => dispatch(actions.sidebar.showActiveConversation()),
+    showProfileSidebar: contactId => dispatch(actions.sidebar.showProfile(contactId))
   })
 )
 

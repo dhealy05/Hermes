@@ -134,12 +134,13 @@ export class ChatView extends React.Component {
       messageInputValue,
       onMessageInputChange,
       onAcceptConversation,
-      toggleInfoSidebar
+      showConversationSidebar,
+      showProfileSidebar
     } = this.props
     let messageContents = []
     let topbar = (
       <TopNav title={conversationTitle}
-              toggleInfoSidebar={toggleInfoSidebar}
+              toggleInfoSidebar={showConversationSidebar}
               onSignOut={onSignOut}/>
     )
 
@@ -160,6 +161,7 @@ export class ChatView extends React.Component {
                    {...other}
                    direction={sender === identity.username ? 'right' : 'left'}
                    sender={contacts[sender]}
+                   onShowSenderProfile={() => showProfileSidebar(sender)}
                    timestamp={sentAt}
                    contentType={type}
                    content={content}/>
@@ -229,7 +231,8 @@ ChatView.propTypes = {
   messageInputValue: PropTypes.string.isRequired,
   onMessageInputChange: PropTypes.func.isRequired,
   onAcceptConversation: PropTypes.func.isRequired,
-  toggleInfoSidebar: PropTypes.func
+  showConversationSidebar: PropTypes.func,
+  showProfileSidebar: PropTypes.func
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000
