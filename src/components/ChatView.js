@@ -173,7 +173,6 @@ export class ChatView extends React.Component {
     } else if (composing) {
       messageContents = <Loader/>;
       if (!sendingNewConversation) {
-        console.log('_-------')
         topbar = <AddUserToChat recipients={newMessageRecipients}
                                 onChange={onSetNewMessageRecipients} />
       }
