@@ -12,6 +12,7 @@ import { NewMessageInput } from './NewMessageInput'
 import { Loader } from './Loader'
 import { TypingIndicator } from './TypingIndicator'
 import { NewConversationInvitation } from './NewConversationInvitation'
+import { TopNav } from './TopNav'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -136,6 +137,7 @@ export class ChatView extends React.Component {
       toggleInfoSidebar,
     } = this.props
     let messageContents = []
+    let topbar = <TopNav title={conversationTitle} onSignOut={onSignOut}/>
 
     if (conversation && conversation.trusted) {
       messageContents = conversation.messages.map(({ sender,
@@ -170,19 +172,19 @@ export class ChatView extends React.Component {
                                    onAccept={onAcceptConversation}/>
       )
     } else if (composing) {
-      messageContents = sendingNewConversation
-                      ? <Loader/>
-                      : <AddUserToChat recipients={newMessageRecipients}
-                                       onChange={onSetNewMessageRecipients}/>
+      messageContents = <Loader/>;
+      if (!sendingNewConversation) {
+        topbar = <AddUserToChat recipients={newMessageRecipients}
+                                onChange={onSetNewMessageRecipients} />
+      }
     }
 
     return (
-      <AppView onSignOut={onSignOut}
-               sidebar={sidebar}
+      <AppView sidebar={sidebar}
                emojiPicker={emojiPicker}
-               title={conversationTitle}
-               toggleInfoSidebar={toggleInfoSidebar}
                showingInfoSidebar={showingInfoSidebar}>
+               topbar={topbar}
+      >
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
         </MessagesContainer>

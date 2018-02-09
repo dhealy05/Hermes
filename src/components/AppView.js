@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import * as colors from '../colors'
 import { Sidebar } from './Sidebar'
 import { InfoSidebar } from './InfoSidebar'
-import { TopNav } from './TopNav'
 
 const Layout = styled.div`
   position: absolute;
@@ -36,19 +35,17 @@ const MainOutlet = styled.div`
 `
 
 export const AppView = ({
-  onSignOut,
-  toggleInfoSidebar,
   showingInfoSidebar,
+  topbar,
   sidebar,
   emojiPicker,
-  title,
   children
 }) => (
   <Layout>
     {sidebar ? sidebar : <Sidebar title="hermes"/>}
     {emojiPicker ? emojiPicker : null}
     <MainOutletContainer>
-      <TopNav title={title} onSignOut={onSignOut} showingInfoSidebar={showingInfoSidebar} toggleInfoSidebar={toggleInfoSidebar} />
+      {topbar}
       <MessageContainer>
         <MainOutlet>
           {children}
@@ -60,10 +57,8 @@ export const AppView = ({
 )
 
 AppView.propTypes = {
-  title: PropTypes.string,
+  topbar: PropTypes.element,
   sidebar: PropTypes.element,
   emojiPicker: PropTypes.element,
-  onSignOut: PropTypes.func,
-  showingInfoSidebar: PropTypes.bool,
-  toggleInfoSidebar: PropTypes.func,
+  showingInfoSidebar: PropTypes.bool
 }
