@@ -8,8 +8,8 @@ const Input = styled.input.attrs({
   type: 'text'
 })`
   font-size: 1em;
-  border: none;
-  background-color: ${colors.white};
+  border: 1px solid ${colors.grey};
+  border-radius: 4px;
   width: 100%;
   padding: 0.5em 1em;
 
@@ -26,6 +26,7 @@ const Outer = styled.div`
 const Inner = styled(Paper)`
   ${props => props.fullWidth && css`
     display: flex;
+    box-shadow: none;
   `}
 `
 

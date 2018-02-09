@@ -9,6 +9,7 @@ const getModalStyle = (style = {}) => ({
   ...style,
   overlay: {
     zIndex: 99999,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     ...style.overlay
   },
   content: {
@@ -18,7 +19,7 @@ const getModalStyle = (style = {}) => ({
     right: '25%',
     top: '4em',
     bottom: '4em',
-    borderRadius: '2px',
+    borderRadius: '5px',
     ...style.content
   }
 })
@@ -27,6 +28,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`
+
+const TitleContainer = styled.div`
+  background-color: ${colors.greyLight};
+  border-bottom: 1px solid ${colors.grey};
+  margin: -20px -20px 0;
+  padding: 20px;
 `
 
 const ContentContainer = styled.div`
@@ -43,10 +51,12 @@ const ActionsContainer = styled.div`
 
 const ActionButton = styled(Button)`
   margin-left: 2em;
+  border-radius: 4px;
 `
 
 export const Modal = ({
   style,
+  title,
   children,
   hasCancelButton = true,
   actions = [],
@@ -76,6 +86,7 @@ export const Modal = ({
                 onRequestClose={onRequestClose}
                 {...props}>
       <Container>
+        {title && <TitleContainer>{title}</TitleContainer>}
         <ContentContainer>
           {children}
         </ContentContainer>

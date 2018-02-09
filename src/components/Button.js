@@ -12,6 +12,7 @@ export const BaseButton = styled.button`
   color: ${colors.white};
   padding: 0.5rem;
   border: 0;
+  border-radius: 4px;
   min-width: 5em;
   transition: 0.1s all;
   cursor: pointer;

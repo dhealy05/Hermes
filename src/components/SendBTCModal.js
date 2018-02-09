@@ -1,16 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Icon } from './Icon'
 import { Modal } from './Modal'
 import { TextInput } from './TextInput'
-import { Button } from './Button'
 
-const Header = styled.h2`
+const Header = styled.p`
   text-align: center;
 `
 
-const ActionsContainer = styled.div`
+const Title = styled.div`
   display: flex;
-  justify-content: space-around;
 `
 
 const MODAL_ACTIONS = [{
@@ -32,10 +31,11 @@ export const SendBTCModal = ({
   }
 
   return (
-    <Modal contentLabel="Send BTC"
+    <Modal title={<Title><Icon icon="attach_money" />Send BTC</Title>}
            onRequestClose={onRequestClose}
            actions={MODAL_ACTIONS}
            onAction={handleAction}
+           style={{ content: { left: '40%', right: '40%', top: '6em', height: 200 } }}
            {...other}>
       <Header>How much BTC would you like to send?</Header>
       <div>

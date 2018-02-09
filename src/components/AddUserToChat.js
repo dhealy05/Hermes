@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Async } from 'react-select';
 import 'react-select/dist/react-select.css';
-import { Avatar } from './Avatar'
-import { TextInput } from './TextInput'
 import { queryName } from '../services/queryNames'
 
 const Container = styled.div`
@@ -14,12 +12,6 @@ const Container = styled.div`
   align-items: center;
   margin: 0 auto;
   width: 30%;
-`
-
-const SelectedUsersContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `
 
 const Select = styled(Async)`
