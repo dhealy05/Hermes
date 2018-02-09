@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Sidebar } from './Sidebar'
+import { InfoSidebar } from './InfoSidebar'
 
 const Layout = styled.div`
   position: absolute;
@@ -20,6 +21,12 @@ const MainOutletContainer = styled.div`
   flex-grow: 1;
 `
 
+const MessageContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+`
+
 const MainOutlet = styled.div`
   flex-grow: 5;
   display: flex;
@@ -28,6 +35,7 @@ const MainOutlet = styled.div`
 `
 
 export const AppView = ({
+  showingInfoSidebar,
   topbar,
   sidebar,
   emojiPicker,
@@ -38,9 +46,12 @@ export const AppView = ({
     {emojiPicker ? emojiPicker : null}
     <MainOutletContainer>
       {topbar}
-      <MainOutlet>
-        {children}
-      </MainOutlet>
+      <MessageContainer>
+        <MainOutlet>
+          {children}
+        </MainOutlet>
+        {showingInfoSidebar && <InfoSidebar />}
+      </MessageContainer>
     </MainOutletContainer>
   </Layout>
 )
@@ -49,4 +60,5 @@ AppView.propTypes = {
   topbar: PropTypes.element,
   sidebar: PropTypes.element,
   emojiPicker: PropTypes.element,
+  showingInfoSidebar: PropTypes.bool
 }

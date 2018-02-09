@@ -74,9 +74,7 @@ const WithRedux = connect(
       newMessageRecipients = state.chat.newMessageRecipients.map(id => contacts[id])
     }
 
-    const sendingNewConversation = state.chat.sendingNewConversation
-
-    const messageInputValue = state.chat.messageInputValue
+    const { sendingNewConversation, messageInputValue, showingInfoSidebar } = state.chat
 
     return {
       identity,
@@ -89,7 +87,8 @@ const WithRedux = connect(
       fileContents,
       newMessageRecipients,
       sendingNewConversation,
-      messageInputValue
+      messageInputValue,
+      showingInfoSidebar,
     }
   },
   dispatch => ({
@@ -120,7 +119,8 @@ const WithRedux = connect(
                   : evt.target.value
       dispatch(actions.chat.setMessageInputValue(value))
     },
-    onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation())
+    onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation()),
+    toggleInfoSidebar: () => dispatch(actions.chat.toggleInfoSidebar())
   })
 )
 

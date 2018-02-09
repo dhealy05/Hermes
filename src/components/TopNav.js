@@ -28,16 +28,21 @@ const Title = styled.div`
   text-align: center;
 `
 
-export const TopNav = ({ onSignOut, title, className }) => (
+export const TopNav = ({ showingInfoSidebar, toggleInfoSidebar, onSignOut, title, className }) => (
   <OuterContainer className={className}>
     { title ? <Title>{title}</Title> : null }
+    <Button style={{ color: showingInfoSidebar ? colors.blue : undefined }} onClick={toggleInfoSidebar} icon="info_outline"/>
     <Button onClick={onSignOut} icon="exit_to_app"/>
   </OuterContainer>
 )
 TopNav.propTypes = {
   title: PropTypes.string,
-  onSignOut: PropTypes.func
+  onSignOut: PropTypes.func,
+  showingInfoSidebar: PropTypes.bool,
+  toggleInfoSidebar: PropTypes.func,
 }
 TopNav.defaultProps = {
-  onSignOut: () => {}
+  onSignOut: () => {},
+  showingInfoSidebar: false,
+  toggleInfoSidebar: () => {},
 }
