@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Sidebar } from './Sidebar'
-import { InfoSidebar } from './InfoSidebar'
 
 const Layout = styled.div`
   position: absolute;
@@ -35,7 +34,7 @@ const MainOutlet = styled.div`
 `
 
 export const AppView = ({
-  showingInfoSidebar,
+  infoSidebar,
   topbar,
   sidebar,
   emojiPicker,
@@ -50,7 +49,7 @@ export const AppView = ({
         <MainOutlet>
           {children}
         </MainOutlet>
-        {showingInfoSidebar && <InfoSidebar />}
+        {infoSidebar || null}
       </MessageContainer>
     </MainOutletContainer>
   </Layout>
@@ -58,7 +57,7 @@ export const AppView = ({
 
 AppView.propTypes = {
   topbar: PropTypes.element,
+  infoSidebar: PropTypes.element,
   sidebar: PropTypes.element,
-  emojiPicker: PropTypes.element,
-  showingInfoSidebar: PropTypes.bool
+  emojiPicker: PropTypes.element
 }

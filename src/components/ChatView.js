@@ -128,16 +128,20 @@ export class ChatView extends React.Component {
       onTyping,
       onSetNewMessageRecipients,
       sidebar,
+      infoSidebar,
       emojiPicker,
       onToggleEmojiPicker,
       messageInputValue,
       onMessageInputChange,
       onAcceptConversation,
-      showingInfoSidebar,
-      toggleInfoSidebar,
+      toggleInfoSidebar
     } = this.props
     let messageContents = []
-    let topbar = <TopNav title={conversationTitle} onSignOut={onSignOut}/>
+    let topbar = (
+      <TopNav title={conversationTitle}
+              toggleInfoSidebar={toggleInfoSidebar}
+              onSignOut={onSignOut}/>
+    )
 
     if (conversation && conversation.trusted) {
       messageContents = conversation.messages.map(({ sender,
@@ -181,10 +185,9 @@ export class ChatView extends React.Component {
 
     return (
       <AppView sidebar={sidebar}
+               infoSidebar={infoSidebar}
                emojiPicker={emojiPicker}
-               showingInfoSidebar={showingInfoSidebar}>
-               topbar={topbar}
-      >
+               topbar={topbar}>
         <MessagesContainer ref={this.setMessagesList}>
           {messageContents}
         </MessagesContainer>
@@ -219,14 +222,14 @@ ChatView.propTypes = {
   onTyping: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired,
+  infoSidebar: PropTypes.element.isRequired,
   emojiPicker: PropTypes.element.isRequired,
   conversationTitle: PropTypes.string.isRequired,
   onToggleEmojiPicker: PropTypes.func.isRequired,
   messageInputValue: PropTypes.string.isRequired,
   onMessageInputChange: PropTypes.func.isRequired,
   onAcceptConversation: PropTypes.func.isRequired,
-  showingInfoSidebar: PropTypes.bool.isRequired,
-  toggleInfoSidebar: PropTypes.func.isRequired,
+  toggleInfoSidebar: PropTypes.func
 }
 ChatView.defaultProps = {
   messagePollInterval: 5000

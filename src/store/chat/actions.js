@@ -469,8 +469,3 @@ const loadConversationMetadata = async () => {
   }
   return conversations
 }
-
-export const TOGGLE_INFO_SIDEBAR = 'TOGGLE_INFO_SIDEBAR'
-export const toggleInfoSidebar = () => ({
-  type: TOGGLE_INFO_SIDEBAR,
-})

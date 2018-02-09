@@ -21,6 +21,10 @@ const OuterContainer = styled(Paper).attrs({
   color: ${colors.black};
   z-index: ${layers.TopNav};
   box-shadow: ${colors.borderLight} 0 1px 2px 0;
+
+  &:hover {
+    box-shadow: ${colors.borderLight} 0 1px 2px 0;
+  }
 `
 
 const Title = styled.div`
@@ -28,11 +32,20 @@ const Title = styled.div`
   text-align: center;
 `
 
-export const TopNav = ({ showingInfoSidebar, toggleInfoSidebar, onSignOut, title, className }) => (
+export const TopNav = ({
+  showingInfoSidebar,
+  toggleInfoSidebar,
+  onSignOut,
+  title,
+  className
+}) => (
   <OuterContainer className={className}>
     { title ? <Title>{title}</Title> : null }
-    <Button style={{ color: showingInfoSidebar ? colors.blue : undefined }} onClick={toggleInfoSidebar} icon="info_outline"/>
-    <Button onClick={onSignOut} icon="exit_to_app"/>
+    <Button style={{ color: showingInfoSidebar ? colors.blue : undefined }}
+            onClick={toggleInfoSidebar}
+            icon="info_outline"/>
+    <Button onClick={onSignOut}
+            icon="exit_to_app"/>
   </OuterContainer>
 )
 TopNav.propTypes = {

@@ -12,6 +12,7 @@ import * as auth from './auth'
 import * as chat from './chat'
 import * as contacts from './contacts'
 import * as emoji from './emoji'
+import * as sidebar from './sidebar'
 import * as baseActions from './actions'
 
 export const actions = {
@@ -20,6 +21,7 @@ export const actions = {
   chat: chat.actions,
   contacts: contacts.actions,
   emoji: emoji.actions,
+  sidebar: sidebar.actions,
 }
 
 const reducer = combineReducers({
@@ -27,6 +29,7 @@ const reducer = combineReducers({
   [chat.namespace]: chat.reducer,
   [contacts.namespace]: contacts.reducer,
   [emoji.namespace]: emoji.reducer,
+  [sidebar.namespace]: sidebar.reducer,
   router: routerReducer
 })
 

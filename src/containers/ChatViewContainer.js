@@ -16,6 +16,7 @@ import { actions } from '../store'
 import { formatListOfNames } from '../util'
 import { ChatSidebarContainer } from './ChatSidebarContainer'
 import { EmojiPickerContainer } from './EmojiPickerContainer'
+import { InfoSidebarContainer } from './InfoSidebarContainer'
 
 function getTitleForConversation(convo, contactsById) {
   if (!convo) {
@@ -74,7 +75,7 @@ const WithRedux = connect(
       newMessageRecipients = state.chat.newMessageRecipients.map(id => contacts[id])
     }
 
-    const { sendingNewConversation, messageInputValue, showingInfoSidebar } = state.chat
+    const { sendingNewConversation, messageInputValue } = state.chat
 
     return {
       identity,
@@ -87,8 +88,7 @@ const WithRedux = connect(
       fileContents,
       newMessageRecipients,
       sendingNewConversation,
-      messageInputValue,
-      showingInfoSidebar,
+      messageInputValue
     }
   },
   dispatch => ({
@@ -120,12 +120,13 @@ const WithRedux = connect(
       dispatch(actions.chat.setMessageInputValue(value))
     },
     onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation()),
-    toggleInfoSidebar: () => dispatch(actions.chat.toggleInfoSidebar())
+    toggleInfoSidebar: () => dispatch(actions.sidebar.toggleSidebar())
   })
 )
 
 const WithContainerChildren = withProps({
   sidebar: <ChatSidebarContainer/>,
+  infoSidebar: <InfoSidebarContainer/>,
   emojiPicker: <EmojiPickerContainer/>
 })
 
