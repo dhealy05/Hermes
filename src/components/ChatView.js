@@ -126,6 +126,7 @@ export class ChatView extends React.Component {
       onSignOut,
       onPickImage,
       onTyping,
+      sendBtc,
       onSetNewMessageRecipients,
       sidebar,
       infoSidebar,
@@ -200,6 +201,7 @@ export class ChatView extends React.Component {
                            placeholder="type your message"
                            value={messageInputValue}
                            onTyping={onTyping}
+                           sendBtc={sendBtc}
                            onChange={onMessageInputChange}
                            onKeyUp={this.onMsgInputKeyUp}/>
         </MessageInputContainer>
@@ -222,6 +224,7 @@ ChatView.propTypes = {
   onSignOut: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
+  sendBtc: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired,
   infoSidebar: PropTypes.element.isRequired,

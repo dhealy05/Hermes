@@ -113,6 +113,7 @@ const WithRedux = connect(
     onToggleEmojiPicker: () => dispatch(actions.emoji.setPickerActive(true)),
     onSignOut: () => dispatch(actions.auth.signOut()),
     onTyping: () => dispatch(actions.chat.broadcastTyping()),
+    sendBtc: amt => dispatch(actions.chat.sendBtc(amt)),
     onMessageInputChange: evt => {
       const value = typeof evt === 'string'
                   ? evt

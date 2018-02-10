@@ -28,7 +28,7 @@ const Input = styled(TextInput).attrs({
 export class NewMessageInput extends React.Component {
   state = {
     sendBtcModalOpen: false,
-    sendBtcValue: 0.00012
+    sendBtcValue: 0.0000001
   }
 
   fileInputEl = null
@@ -61,7 +61,8 @@ export class NewMessageInput extends React.Component {
   onBtcValueChange = evt => this.setState({ sendBtcValue: evt.target.value })
 
   onSendBtc = amt => {
-    alert(`sending ${amt} BTC now! 💸`)
+    //alert(`sending ${amt} BTC now! 💸`)
+    this.props.sendBtc(amt)
     this.closeBtcModal()
   }
 
@@ -107,5 +108,6 @@ NewMessageInput.propTypes = {
   onToggleEmojiPicker: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
+  sendBtc: PropTypes.func.isRequired,
   onChange: PropTypes.func
 }

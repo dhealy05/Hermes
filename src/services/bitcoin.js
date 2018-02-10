@@ -1,8 +1,20 @@
 import { identity } from './identity'
+import { getPublicIndexForId } from './contacts'
 const bitcoin = require('bitcoinjs-lib')
 const bigi = require('bigi')
 const request = require('request')
 const SATOSHIS_IN_BTC = 100000000
+
+export async function sendBitcoinToIds(ids, amount){
+  var recipients = []
+  for(var i = 0; i < ids.length; i++){
+    if(ids[i] == identity().username){continue}
+    var public_index = await getPublicIndexForId(ids[i])
+    recipients.push(public_index.bitcoin_address)
+  }
+  const result = await makeTransaction(recipients, amount)
+  return result
+}
 
 export function getAddress(){
   var privateKey = identity().appPrivateKey
@@ -63,27 +75,23 @@ export async function getBalance(address){
   })
 }
 
-export async function makeTransaction(recipient_address, amount){
+export async function makeTransaction(recipients, amount){
   const me = getAddress()
   const address = me.getAddress()
-  console.log(amount)
   const satoshis = btcToSatoshis(amount)
-  console.log(satoshis)
 
   var tx = new bitcoin.TransactionBuilder()
 
   const balance = await getBalance(address)
-  console.log(balance)
+  if(balance == null){return false}
   const finalBalance = balance[address].final_balance
-  console.log(finalBalance)
+  if(finalBalance == null){return false}
   const unspentOutputs = await getUnspentOutputs(address)
-  console.log(unspentOutputs)
+  if(unspentOutputs == null){return false}
 
   var bytes = (unspentOutputs.unspent_outputs.length * 148) + 78
-  console.log(bytes)
   var fee = await getNetworkFee(bytes)
   //in*148 + out*34 + 10 plus or minus 'in'
-  console.log(fee)
 
   if(satoshis + fee > finalBalance){
     console.log("Insufficient Funds")
@@ -91,15 +99,17 @@ export async function makeTransaction(recipient_address, amount){
   }
 
   var change = finalBalance - satoshis
-  console.log(change)
   change = change - fee
-  console.log(change)
 
   for(var i = 0; i < unspentOutputs.unspent_outputs.length; i++){
     tx.addInput(unspentOutputs.unspent_outputs[i].tx_hash_big_endian, unspentOutputs.unspent_outputs[i].tx_output_n)
   }
 
-  tx.addOutput(recipient_address, satoshis)
+  const satoshisPerAddress = satoshis / recipients.length
+
+  for(var i = 0; i < recipients.length; i++){
+    tx.addOutput(recipients[i], satoshisPerAddress)
+  }
 
   tx.addOutput(address, change)
 
@@ -109,8 +119,8 @@ export async function makeTransaction(recipient_address, amount){
 
   // prepare for broadcast to the Bitcoin network, see "can broadcast a Transaction" below
   var txhex = tx.build().toHex()
-  console.log(txhex)
   broadcastTransaction(txhex)
+  return true
 }
 
 export async function getNetworkFee(bytes) {

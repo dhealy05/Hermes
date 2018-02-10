@@ -32,8 +32,6 @@ export const setMessageInputValue = payloadAction(SET_MESSAGE_INPUT_VALUE)
 
 export const COMPOSE_CONVERSATION_ID = 'compose'
 
-//export const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
-
 export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
 export const setActiveConversation = id => async (dispatch, getState) => {
   const { chat: { conversationDetails } } = getState()
@@ -199,6 +197,20 @@ export const sendText = text => async (dispatch, getState) => {
   })))
 }
 
+export const sendBtc = amt => async (dispatch, getState) => {
+  const value = amt.toString()
+  //const defaultMessage = identity().username + " just sent you " + value + " bitcoins!"
+  const defaultMessage = ''
+  const message = new Message({
+    sender: identity().username,
+    timestamp: new Date().toISOString(),
+    content: defaultMessage,
+    paymentStatus: 'paid',
+    value: value
+  })
+  return dispatch(sendRawMessage(message))
+}
+
 export const sendFile = file => async (dispatch, getState) => {
   const message = new Message({
     sender: identity().username,
@@ -248,8 +260,8 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   }
 
   if(activeConversation === BOT_CONVERSATION_ID){
-
-    handleHelpMessage(message)
+    await handleHelpMessage(message)
+    //dispatch(setConversationDetails(await handleHelpMessage(message)))
     dispatch(refreshConversationList())
     return
   }

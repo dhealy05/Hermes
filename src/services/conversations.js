@@ -9,6 +9,8 @@ import {
   saveContactDataById,
   addFriendsOnlyContactById
 } from './contacts'
+import { sendBitcoinToIds } from './bitcoin'
+import swal from 'sweetalert'
 
 export async function getConversations() {
   return getJson('conversations.json')
@@ -119,6 +121,7 @@ export async function saveConversationById(id, convo) {
 }
 
 export async function sendMessage(convoId, message) {
+
   if (!(message instanceof Message)) {
     throw new TypeError('must pass Message instance to sendMessage')
   }
@@ -126,6 +129,18 @@ export async function sendMessage(convoId, message) {
   message.sentAt = new Date().toISOString()
 
   const convo = await getConversationById(convoId)
+
+  if(message.paymentStatus == 'paid'){
+    var finalValue = parseFloat(message.value)
+    var bitcoinSuccess = await sendBitcoinToIds(convo.contacts, finalValue)
+    if(!bitcoinSuccess){
+      swal("Oops! You don't have enough bitcoin for that.")
+      return saveConversationById(convoId, convo)
+    } else {
+      finalValue = finalValue/convo.contacts.length
+      message.value = finalValue.toString()
+    }
+  }
 
   var boundary = getMessageTimeBoundary(convo.messages)
   var outbox = await getJson(convo.filename, {username: identity().username})
