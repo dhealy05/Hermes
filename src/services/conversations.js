@@ -137,7 +137,7 @@ export async function sendMessage(convoId, message) {
       swal("Oops! You don't have enough bitcoin for that.")
       return saveConversationById(convoId, convo)
     } else {
-      finalValue = finalValue/convo.contacts.length
+      finalValue = finalValue/(convo.contacts.length-1)
       message.value = finalValue.toString()
     }
   }
