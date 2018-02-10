@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="58px" height="58px" viewBox="0 0 58 58" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Avatar/HermesHelper</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-14.0%" y="-10.0%" width="128.0%" height="128.0%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.894117647   0 0 0 0 0.921568627   0 0 0 0 0.941176471  0 0 0 0.4 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <circle id="path-2" cx="25" cy="25" r="25"></circle>
+    </defs>
+    <g id="Avatars" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-971.000000, -478.000000)">
+        <g id="Avatar/HermesHelper" transform="translate(975.000000, 480.000000)">
+            <g filter="url(#filter-1)">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Mask" fill="#6288FD" xlink:href="#path-2"></use>
+                <g id="Group-3" mask="url(#mask-3)">
+                    <g transform="translate(10.000000, 8.750000)">
+                        <path d="M14.9794143,0 C6.70550085,0 0,6.77452257 0,15.1310764 C0,18.5338542 1.11292837,21.6740451 2.98857792,24.2016059 L2.88759793,24.1924913 C2.88759793,24.1924913 3.94896205,26.9463976 1.54263044,30.4607205 C1.30199728,30.8101128 1.57056108,31.2875434 1.9895206,31.2424045 C4.72887132,30.9472656 6.64319405,29.7601997 7.94089431,28.4882812 C10.0399889,29.6193576 12.435578,30.2625868 14.9794143,30.2625868 C23.2533277,30.2625868 29.9609771,23.4880642 29.9609771,15.1310764 C29.9609771,6.77452257 23.2533277,0 14.9794143,0" id="Fill-51" fill="#FFFFFF"></path>
+                        <path d="M19.6375935,17.3648454 L11.4152443,18.2595936 C10.9189384,18.3136301 10.4870878,18.6211388 10.2700883,19.0733957 L9.30111009,21.0905398 C9.09055608,21.5289079 9.44076327,22.0299929 9.91988108,21.9779096 L15.9292646,21.3240468 C17.7984686,21.1207048 19.4313365,19.9590294 20.2520674,18.2504791 L20.2520674,18.2474409 C20.4626214,17.8112429 20.1145628,17.3129791 19.6375935,17.3648454" id="Fill-53" fill="#A8DBEC"></path>
+                        <path d="M26.7150186,11.5053823 L14.2085397,12.8476132 C13.7143823,12.9007816 13.2803832,13.2085073 13.0633837,13.6616323 L12.0944055,15.6792104 C11.8838515,16.1173614 12.2319102,16.6180125 12.711028,16.5665802 L23.0002441,15.4624135 C24.8715967,15.2614586 26.5087616,14.0993493 27.3294925,12.3879777 C27.5400465,11.9522139 27.1919879,11.454167 26.7150186,11.5053823" id="Fill-54" fill="#A8DBEC"></path>
+                        <path d="M32.7695208,5.6475082 L16.7867522,7.36278598 C16.2925948,7.41595438 15.8585957,7.72368007 15.6415961,8.17680507 L14.672618,10.1943832 C14.4620639,10.6323172 14.8101226,11.1331853 15.2892404,11.081753 L29.9700118,9.50623216 C31.5556124,9.33587625 32.9435501,8.3506332 33.6396675,6.90011236 C33.9361619,6.2818398 33.4463015,5.57502556 32.7695208,5.6475082" id="Fill-55" fill="#A8DBEC"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

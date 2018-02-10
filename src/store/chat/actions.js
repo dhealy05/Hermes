@@ -73,7 +73,12 @@ export const SET_NEW_MESSAGE_RECIPIENTS = 'SET_NEW_MESSAGE_RECIPIENTS'
 export const setNewMessageRecipients = ids => (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
 
-  for (const id of ids) {
+  //TODO: should have ".id" on entry
+  for(var i = 0; i < ids.length; i++){
+    ids[i] = ids[i] + '.id'
+  }
+
+  for (var id of ids) {
     if (!contactsById[id]) {
       dispatch(contactActions.fetchContactById(id))
     }
@@ -124,11 +129,20 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
   dispatch(startLoadingConversationDetails(id))
   const convo = await getConversationById(id)
 
-  for (const msg of convo.messages) {
-    if (msg.type === ContentTypes.Image) {
-      dispatch(fetchImageForMessage(msg, convo))
+  for (var i = 0; i < convo.messages.length; i++) {
+    if (convo.messages[i].type === ContentTypes.Image) {
+      dispatch(fetchImageForMessage(convo.messages[i], convo))
+    }
+    //if msg.expirationDate has passed, remove from array
+    if(convo.messages[i].expirationDate !== ''){
+      if(new Date(convo.messages[i].expirationDate) < new Date()){
+        convo.messages.splice(i, 1)
+      }
     }
   }
+
+  saveConversationById(id, convo)
+  //resave convo sans expired messages
 
   dispatch(finishLoadingConversationDetails(convo))
 }

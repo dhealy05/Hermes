@@ -6,6 +6,7 @@ export const getJson = async (filename, options) => {
 }
 
 export const getFile = async (filename, { username = null, ...options } = {}) => {
+
   if (!username) {
     return blockstack.getFile(filename, { decrypt: true, zoneFileLookupURL: 'https://core.blockstack.org/v1/names/',  ...options })
   }

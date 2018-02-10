@@ -10,7 +10,7 @@ export async function getContacts() {
 
 export async function addContactById(id, trusted = false) {
   const profile = await lookupProfile(id)
-  var pic = ''
+  var pic = 'https://www.hihermes.co/images/avatars/' + id[0].toLowerCase() + '.svg'
   if(profile.image != null){pic = profile.image[0].contentUrl}
   var name = profile.name
   if(name == null){name = id}

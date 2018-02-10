@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Avatar/LetterC</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="25" cy="25" r="25"></circle>
+    </defs>
+    <g id="Avatars" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-555.000000, -340.000000)">
+        <g id="Avatar/LetterC" transform="translate(555.000000, 340.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" fill="#FDC815" xlink:href="#path-1"></use>
+            <text id="C" mask="url(#mask-2)" font-family="Oxygen-Bold, Oxygen" font-size="20" font-weight="bold" line-spacing="29" fill="#FFFFFF">
+                <tspan x="18.6474609" y="30">C</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
