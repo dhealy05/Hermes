@@ -199,6 +199,11 @@ function purgeOutbox(messages, boundary){
 function checkTimestamp(message, messages) {
     for (var i = 0; i < messages.length; i++) {
       if (message.sentAt == messages[i].sentAt){return true}
+      if(message.expirationDate != ''){
+        if(new Date(message.expirationDate) < new Date()){
+          return true
+        }
+      }
     }
     return false
 }

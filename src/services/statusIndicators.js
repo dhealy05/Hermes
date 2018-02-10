@@ -40,11 +40,11 @@ export async function getMyStatus(){
 export async function getLastSeen(filename, secret, username){
   const status = await getJson(filename, {username: username})
   const lastSeen = decodeText(status.lastSeen, secret)
-  console.log(new Date(lastSeen))
   return new Date(lastSeen)
 }
 
 export async function getStatus(id){
+  if(id == 'hermesHelper'){return}
   var contacts = await getContacts()
   var contact = contacts.contacts[id]
   if(contact.statusPage == '' || contact.statusSecret == ''){
@@ -58,7 +58,6 @@ async function updateContactAndGetLastSeen(contact){
   const conversations = await getConversations()
   var secret = ''
   var filename = ''
-  console.log(conversations)
   for(var id in conversations.conversations){
     if(id.includes(contact.id)){
       filename = conversations.conversations[id].filename

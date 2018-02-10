@@ -20,7 +20,8 @@ import {
   identity,
   lookupProfile,
   isUserOnHermes,
-  setTyping
+  setTyping,
+  handleHelpMessage
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -30,6 +31,8 @@ export const SET_MESSAGE_INPUT_VALUE = 'SET_MESSAGE_INPUT_VALUE'
 export const setMessageInputValue = payloadAction(SET_MESSAGE_INPUT_VALUE)
 
 export const COMPOSE_CONVERSATION_ID = 'compose'
+
+//export const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
 
 export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
 export const setActiveConversation = id => async (dispatch, getState) => {
@@ -75,7 +78,9 @@ export const setNewMessageRecipients = ids => (dispatch, getState) => {
 
   //TODO: should have ".id" on entry
   for(var i = 0; i < ids.length; i++){
-    ids[i] = ids[i] + '.id'
+    if(!ids[i].includes('.id')){
+      ids[i] = ids[i] + '.id'
+    }
   }
 
   for (var id of ids) {
@@ -212,6 +217,9 @@ export const FINISH_SENDING_NEW_CONVERSATION = 'FINISH_SENDING_NEW_CONVERSATION'
 export const finishSendingNewConversation = payloadAction(FINISH_SENDING_NEW_CONVERSATION)
 
 export const sendRawMessage = message => async (dispatch, getState) => {
+
+  const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
+
   const { chat: { activeConversation,
                   conversationMetadata,
                   newMessageRecipients } } = getState()
@@ -239,6 +247,13 @@ export const sendRawMessage = message => async (dispatch, getState) => {
     return
   }
 
+  if(activeConversation === BOT_CONVERSATION_ID){
+
+    handleHelpMessage(message)
+    dispatch(refreshConversationList())
+    return
+  }
+
   const convo = conversationMetadata[activeConversation]
 
   if (!convo) {
@@ -262,6 +277,9 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 // cache promise from setTyping to avoid sending multiple simultaneous requests
 let setTypingPromise = null
 export const broadcastTyping = throttle(() => (dispatch, getState) => {
+
+  const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
+
   if (setTypingPromise) {
     return setTypingPromise
   }
@@ -271,7 +289,8 @@ export const broadcastTyping = throttle(() => (dispatch, getState) => {
 
   if (!activeConversation
       || activeConversation === COMPOSE_CONVERSATION_ID
-      || !conversationMetadata[activeConversation]) {
+      || !conversationMetadata[activeConversation]
+      || activeConversation === BOT_CONVERSATION_ID) {
     return
   }
 
@@ -352,7 +371,7 @@ export const pollNewMessages = () => async (dispatch, getState) => {
     const meta = conversationMetadata[id]
 
     for (const contactId of meta.contacts) {
-      if (contactId == identity().username) {
+      if (contactId == identity().username || contactId == 'hermesHelper') {
         continue
       }
 
