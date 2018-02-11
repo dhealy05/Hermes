@@ -4,13 +4,15 @@ import { getConversationById, saveConversationById } from './conversations'
 import { saveContactDataById } from './contacts'
 
 export async function handleHelpMessage(message){
-  console.log("ENTERED")
   if (message.content instanceof File) {
     console.log("File")
   }
-  console.log(message.content)
   await saveMessage(message)
   await sendHermesMessage("Message Received")
+}
+
+export async function switchboard(text){
+  //if()
 }
 
 export async function sendHermesMessage(text){

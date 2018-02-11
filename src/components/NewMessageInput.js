@@ -8,6 +8,7 @@ import { Paper } from './Paper'
 import { TextInput } from './TextInput'
 import { EmojiPicker } from './EmojiPicker'
 import { SendBTCModal } from './SendBTCModal'
+import { ExpiringMessageModal } from './ExpiringMessageModal'
 
 const Container = styled(Paper)`
   width: 100%;
@@ -28,6 +29,7 @@ const Input = styled(TextInput).attrs({
 export class NewMessageInput extends React.Component {
   state = {
     sendBtcModalOpen: false,
+    sendExpiringMessageModalOpen: false,
     sendBtcValue: 0.0000001
   }
 
@@ -68,6 +70,10 @@ export class NewMessageInput extends React.Component {
 
   setFileInputEl = ref => this.fileInputEl = ref
 
+  openExpiringMessageModal = () => this.setState({ sendExpiringMessageModalOpen: true })
+
+  closeExpiringMessageModal = () => this.setState({ sendExpiringMessageModalOpen: false })
+
   render() {
     let {
       onToggleEmojiPicker,
@@ -94,12 +100,17 @@ export class NewMessageInput extends React.Component {
                       onClick={this.pickImage}/>
           <IconButton icon="attach_money"
                       onClick={this.openBtcModal}/>
+          <IconButton icon="timer"
+                      onClick={this.openExpiringMessageModal}/>
         </ButtonContainer>
         <SendBTCModal isOpen={this.state.sendBtcModalOpen}
                       onRequestClose={this.closeBtcModal}
                       btcToSend={this.state.sendBtcValue}
                       onBtcValueChange={this.onBtcValueChange}
                       onSend={this.onSendBtc}/>
+        <ExpiringMessageModal isOpen={this.state.sendExpiringMessageModalOpen}
+                      onRequestClose={this.closeExpiringMessageModal}
+                      btcToSet={() => {}}/>              
       </Container>
     )
   }

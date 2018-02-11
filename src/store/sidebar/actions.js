@@ -21,9 +21,6 @@ export const showActiveConversation = convoId => (dispatch, getState) => {
 
   if(convoId != null){activeConversation = convoId}
 
-  console.log(visible)
-  console.log(convoId)
-
   if(visible == false && convoId != null){
     dispatch(hideSidebar());
     return;
