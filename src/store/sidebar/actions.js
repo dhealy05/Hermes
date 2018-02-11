@@ -13,11 +13,13 @@ export const SIDEBAR_SHOW_PROFILE = 'SIDEBAR_SHOW_PROFILE'
 export const sidebarShowProfile = payloadAction(SIDEBAR_SHOW_PROFILE)
 
 export const showActiveConversation = convoId => (dispatch, getState) => {
-  const { chat: { activeConversation,
+  var { chat: { activeConversation,
                   conversationMetadata } } = getState()
 
   const { sidebar: { visible,
                      content } } = getState()
+
+  if(convoId != null){activeConversation = convoId}                   
 
   var toggle = handleToggle(content, visible, false, activeConversation)
   if(toggle){dispatch(toggleSidebar()); return}
