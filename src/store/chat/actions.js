@@ -25,6 +25,7 @@ import {
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
+import { hideSidebar } from '../sidebar/actions'
 import swal from 'sweetalert'
 
 export const SET_MESSAGE_INPUT_VALUE = 'SET_MESSAGE_INPUT_VALUE'
@@ -35,6 +36,8 @@ export const COMPOSE_CONVERSATION_ID = 'compose'
 export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
 export const setActiveConversation = id => async (dispatch, getState) => {
   const { chat: { conversationDetails } } = getState()
+
+  //dispatch(showActiveConversation(id))
 
   if (id && id !== COMPOSE_CONVERSATION_ID && !conversationDetails[id]) {
     // not using `await` because we want to show a loading state
@@ -47,10 +50,13 @@ export const setActiveConversation = id => async (dispatch, getState) => {
   })
 }
 
-export const startComposing = () => ({
-  type: SET_ACTIVE_CONVERSATION,
-  payload: COMPOSE_CONVERSATION_ID
-})
+export const startComposing = () => async (dispatch, getState) => {
+  dispatch(hideSidebar())
+  return dispatch ({
+    type: SET_ACTIVE_CONVERSATION,
+    payload: COMPOSE_CONVERSATION_ID
+  })
+}
 
 export const RECV_MESSAGE = 'RECV_MESSAGE'
 export const recvMessage = payloadAction(RECV_MESSAGE)

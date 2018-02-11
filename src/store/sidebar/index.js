@@ -17,6 +17,11 @@ export const reducer = (state = initialState, action) => {
         ...state,
         visible: !state.visible,
       }
+    case actions.HIDE_SIDEBAR:
+      return {
+        ...state,
+        visible: false,
+      }
     case actions.SIDEBAR_SHOW_PROFILE:
       return {
         ...state,

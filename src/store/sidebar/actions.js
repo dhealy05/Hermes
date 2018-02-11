@@ -3,19 +3,21 @@ import { payloadAction } from '../util'
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR'
 export const toggleSidebar = payloadAction(TOGGLE_SIDEBAR)
 
+export const HIDE_SIDEBAR = 'HIDE_SIDEBAR'
+export const hideSidebar = payloadAction(HIDE_SIDEBAR)
+
 export const SIDEBAR_SHOW_CONVERSATION_INFO = 'SIDEBAR_SHOW_CONVERSATION_INFO'
 export const sidebarShowConversationInfo = payloadAction(SIDEBAR_SHOW_CONVERSATION_INFO)
 
 export const SIDEBAR_SHOW_PROFILE = 'SIDEBAR_SHOW_PROFILE'
 export const sidebarShowProfile = payloadAction(SIDEBAR_SHOW_PROFILE)
 
-export const showActiveConversation = () => (dispatch, getState) => {
+export const showActiveConversation = convoId => (dispatch, getState) => {
   const { chat: { activeConversation,
                   conversationMetadata } } = getState()
 
-  const { sidebar: { visible } } = getState()
-
-  const { sidebar: { content } } = getState()
+  const { sidebar: { visible,
+                     content } } = getState()
 
   var toggle = handleToggle(content, visible, false, activeConversation)
   if(toggle){dispatch(toggleSidebar()); return}
@@ -32,9 +34,8 @@ export const showActiveConversation = () => (dispatch, getState) => {
 export const showProfile = contactId => (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
 
-  const { sidebar: { visible } } = getState()
-
-  const { sidebar: { content } } = getState()
+  const { sidebar: { visible,
+                     content } } = getState()
 
   var toggle = handleToggle(content, visible, true, contactId)
   if(toggle){dispatch(toggleSidebar()); return}
@@ -62,6 +63,7 @@ function handleToggle(content, visible, profile, existingId){
   }
 
   if(!profile){
+    if(existingId == 'compose'){return true}
     if(content.conversation == null){return false}
     if(content.conversation.id == existingId && visible){
       return true
