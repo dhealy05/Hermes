@@ -46,7 +46,7 @@ export async function getLastSeenForId(id){
 
 export async function getPublicFriendsForId(id){
   const statusPageAndSecret = await getStatusPageAndSecretForId(id)
-  if(!statusPageAndSecret){return false}
+  if(!statusPageAndSecret){return []}
   var decodedFriends = []
   for(var i = 0; i < statusPageAndSecret.statusPage.contacts.length; i++){
     decodedFriends.push(decodeText(statusPageAndSecret.statusPage.contacts[i], statusPageAndSecret.secret))

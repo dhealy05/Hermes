@@ -447,11 +447,6 @@ export const pollNewConversations = () => async (dispatch, getState) => {
   for (const contactId in contactsById) {
     if(contactId == identity().username || contactId == 'hermesHelper'){continue}
 
-    //var lastSeen = await getLastSeenForId(contactId)
-    //console.log(lastSeen)
-    //var publicFriends = await getPublicFriendsForId(contactId)
-    //console.log(publicFriends)
-
     const convo = await discoverConversation(contactId)
 
     if (!convo || conversationDetails[convo]) {
@@ -462,6 +457,23 @@ export const pollNewConversations = () => async (dispatch, getState) => {
 
     if (convo.trusted) {
       dispatch(fetchConversationDetails(convo))
+    }
+  }
+
+  //secondary poll for friends of friends
+  for (const contactId in contactsById) {
+    if(contactId == identity().username || contactId == 'hermesHelper'){continue}
+    var publicFriends = await getPublicFriendsForId(contactId)
+    for(var i = 0; i < publicFriends.length; i++){
+      if(publicFriends[i] == identity().username || publicFriends[i] == 'hermesHelper'){continue}
+      const newConvo = await discoverConversation(publicFriends[i])
+      if (!newConvo || conversationDetails[newConvo]) {
+        continue
+      }
+      discoveredNewConversation = true
+      if (newConvo.trusted) {
+        dispatch(fetchConversationDetails(newConvo))
+      }
     }
   }
 
