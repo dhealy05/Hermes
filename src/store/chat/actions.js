@@ -249,7 +249,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
                   messageExpirationDate } } = getState()
 
   message.expirationDate = messageExpirationDate
-  setExpirationDate('')                
+  dispatch(setExpirationDate(''))                
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
 

@@ -75,6 +75,7 @@ export class NewMessageInput extends React.Component {
     var expirationDate = new Date();
     expirationDate.setHours(expirationDate.getHours() + num);
     this.props.setExpirationDate(expirationDate.toISOString())
+    this.closeExpiringMessageModal()
   }
 
   setFileInputEl = ref => this.fileInputEl = ref

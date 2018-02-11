@@ -122,6 +122,8 @@ export async function saveConversationById(id, convo) {
 
 export async function sendMessage(convoId, message) {
 
+  console.log(message)
+
   if (!(message instanceof Message)) {
     throw new TypeError('must pass Message instance to sendMessage')
   }
