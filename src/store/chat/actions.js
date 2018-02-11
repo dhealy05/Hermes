@@ -444,6 +444,7 @@ export const pollNewConversations = () => async (dispatch, getState) => {
 
   let discoveredNewConversation = false
 
+  //primary poll for new contacts. this will probably mostly uncover group chats
   for (const contactId in contactsById) {
     if(contactId == identity().username || contactId == 'hermesHelper'){continue}
 
