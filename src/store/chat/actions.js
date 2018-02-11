@@ -437,33 +437,31 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 export const pollNewConversations = () => async (dispatch, getState) => {
   dispatch(startPollingConversations())
 
-  const { chat: { conversationDetails, conversationMetadata } } = getState()
+  console.log("POLLING NEW CONVOS --ME")
+
+  const { contacts: { contactsById },
+          chat: { conversationDetails } } = getState()
 
   let discoveredNewConversation = false
 
-  for (const id in conversationMetadata) {
-    const meta = conversationMetadata[id]
+  for (const contactId in contactsById) {
+    if(contactId == identity().username || contactId == 'hermesHelper'){continue}
 
-    for (const contactId of meta.contacts) {
-      if(contactId == identity().username || contactId == 'hermesHelper'){continue}
+    //var lastSeen = await getLastSeenForId(contactId)
+    //console.log(lastSeen)
+    //var publicFriends = await getPublicFriendsForId(contactId)
+    //console.log(publicFriends)
 
-      //console.log(contactId)
-      //var lastSeen = await getLastSeenForId(contactId)
-      //console.log(lastSeen)
-      //var publicFriends = await getPublicFriendsForId(contactId)
-      //console.log(publicFriends)
+    const convo = await discoverConversation(contactId)
 
-      const convo = await discoverConversation(contactId)
+    if (!convo || conversationDetails[convo]) {
+      continue
+    }
 
-      if (!convo || conversationDetails[convo]) {
-        continue
-      }
+    discoveredNewConversation = true
 
-      discoveredNewConversation = true
-
-      if (convo.trusted) {
-        dispatch(fetchConversationDetails(convo))
-      }
+    if (convo.trusted) {
+      dispatch(fetchConversationDetails(convo))
     }
   }
 
