@@ -31,6 +31,9 @@ import swal from 'sweetalert'
 export const SET_MESSAGE_INPUT_VALUE = 'SET_MESSAGE_INPUT_VALUE'
 export const setMessageInputValue = payloadAction(SET_MESSAGE_INPUT_VALUE)
 
+export const SET_MESSAGE_EXPIRATION_DATE = 'SET_MESSAGE_EXPIRATION_DATE'
+export const setExpirationDate = payloadAction(SET_MESSAGE_EXPIRATION_DATE)
+
 export const COMPOSE_CONVERSATION_ID = 'compose'
 
 export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
@@ -238,9 +241,15 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
   const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
 
+  console.log(getState())
+
   const { chat: { activeConversation,
                   conversationMetadata,
-                  newMessageRecipients } } = getState()
+                  newMessageRecipients,
+                  messageExpirationDate } } = getState()
+
+  message.expirationDate = messageExpirationDate
+  setExpirationDate('')                
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
 

@@ -30,7 +30,8 @@ export class NewMessageInput extends React.Component {
   state = {
     sendBtcModalOpen: false,
     sendExpiringMessageModalOpen: false,
-    sendBtcValue: 0.0000001
+    sendBtcValue: 0.0000001,
+    numberOfHours: 1
   }
 
   fileInputEl = null
@@ -66,6 +67,14 @@ export class NewMessageInput extends React.Component {
     //alert(`sending ${amt} BTC now! 💸`)
     this.props.sendBtc(amt)
     this.closeBtcModal()
+  }
+
+  onSetHours = evt => this.setState({ numberOfHours: evt.target.value })
+
+  setExpirationDate = num => {
+    var expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() + num);
+    this.props.setExpirationDate(expirationDate.toISOString())
   }
 
   setFileInputEl = ref => this.fileInputEl = ref
@@ -110,7 +119,9 @@ export class NewMessageInput extends React.Component {
                       onSend={this.onSendBtc}/>
         <ExpiringMessageModal isOpen={this.state.sendExpiringMessageModalOpen}
                       onRequestClose={this.closeExpiringMessageModal}
-                      btcToSet={() => {}}/>              
+                      onSetHours={this.onSetHours}
+                      numberOfHours={this.state.numberOfHours}
+                      setExpirationDate={this.setExpirationDate}/>
       </Container>
     )
   }
@@ -120,5 +131,6 @@ NewMessageInput.propTypes = {
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
   sendBtc: PropTypes.func.isRequired,
+  setExpirationDate: PropTypes.func.isRequired,
   onChange: PropTypes.func
 }

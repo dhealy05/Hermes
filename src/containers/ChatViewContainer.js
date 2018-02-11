@@ -75,7 +75,7 @@ const WithRedux = connect(
       newMessageRecipients = state.chat.newMessageRecipients.map(id => contacts[id])
     }
 
-    const { sendingNewConversation, messageInputValue } = state.chat
+    const { sendingNewConversation, messageInputValue, messageExpirationDate } = state.chat
 
     return {
       identity,
@@ -88,7 +88,8 @@ const WithRedux = connect(
       fileContents,
       newMessageRecipients,
       sendingNewConversation,
-      messageInputValue
+      messageInputValue,
+      messageExpirationDate
     }
   },
   dispatch => ({
@@ -114,6 +115,7 @@ const WithRedux = connect(
     onSignOut: () => dispatch(actions.auth.signOut()),
     onTyping: () => dispatch(actions.chat.broadcastTyping()),
     sendBtc: amt => dispatch(actions.chat.sendBtc(amt)),
+    setExpirationDate: date => dispatch(actions.chat.setExpirationDate(date)),
     onMessageInputChange: evt => {
       const value = typeof evt === 'string'
                   ? evt

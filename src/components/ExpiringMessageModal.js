@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
+import { TextInput } from './TextInput'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 
@@ -25,13 +26,14 @@ const MODAL_ACTIONS = [{
 
 export const ExpiringMessageModal = ({
   onRequestClose,
-  btcToSet,
-  onSet,
+  numberOfHours,
+  onSetHours,
+  setExpirationDate,
   ...other
 }) => {
   const handleAction = type => {
     if (type === 'set') {
-      onSet(btcToSet)
+      setExpirationDate(numberOfHours)
     }
   }
 
@@ -42,30 +44,12 @@ export const ExpiringMessageModal = ({
            onAction={handleAction}
            style={{ content: { left: '35%', right: '35%', top: '6em', height: 220 } }}
            {...other}>
-      <Header>Your next message expires in:</Header>
+      <Header>Enter the number of hours you want your message to last:</Header>
       <div>
-        <SelectWrapper>
-          <Select
-            name="amount"
-            options={[
-              { value: 15, label: '15' },
-              { value: 30, label: '30' },
-              { value: 45, label: '45' },
-              { value: 60, label: '60' },
-            ]}
-          />
-        </SelectWrapper>
-        <SelectWrapper>
-          <Select
-            name="unit"
-            options={[
-              { value: 'minutes', label: 'Minutes' },
-              { value: 'hours', label: 'Hours' },
-              { value: 'weeks', label: 'Weeks' },
-              { value: 'months', label: 'Months' },
-            ]}
-          />
-        </SelectWrapper>
+        <TextInput fullWidth
+                   type="number"
+                   value={numberOfHours}
+                   onChange={onSetHours}/>
       </div>
     </Modal>
   )

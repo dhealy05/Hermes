@@ -127,12 +127,14 @@ export class ChatView extends React.Component {
       onPickImage,
       onTyping,
       sendBtc,
+      setExpirationDate,
       onSetNewMessageRecipients,
       sidebar,
       infoSidebar,
       emojiPicker,
       onToggleEmojiPicker,
       messageInputValue,
+      messageExpirationDate,
       onMessageInputChange,
       onAcceptConversation,
       showConversationSidebar,
@@ -202,6 +204,7 @@ export class ChatView extends React.Component {
                            value={messageInputValue}
                            onTyping={onTyping}
                            sendBtc={sendBtc}
+                           setExpirationDate={setExpirationDate}
                            onChange={onMessageInputChange}
                            onKeyUp={this.onMsgInputKeyUp}/>
         </MessageInputContainer>
@@ -225,6 +228,7 @@ ChatView.propTypes = {
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
   sendBtc: PropTypes.func.isRequired,
+  setExpirationDate: PropTypes.func.isRequired,
   onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired,
   infoSidebar: PropTypes.element.isRequired,

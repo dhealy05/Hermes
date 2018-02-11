@@ -17,6 +17,7 @@ const initialState = {
   sendingNewConversation: false,
   fileContents: {},
   messageInputValue: '',
+  messageExpirationDate: ''
 }
 
 export const reducer = (state = initialState, action) => {
@@ -30,6 +31,11 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         messageInputValue: action.payload
+      }
+    case actions.SET_MESSAGE_EXPIRATION_DATE:
+      return {
+        ...state,
+        messageExpirationDate: action.payload
       }
     case actions.SET_ACTIVE_CONVERSATION:
       return {
