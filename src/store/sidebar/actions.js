@@ -15,9 +15,10 @@ export const showActiveConversation = () => (dispatch, getState) => {
 
   const { sidebar: { visible } } = getState()
 
-  console.log(visible)
+  const { sidebar: { content } } = getState()
 
-  if(visible){dispatch(toggleSidebar()); return}
+  var toggle = handleToggle(content, visible, false, activeConversation)
+  if(toggle){dispatch(toggleSidebar()); return}
 
   const convo = conversationMetadata[activeConversation]
 
@@ -25,7 +26,7 @@ export const showActiveConversation = () => (dispatch, getState) => {
     return
   }
 
-  dispatch(sidebarShowConversationInfo({ message: 'look at me' }))
+  dispatch(sidebarShowConversationInfo(convo))
 }
 
 export const showProfile = contactId => (dispatch, getState) => {
@@ -33,7 +34,10 @@ export const showProfile = contactId => (dispatch, getState) => {
 
   const { sidebar: { visible } } = getState()
 
-  if(visible){dispatch(toggleSidebar()); return}
+  const { sidebar: { content } } = getState()
+
+  var toggle = handleToggle(content, visible, true, contactId)
+  if(toggle){dispatch(toggleSidebar()); return}
 
   const contact = contactsById[contactId]
 
@@ -43,4 +47,26 @@ export const showProfile = contactId => (dispatch, getState) => {
   }
 
   dispatch(sidebarShowProfile(contact))
+}
+
+function handleToggle(content, visible, profile, existingId){
+  if(content == null){
+    return false
+  }
+
+  if(profile){
+    if(content.profile == null){return false}
+    if(content.profile.id == existingId && visible){
+      return true
+    }
+  }
+
+  if(!profile){
+    if(content.conversation == null){return false}
+    if(content.conversation.id == existingId && visible){
+      return true
+    }
+  }
+
+  return false
 }

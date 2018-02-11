@@ -18,7 +18,7 @@ const PopulatedSidebar = ({
     case SidebarContentTypes.Conversation:
       renderedContent = (
         <p>
-          This is a conversation. The message: {content.conversation.message}
+          This is a conversation. The id: {content.conversation.id}
         </p>
       )
       break
