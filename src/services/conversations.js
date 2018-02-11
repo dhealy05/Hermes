@@ -6,8 +6,7 @@ import { encodeText, decodeText } from './keys'
 import {
   addContactById,
   getContacts,
-  saveContactDataById,
-  addFriendsOnlyContactById
+  saveContactDataById
 } from './contacts'
 import { sendBitcoinToIds } from './bitcoin'
 import swal from 'sweetalert'
@@ -268,9 +267,10 @@ export function saveOutgoingMessages(convo, outbox) {
     paymentStatus: encodeText(lastMsg.paymentStatus, convo.secret),
     value: encodeText(lastMsg.value, convo.secret)
   })
+  convo.messages = messages
   return saveJson(
     convo.filename,
-    { messages: messages, typing: '' },
+    convo,
     { isPublic: true }
   )
 }
@@ -306,7 +306,7 @@ export async function acknowledgeConversation(conversationOrId) {
     contact.trusted = true
 
     await saveContactDataById(contactId, contact)
-    await addFriendsOnlyContactById(contactId)
+    //await addFriendsOnlyContactById(contactId)
   }
 
   conversation.trusted = true

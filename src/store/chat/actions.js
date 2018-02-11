@@ -21,7 +21,9 @@ import {
   lookupProfile,
   isUserOnHermes,
   setTyping,
-  handleHelpMessage
+  handleHelpMessage,
+  getLastSeenForId,
+  getPublicFriendsForId
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -241,15 +243,13 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
   const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
 
-  console.log(getState())
-
   const { chat: { activeConversation,
                   conversationMetadata,
                   newMessageRecipients,
                   messageExpirationDate } } = getState()
 
   message.expirationDate = messageExpirationDate
-  dispatch(setExpirationDate(''))                
+  dispatch(setExpirationDate(''))
 
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
 
@@ -383,6 +383,7 @@ const NEW_CONVERSATION_POLL_INTERVAL = 5
 let conversationPollCounter = NEW_CONVERSATION_POLL_INTERVAL
 
 export const pollNewMessages = () => async (dispatch, getState) => {
+
   if (++conversationPollCounter >= NEW_CONVERSATION_POLL_INTERVAL) {
     conversationPollCounter = 0
     await dispatch(pollNewConversations())
@@ -436,22 +437,33 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 export const pollNewConversations = () => async (dispatch, getState) => {
   dispatch(startPollingConversations())
 
-  const { chat: { conversationDetails } } = getState()
-  const public_contacts = ["fulgid.id", "nmuth.id", "djhealy.id", "djh.id"]
+  const { chat: { conversationDetails, conversationMetadata } } = getState()
 
   let discoveredNewConversation = false
 
-  for (const contact of public_contacts) {
-    const convo = await discoverConversation(contact)
+  for (const id in conversationMetadata) {
+    const meta = conversationMetadata[id]
 
-    if (!convo || conversationDetails[convo]) {
-      continue
-    }
+    for (const contactId of meta.contacts) {
+      if(contactId == identity().username || contactId == 'hermesHelper'){continue}
 
-    discoveredNewConversation = true
+      //console.log(contactId)
+      //var lastSeen = await getLastSeenForId(contactId)
+      //console.log(lastSeen)
+      //var publicFriends = await getPublicFriendsForId(contactId)
+      //console.log(publicFriends)
 
-    if (convo.trusted) {
-      dispatch(fetchConversationDetails(convo))
+      const convo = await discoverConversation(contactId)
+
+      if (!convo || conversationDetails[convo]) {
+        continue
+      }
+
+      discoveredNewConversation = true
+
+      if (convo.trusted) {
+        dispatch(fetchConversationDetails(convo))
+      }
     }
   }
 

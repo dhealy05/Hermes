@@ -30,6 +30,7 @@ export async function saveContactDataById(id, contact) {
   const { contacts } = await getContacts()
   contacts[id] = contact
   await saveContactsFile(contacts)
+  addFriendsOnlyContactById(id)
   return contact
 }
 

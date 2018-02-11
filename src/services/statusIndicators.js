@@ -37,24 +37,40 @@ export async function getMyStatus(){
   return new Date(lastSeen)
 }
 
-export async function getLastSeen(filename, secret, username){
-  const status = await getJson(filename, {username: username})
-  const lastSeen = decodeText(status.lastSeen, secret)
+export async function getLastSeenForId(id){
+  const statusPageAndSecret = await getStatusPageAndSecretForId(id)
+  if(!statusPageAndSecret){return false}
+  const lastSeen = decodeText(statusPageAndSecret.statusPage.lastSeen, statusPageAndSecret.secret)
   return new Date(lastSeen)
 }
 
-export async function getStatus(id){
+export async function getPublicFriendsForId(id){
+  const statusPageAndSecret = await getStatusPageAndSecretForId(id)
+  if(!statusPageAndSecret){return false}
+  var decodedFriends = []
+  for(var i = 0; i < statusPageAndSecret.statusPage.contacts.length; i++){
+    decodedFriends.push(decodeText(statusPageAndSecret.statusPage.contacts[i], statusPageAndSecret.secret))
+  }
+  return decodedFriends
+}
+
+export async function getStatusPageAndSecretForId(id){
   if(id == 'hermesHelper'){return}
   var contacts = await getContacts()
   var contact = contacts.contacts[id]
+  if(!contact.trusted){return false}
   if(contact.statusPage == '' || contact.statusSecret == ''){
-    return await updateContactAndGetLastSeen(contact)
+    contact = await updateContact(contact)
+    if(!contact){return false}
+    var statusPage = await getJson(contact.statusPage, {username: contact.id})
+    return {statusPage: statusPage, secret: contact.statusSecret}
   } else {
-    return await getLastSeen(contact.statusPage, contact.statusSecret, contact.id)
+    var statusPage = await getJson(contact.statusPage, {username: contact.id})
+    return {statusPage: statusPage, secret: contact.statusSecret}
   }
 }
 
-async function updateContactAndGetLastSeen(contact){
+async function updateContact(contact){
   const conversations = await getConversations()
   var secret = ''
   var filename = ''
@@ -65,8 +81,10 @@ async function updateContactAndGetLastSeen(contact){
     }
   }
   var outbox = await getJson(filename, {username: contact.id})
+  if(outbox == null){return false}
+  console.log(outbox)
   contact.statusPage = decodeText(outbox.statusPage, secret)
   contact.statusSecret = decodeText(outbox.statusSecret, secret)
   saveContactDataById(contact.id, contact)
-  return await getLastSeen(contact.statusPage, contact.statusSecret, contact.id)
+  return contact
 }
