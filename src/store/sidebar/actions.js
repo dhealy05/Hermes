@@ -19,10 +19,18 @@ export const showActiveConversation = convoId => (dispatch, getState) => {
   const { sidebar: { visible,
                      content } } = getState()
 
-  if(convoId != null){activeConversation = convoId}                   
+  if(convoId != null){activeConversation = convoId}
 
-  var toggle = handleToggle(content, visible, false, activeConversation)
-  if(toggle){dispatch(toggleSidebar()); return}
+  console.log(visible)
+  console.log(convoId)
+
+  if(visible == false && convoId != null){
+    dispatch(hideSidebar());
+    return;
+  } else {
+    var toggle = handleToggle(content, visible, false, activeConversation)
+    if(toggle){dispatch(toggleSidebar()); return;}
+  }
 
   const convo = conversationMetadata[activeConversation]
 
