@@ -13,6 +13,12 @@ export const showActiveConversation = () => (dispatch, getState) => {
   const { chat: { activeConversation,
                   conversationMetadata } } = getState()
 
+  const { sidebar: { visible } } = getState()
+
+  console.log(visible)
+
+  if(visible){dispatch(toggleSidebar()); return}
+
   const convo = conversationMetadata[activeConversation]
 
   if (!convo) {
@@ -24,6 +30,10 @@ export const showActiveConversation = () => (dispatch, getState) => {
 
 export const showProfile = contactId => (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
+
+  const { sidebar: { visible } } = getState()
+
+  if(visible){dispatch(toggleSidebar()); return}
 
   const contact = contactsById[contactId]
 
