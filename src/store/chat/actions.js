@@ -275,8 +275,8 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   }
 
   if(activeConversation === BOT_CONVERSATION_ID){
-    await handleHelpMessage(message)
-    //dispatch(setConversationDetails(await handleHelpMessage(message)))
+    //await handleHelpMessage(message)
+    dispatch(setConversationDetails(await handleHelpMessage(message)))
     dispatch(refreshConversationList())
     return
   }
