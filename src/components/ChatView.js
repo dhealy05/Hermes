@@ -28,7 +28,10 @@ const MessagesContainer = styled.div`
   }
 `
 
-const MessageInputContainer = styled.div``
+const MessageInputContainer = styled.div`
+  box-sizing: border-box;
+  margin: 15px;
+`
 
 export class ChatView extends React.Component {
   state = {
@@ -177,7 +180,8 @@ export class ChatView extends React.Component {
                 content = fileContents[rawContent]
               }
               return (
-                <Message {...other}
+                <Message key={i}
+                         {...other}
                          direction={sender === identity.username ? 'right' : 'left'}
                          contentType={type}
                          content={content} />
@@ -215,7 +219,7 @@ export class ChatView extends React.Component {
           <TypingIndicator names={typing}/>
           <NewMessageInput onPickImage={onPickImage}
                            onToggleEmojiPicker={onToggleEmojiPicker}
-                           placeholder="type your message"
+                           placeholder="Type your message"
                            value={messageInputValue}
                            onTyping={onTyping}
                            sendBtc={sendBtc}

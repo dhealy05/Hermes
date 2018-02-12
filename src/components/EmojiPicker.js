@@ -16,7 +16,7 @@ const ClickShield = styled.div`
 const pickerStyle = {
   position: 'absolute',
   right: '1em',
-  bottom: '1em',
+  bottom: '4em',
   zIndex: 9999
 }
 

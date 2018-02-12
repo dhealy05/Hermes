@@ -4,19 +4,25 @@ import styled from 'styled-components'
 import { omit } from 'lodash'
 import * as colors from '../colors'
 import { IconButton } from './IconButton'
-import { Paper } from './Paper'
 import { TextInput } from './TextInput'
-import { EmojiPicker } from './EmojiPicker'
 import { SendBTCModal } from './SendBTCModal'
 import { ExpiringMessageModal } from './ExpiringMessageModal'
 
-const Container = styled(Paper)`
+const Container = styled.div`
   width: 100%;
+  position: relative;
 `
 
 const ButtonContainer = styled.div`
+  position: absolute;
   padding: 0.5em 1em;
-  color: ${colors.greyDark}
+  color: ${colors.greyDark};
+  right: 0px;
+  bottom: 0px;
+
+  button {
+    width: 28px;
+  }
 `
 
 const Input = styled(TextInput).attrs({
@@ -24,6 +30,13 @@ const Input = styled(TextInput).attrs({
 })`
   margin: 0;
   margin-top: 0;
+  border: 2px solid ${colors.grey};
+  border-radius: 5px;
+
+  input {
+    border: none;
+    padding: 0.7em 1em;
+  }
 `
 
 export class NewMessageInput extends React.Component {
@@ -100,7 +113,7 @@ export class NewMessageInput extends React.Component {
                onChange={this.onFileInputChange}
                ref={this.setFileInputEl}/>
         <Input fullWidth
-               placeholder="type your message"
+               placeholder="Type your message"
                onChange={this.onTextChange}
                {...other}/>
         <ButtonContainer>
