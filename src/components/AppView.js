@@ -12,6 +12,7 @@ const Layout = styled.div`
   top: 0;
   display: flex;
   background-color: ${colors.white};
+  background-image: url("/background.svg");
 `
 
 const MainOutletContainer = styled.div`

@@ -6,10 +6,10 @@ import { chain, get } from 'lodash'
 import * as colors from '../colors'
 import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
+import { MessageGroup } from './MessageGroup'
 import { Message } from './Message'
 import { AddUserToChat } from './AddUserToChat'
 import { NewMessageInput } from './NewMessageInput'
-import { Loader } from './Loader'
 import { TypingIndicator } from './TypingIndicator'
 import { NewConversationInvitation } from './NewConversationInvitation'
 import { TopNav } from './TopNav'
@@ -19,6 +19,8 @@ const MessagesContainer = styled.div`
   padding: 24px;
   display: flex;
   flex-direction: column-reverse;
+  overflow: auto;
+)
 
   &::-webkit-scrollbar-track {
     width: 3px;
@@ -148,28 +150,41 @@ export class ChatView extends React.Component {
     )
 
     if (conversation && conversation.trusted) {
-      messageContents = conversation.messages.map(({ sender,
-                                                     content: rawContent,
-                                                     type,
-                                                     sentAt,
-                                                     ...other }, i) => {
-        let content = rawContent
-
-        if (type === ContentTypes.Image) {
-          content = fileContents[rawContent]
-        }
-
-        return (
-          <Message key={i}
-                   {...other}
-                   direction={sender === identity.username ? 'right' : 'left'}
-                   sender={contacts[sender]}
-                   onShowSenderProfile={() => showProfileSidebar(sender)}
-                   timestamp={sentAt}
-                   contentType={type}
-                   content={content}/>
-        )
-      })
+      let lastSender;
+      messageContents = conversation.messages
+        .reduce((threads, message) => {
+          if (message.sender !== lastSender) {
+            // Create thread
+            threads.push({ sender: message.sender, sentAt: message.sentAt, messages: [] });
+          }
+          threads[threads.length - 1].messages.push(message);
+          lastSender = message.sender;
+          return threads;
+        }, [])
+        .map(({ sender, sentAt, messages }, i) => (
+          <MessageGroup key={i}
+                        direction={sender === identity.username ? 'right' : 'left'}
+                        sender={contacts[sender]}
+                        onShowSenderProfile={() => showProfileSidebar(sender)}
+                        timestamp={sentAt}>
+            { messages && messages.map(({ sender,
+                                          content: rawContent,
+                                          type,
+                                          sentAt,
+                                          ...other }, i) => {
+              let content = rawContent
+              if (type === ContentTypes.Image) {
+                content = fileContents[rawContent]
+              }
+              return (
+                <Message {...other}
+                         direction={sender === identity.username ? 'right' : 'left'}
+                         contentType={type}
+                         content={content} />
+              );
+            })}
+          </MessageGroup>
+        ))
     } else if (conversation && !conversation.trusted) {
       const others = chain(conversation.contacts)
         .filter(c => c !== identity.username)
