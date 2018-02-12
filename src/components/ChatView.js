@@ -157,7 +157,7 @@ export class ChatView extends React.Component {
             // Create thread
             threads.push({ sender: message.sender, sentAt: message.sentAt, messages: [] });
           }
-          threads[threads.length - 1].messages.push(message);
+          threads[threads.length - 1].messages.unshift(message);
           lastSender = message.sender;
           return threads;
         }, [])
