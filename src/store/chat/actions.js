@@ -444,9 +444,18 @@ export const pollNewConversations = () => async (dispatch, getState) => {
 
   let discoveredNewConversation = false
 
+  var previouslyPolledIds = []
+
   //primary poll for new contacts. this will probably mostly uncover group chats
   for (const contactId in contactsById) {
     if(contactId == identity().username || contactId == 'hermesHelper'){continue}
+
+    previouslyPolledIds.push(contactId)
+
+    const profile = await lookupProfile(contactId)
+    if(!await isUserOnHermes(profile)){
+      continue
+    }
 
     const convo = await discoverConversation(contactId)
 
@@ -467,6 +476,7 @@ export const pollNewConversations = () => async (dispatch, getState) => {
     var publicFriends = await getPublicFriendsForId(contactId)
     for(var i = 0; i < publicFriends.length; i++){
       if(publicFriends[i] == identity().username || publicFriends[i] == 'hermesHelper'){continue}
+      if(previouslyPolledIds.includes(publicFriends[i])){continue}
       const newConvo = await discoverConversation(publicFriends[i])
       if (!newConvo || conversationDetails[newConvo]) {
         continue
