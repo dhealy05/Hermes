@@ -74,7 +74,8 @@ export const Modal = ({
 
   if (hasCancelButton) {
     actionButtons.unshift(
-      <ActionButton linkButton
+      <ActionButton key="cancel"
+                    linkButton
                     onClick={onRequestClose}>
         Cancel
       </ActionButton>

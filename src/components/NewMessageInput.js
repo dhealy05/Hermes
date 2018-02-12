@@ -121,8 +121,9 @@ export class NewMessageInput extends React.Component {
                       onClick={onToggleEmojiPicker}/>
           <IconButton icon="insert_photo"
                       onClick={this.pickImage}/>
-          <IconButton icon="attach_money"
-                      onClick={this.openBtcModal}/>
+          <IconButton onClick={this.openBtcModal}>
+            <img src="/Bitcoin.svg" alt="bitcoins" />
+          </IconButton>
           <IconButton icon="timer"
                       onClick={this.openExpiringMessageModal}/>
         </ButtonContainer>

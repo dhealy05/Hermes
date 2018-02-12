@@ -12,10 +12,15 @@ const Button = styled.button`
   &:focus {
     outline: none;
   }
+
+  img {
+    margin-bottom: 2px;
+    width: 20px;
+  }
 `
 
-export const IconButton = ({ className, icon, ...other }) => (
+export const IconButton = ({ className, icon, children, ...other }) => (
   <Button className={className} {...other}>
-    <Icon icon={icon}/>
+    { children || <Icon icon={icon}/> }
   </Button>
 )

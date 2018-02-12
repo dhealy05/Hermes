@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Icon } from './Icon'
 import { Modal } from './Modal'
 import { TextInput } from './TextInput'
 
@@ -10,6 +9,10 @@ const Header = styled.p`
 
 const Title = styled.div`
   display: flex;
+`
+
+const Image = styled.img`
+  margin-right: 8px;
 `
 
 const MODAL_ACTIONS = [{
@@ -31,7 +34,7 @@ export const SendBTCModal = ({
   }
 
   return (
-    <Modal title={<Title><Icon icon="attach_money" />Send BTC</Title>}
+    <Modal title={<Title><Image src="/BitcoinDark.svg" alt="bitcoins" />Send BTC</Title>}
            onRequestClose={onRequestClose}
            actions={MODAL_ACTIONS}
            onAction={handleAction}

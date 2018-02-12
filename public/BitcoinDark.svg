@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/BitcoinDark</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="09.Hermes-Helper" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-975.000000, -816.000000)" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Message-Area" transform="translate(380.000000, 800.000000)" stroke="#000">
+            <g id="Icon/BitcoinDark" transform="translate(596.000000, 17.000000)">
+                <g>
+                    <circle id="Oval-14" stroke-width="1.5" cx="8" cy="8" r="8"></circle>
+                    <path d="M7,3 L7,4.2" id="Line" stroke-width="1.5"></path>
+                    <path d="M7,12 L7,13.2" id="Line-Copy" stroke-width="1.5"></path>
+                    <path d="M9,3 L9,4.2" id="Line-Copy-3" stroke-width="1.5"></path>
+                    <path d="M9,12 L9,13.2" id="Line-Copy-2" stroke-width="1.5"></path>
+                    <path d="M6,4.5 L6,11.1415123 L9.31516598,11.1415123 C10.276445,11.1415123 11.0557156,10.3622417 11.0557156,9.40096265 L11.0557156,9.40096265 C11.0557156,8.43968363 10.276445,7.66041302 9.31516598,7.66041302 L6.38110252,7.66041302 L8.4755091,7.66041302 C9.34823306,7.66041302 10.0557156,6.95293047 10.0557156,6.08020651 L10.0557156,6.08020651 C10.0557156,5.20748255 9.34823306,4.5 8.4755091,4.5 L6,4.5 Z" id="Path-2" stroke-width="1.5"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
