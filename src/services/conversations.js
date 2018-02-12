@@ -92,12 +92,21 @@ export async function createNewConversation(
 }
 
 export async function getPicFromContacts(contacts){
+
+  if(contacts.length == 1){
+    if(identity().profile.image != null){
+      return identity().profile.image[0].contentUrl
+    } else {
+      return ''
+    }
+  }
+
   var pic = ''
   for(var i = 0; i < contacts.length; i++){
     if(contacts[i] == identity().username){continue;}
     pic = 'https://www.hihermes.co/images/avatars/' + contacts[i][0].toLowerCase() + '.svg'
     const profile = await lookupProfile(contacts[i])
-    if(profile.image != null){pic = profile.image[0].contentUrl; return pic}
+    if(profile.image != null){return profile.image[0].contentUrl; return pic}
   }
   return pic
 }
