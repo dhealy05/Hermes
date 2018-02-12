@@ -112,6 +112,9 @@ export async function getPicFromContacts(contacts){
 }
 
 export async function saveConversationById(id, convo) {
+
+  console.log(convo)
+
   if (!id || typeof id !== 'string') {
     throw new TypeError('missing required string parameter `id`')
   }
@@ -130,6 +133,7 @@ export async function saveConversationById(id, convo) {
 
 export async function sendMessage(convoId, message) {
 
+  console.log("XXXXXXXXXXX")
   console.log(message)
 
   if (!(message instanceof Message)) {
@@ -276,10 +280,14 @@ export function saveOutgoingMessages(convo, outbox) {
     paymentStatus: encodeText(lastMsg.paymentStatus, convo.secret),
     value: encodeText(lastMsg.value, convo.secret)
   })
-  convo.messages = messages
   return saveJson(
     convo.filename,
-    convo,
+    {
+      messages: messages,
+      typing: '',
+      statusPage: convo.statusPage,
+      statusSecret: convo.statusSecret
+    },
     { isPublic: true }
   )
 }
