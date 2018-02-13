@@ -5,6 +5,7 @@ import * as colors from '../colors'
 import { ContentTypes } from '../models'
 import { formatTime } from '../services/formatTime'
 import { Avatar } from './Avatar'
+import { identity } from '../services'
 
 const List = styled.ul`
   font-size: 14px;
@@ -64,12 +65,15 @@ export const ThumbnailsList = props => {
   const items = props.thumbnails.map(t => {
     let preview = null
 
+    var sender = t.lastSenderName
+    if(sender == identity().profile.name){sender = "You"}
+
     if (t.trusted === false) {
       preview = <TextPreview>{t.lastSenderName} wants to connect</TextPreview>
     } else if (t.contentType === ContentTypes.Text) {
-      preview = <TextPreview>{t.lastSenderName}: {t.content}</TextPreview>
+      preview = <TextPreview>{sender}: {t.content}</TextPreview>
     } else if (t.contentType === ContentTypes.Image) {
-      preview = <TextPreview>{t.lastSenderName} sent an image</TextPreview>
+      preview = <TextPreview>{sender} sent an image</TextPreview>
     }
 
     return (

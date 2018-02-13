@@ -333,6 +333,12 @@ export async function deleteConversation(id){
   const { contacts } = await getContacts()
   delete contacts[id]
   await saveJson('contacts.json', contacts)
+  await saveJson(`conversation_${id}.json`, '')
+  await saveJson(
+    filename,
+    { messages: [], typing: '', statusPage: '', statusSecret: ''},
+    { isPublic: true }
+  )
   //await deleteFile(filename)
   //await deleteFile(`conversation_${id}.json`)
 }
