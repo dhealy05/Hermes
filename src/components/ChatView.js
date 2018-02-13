@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { chain, get } from 'lodash'
+import ReactPlaceholder from 'react-placeholder';
+import { MediaBlock } from 'react-placeholder/lib/placeholders';
+import "react-placeholder/lib/reactPlaceholder.css";
 import * as colors from '../colors'
 import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
@@ -32,6 +35,15 @@ const MessageInputContainer = styled.div`
   box-sizing: border-box;
   margin: 15px;
 `
+
+// Simulating a conversation
+const placeholder = (
+  <MessagesContainer>
+    <MediaBlock color={colors.greyLight} rows={7} />
+    <MediaBlock color={colors.greyLight} rows={6} />
+    <MediaBlock color={colors.greyLight} rows={2} />
+  </MessagesContainer>
+)
 
 export class ChatView extends React.Component {
   state = {
@@ -124,6 +136,7 @@ export class ChatView extends React.Component {
       conversation,
       conversationTitle,
       contacts,
+      loadingConversation,
       typing,
       fileContents,
       newMessageRecipients,
@@ -139,7 +152,6 @@ export class ChatView extends React.Component {
       emojiPicker,
       onToggleEmojiPicker,
       messageInputValue,
-      messageExpirationDate,
       onMessageInputChange,
       onAcceptConversation,
       showConversationSidebar,
@@ -212,9 +224,13 @@ export class ChatView extends React.Component {
                infoSidebar={infoSidebar}
                emojiPicker={emojiPicker}
                topbar={topbar}>
-        <MessagesContainer ref={this.setMessagesList}>
-          {messageContents}
-        </MessagesContainer>
+        <ReactPlaceholder customPlaceholder={placeholder}
+                          showLoadingAnimation={true}
+                          ready={!loadingConversation}>
+          <MessagesContainer ref={this.setMessagesList}>
+            {messageContents}
+          </MessagesContainer>
+        </ReactPlaceholder>
         <MessageInputContainer>
           <TypingIndicator names={typing}/>
           <NewMessageInput onPickImage={onPickImage}

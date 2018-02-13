@@ -56,8 +56,7 @@ const WithRedux = connect(
     const loading = state.chat.loadingConversationMetadata
                  || state.contacts.loading
                  || (!conversation && !composing)
-                 || conversation && conversation.loading
-
+    const loadingConversation = conversation && conversation.loading
     const metadata = state.chat.conversationMetadata[activeConversation]
     const conversationTitle = (composing || !conversation)
                             ? 'New Conversation'
@@ -83,6 +82,7 @@ const WithRedux = connect(
       conversation,
       conversationTitle,
       loading,
+      loadingConversation,
       contacts,
       typing,
       fileContents,

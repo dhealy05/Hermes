@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="18px" viewBox="0 0 17 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/New chat</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="02.Chat" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-321.000000, -26.000000)" stroke-linecap="round">
+        <g id="Header" transform="translate(-1.000000, -1.000000)" stroke="#6288FD">
+            <g id="Logo-Container">
+                <g id="Icon/New-chat" transform="translate(318.000000, 24.000000)">
+                    <g id="Group-3">
+                        <g transform="translate(5.000000, 4.000000)" stroke-width="2">
+                            <path d="M7.33333333,0.727272727 L7.33333333,15.2727273" id="Line-2"></path>
+                            <path d="M0,8 L14.6666667,8" id="Line-2-Copy"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

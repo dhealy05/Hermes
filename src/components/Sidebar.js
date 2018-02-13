@@ -33,10 +33,11 @@ export const Sidebar = ({ className, title, onComposeMessage, children }) => {
   return (
     <OuterContainer className={className}>
       <Title>
-        <img src="/title-logo-inverted.svg"/>
+        <img src="/title-logo-inverted.svg" alt="Logo" />
         <div>
-          <ShortcutButton icon="message"
-                          onClick={onComposeMessage}/>
+          <ShortcutButton onClick={onComposeMessage}>
+            <img src="/NewChat.svg" alt="New conversation" />
+          </ShortcutButton>
         </div>
       </Title>
       {children}

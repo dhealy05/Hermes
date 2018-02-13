@@ -59,7 +59,7 @@ export const Conversation = Model('Conversation', {
   trusted: true
 })
 
-Conversation.getId = ({ contacts }) => contacts.sort().join('-')
+Conversation.getId = ({ contacts }) => contacts && contacts.sort().join('-')
 
 Conversation.getDefaultThumbnail = () => ({
   id: null,
