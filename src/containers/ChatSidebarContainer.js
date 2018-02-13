@@ -6,6 +6,7 @@ import { Sidebar } from '../components/Sidebar'
 import { ThumbnailsList } from '../components/ThumbnailsList'
 import { actions } from '../store'
 import { Conversation } from '../models'
+import { identity } from '../services'
 
 const WithRedux = connect(
   state => ({
@@ -27,7 +28,8 @@ export const ChatSidebar = ({
   const thumbnails = chain(conversationsById)
     .map(c => {
       const contacts = c.contacts.map(id => contactsById[id])
-      const title = contacts.map(c => c.name).join(', ')
+      const contactsArray = contacts.map(c => c.name)
+      const title = (contactsArray.filter(name => name !== identity().profile.name)).join(', ')
       const lastSender = contactsById[c.thumbnail.lastSender]
       const lastSenderName = (lastSender && lastSender.name) || 'Anonymous'
 

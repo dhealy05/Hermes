@@ -113,8 +113,6 @@ export async function getPicFromContacts(contacts){
 
 export async function saveConversationById(id, convo) {
 
-  console.log(convo)
-
   if (!id || typeof id !== 'string') {
     throw new TypeError('missing required string parameter `id`')
   }
@@ -132,9 +130,6 @@ export async function saveConversationById(id, convo) {
 }
 
 export async function sendMessage(convoId, message) {
-
-  console.log("XXXXXXXXXXX")
-  console.log(message)
 
   if (!(message instanceof Message)) {
     throw new TypeError('must pass Message instance to sendMessage')

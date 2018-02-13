@@ -68,6 +68,8 @@ export const ThumbnailsList = props => {
       preview = <TextPreview>{t.lastSenderName} wants to connect</TextPreview>
     } else if (t.contentType === ContentTypes.Text) {
       preview = <TextPreview>{t.lastSenderName}: {t.content}</TextPreview>
+    } else if (t.contentType === ContentTypes.Image) {
+      preview = <TextPreview>{t.lastSenderName} sent an image</TextPreview>
     }
 
     return (
