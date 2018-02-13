@@ -15,6 +15,5 @@ const Wrapper = styled.div`
 export const Loader = () => (
   <Wrapper>
     <img src="/LogoAnimatedBig.svg" alt="loading..." />
-    Loading...
   </Wrapper>
 )
