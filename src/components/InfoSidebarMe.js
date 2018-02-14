@@ -62,7 +62,8 @@ export class InfoSidebarMe extends Component {
   async componentDidMount() {
     const address = getPublicAddress();
     const balance = await getBalance(address);
-    this.setState({ address, balance: balance[address].final_balance });
+    const balanceInBtc = balance[address].final_balance / 100000000
+    this.setState({ address, balance: balanceInBtc });
   }
 
   render() {

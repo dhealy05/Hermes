@@ -87,6 +87,7 @@ export class NewMessageInput extends React.Component {
   setExpirationDate = num => {
     var expirationDate = new Date();
     expirationDate.setHours(expirationDate.getHours() + num);
+    //expirationDate.setMinutes(expirationDate.getMinutes() + num);
     this.props.setExpirationDate(expirationDate.toISOString())
     this.closeExpiringMessageModal()
   }

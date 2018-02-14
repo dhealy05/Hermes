@@ -108,9 +108,6 @@ export async function makeTransaction(recipients, amount){
 
   const satoshisPerAddress = satoshis / recipients.length
 
-  console.log(satoshisPerAddress)
-  console.log(recipients)
-
   for(var i = 0; i < recipients.length; i++){
     tx.addOutput(recipients[i], satoshisPerAddress)
   }
