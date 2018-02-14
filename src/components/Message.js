@@ -67,10 +67,11 @@ export const Message = ({
 }) => {
   return (
     <div>
-      <MessageContent contentType={contentType} content={content} direction={direction} />
-      { paymentStatus !== 'unpaid'
-        ? <PaidMessageValue>{value} BTC sent</PaidMessageValue>
-        : null }
+      { paymentStatus === 'unpaid'
+      ? <MessageContent contentType={contentType}
+                        content={content}
+                        direction={direction}/>
+      : <PaidMessageValue>{value} BTC sent</PaidMessageValue> }
     </div>
   )
 }
