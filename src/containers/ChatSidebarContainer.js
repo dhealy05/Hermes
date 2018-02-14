@@ -31,8 +31,13 @@ export const ChatSidebar = ({
       var contactsArray = contacts.map(c => c.name)
       var title = (contactsArray.filter(name => name !== identity().profile.name)).join(', ')
       if(identity().profile.name == '' || identity().profile.name == null){
-        contactsArray = contacts.map(c => c.id)
-        title = (contactsArray.filter(id => id !== identity().username)).join(', ')
+        var titleArray = []
+        for(var i = 0; i < contacts.length; i++){
+          if(contacts[i].id !== identity().username){
+            titleArray.push(contacts[i].name)
+          }
+        }
+        title = titleArray.join(', ')
       }
       const lastSender = contactsById[c.thumbnail.lastSender]
       const lastSenderName = (lastSender && lastSender.name) || (lastSender && lastSender.id) || 'Anonymous'
