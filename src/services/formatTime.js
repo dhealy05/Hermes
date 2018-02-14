@@ -14,3 +14,5 @@ export const formatTime = isostring => {
 
   return m.format('MMM Do')
 }
+
+export const timeAgo = isostring => moment(isostring).fromNow()

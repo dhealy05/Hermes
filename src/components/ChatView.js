@@ -41,7 +41,7 @@ const placeholder = (
   <MessagesContainer>
     <MediaBlock color={colors.greyLight} rows={7} />
     <MediaBlock color={colors.greyLight} rows={6} />
-    <MediaBlock color={colors.greyLight} rows={2} />
+    <MediaBlock color={colors.greyLight} rows={8} />
   </MessagesContainer>
 )
 

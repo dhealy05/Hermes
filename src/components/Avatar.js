@@ -9,6 +9,9 @@ export const Circle = styled(Paper).attrs({
   ${props => css`
     width: ${props.size}px;
     height: ${props.size}px;
+    height: ${props.size}px;
+    line-height: ${props.size}px;
+    text-align: center;
   `}
 
   ${props => props.background && css`

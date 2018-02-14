@@ -10,7 +10,6 @@ const OuterContainer = styled.div`
   background-color: ${colors.white};
   box-shadow: ${colors.border} -1px 0 2px 0;
   z-index: ${layers.Sidebar};
-  padding: 10px;
 `
 
 export const InfoSidebar = ({ children }) => {
