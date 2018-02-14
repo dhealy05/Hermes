@@ -13,18 +13,6 @@ const Container = styled.div`
   position: relative;
 `
 
-const ButtonContainer = styled.div`
-  position: absolute;
-  padding: 0.5em 1em;
-  color: ${colors.greyDark};
-  right: 0px;
-  bottom: 0px;
-
-  button {
-    width: 28px;
-  }
-`
-
 const Input = styled(TextInput).attrs({
   unstyled: true
 })`
@@ -106,6 +94,18 @@ export class NewMessageInput extends React.Component {
 
     other = omit(other, 'onChange')
 
+    const inputButtons = <React.Fragment>
+      <IconButton icon="tag_faces"
+                  onClick={onToggleEmojiPicker}/>
+      <IconButton icon="insert_photo"
+                  onClick={this.pickImage}/>
+      <IconButton onClick={this.openBtcModal}>
+        <img src="/Bitcoin.svg" alt="bitcoins" />
+      </IconButton>
+      <IconButton icon="timer"
+                  onClick={this.openExpiringMessageModal}/>
+    </React.Fragment>
+
     return (
       <Container>
         <input type="file"
@@ -116,18 +116,8 @@ export class NewMessageInput extends React.Component {
         <Input fullWidth
                placeholder="Type your message"
                onChange={this.onTextChange}
+               buttons={inputButtons}
                {...other}/>
-        <ButtonContainer>
-          <IconButton icon="tag_faces"
-                      onClick={onToggleEmojiPicker}/>
-          <IconButton icon="insert_photo"
-                      onClick={this.pickImage}/>
-          <IconButton onClick={this.openBtcModal}>
-            <img src="/Bitcoin.svg" alt="bitcoins" />
-          </IconButton>
-          <IconButton icon="timer"
-                      onClick={this.openExpiringMessageModal}/>
-        </ButtonContainer>
         <SendBTCModal isOpen={this.state.sendBtcModalOpen}
                       onRequestClose={this.closeBtcModal}
                       btcToSend={this.state.sendBtcValue}
