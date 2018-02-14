@@ -13,7 +13,7 @@ export async function addContactById(id, trusted = false) {
   var pic = 'https://www.hihermes.co/images/avatars/' + id[0].toLowerCase() + '.svg'
   if(profile.image != null){pic = profile.image[0].contentUrl}
   var name = profile.name
-  if(name == null){name = id}
+  if(name == null || name == ''){name = id}
 
   const contact = new Contact({
     id,
