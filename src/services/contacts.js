@@ -1,8 +1,8 @@
 import * as blockstack from 'blockstack'
 import { Contact } from '../models/contact'
 import { getJson, saveJson } from './blockstack'
-import {lookupProfile, identity} from './identity'
-import {encodeText} from './keys'
+import {lookupProfile, identity, isUserOnHermes} from './identity'
+import {encodeText, decodeText} from './keys'
 
 export async function getContacts() {
   return await getJson('contacts.json')
@@ -67,6 +67,14 @@ export async function getPublicKeyForId(id) {
 export async function addFriendsOnlyContactById(id){
   const info = await getJson('status.json')
   var status = await getJson(info.filename, {username: identity().username})
+  var friendsList = []
+  for(var i = 0; i < status.contacts.length; i++){
+    friendsList.push(decodeText(status.contacts[i], info.secret))
+  }
+  if(friendsList.includes(id)){return;}
+  var profile = await lookupProfile(id)
+  var onHermes = await isUserOnHermes(profile)
+  if(!onHermes){return;}
   var encoded = encodeText(id, info.secret)
   status.contacts.push(encoded)
   await saveJson(info.filename, status, {isPublic: true})
