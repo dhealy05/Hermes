@@ -10,8 +10,9 @@ export async function sendBitcoinToIds(ids, amount){
   for(var i = 0; i < ids.length; i++){
     if(ids[i] == identity().username){continue}
     var public_index = await getPublicIndexForId(ids[i])
-    recipients.push(public_index.bitcoin_address)
+    recipients.push(public_index.bitcoinAddress)
   }
+  if(recipients.length < 1){return false}
   const result = await makeTransaction(recipients, amount)
   return result
 }
@@ -106,6 +107,9 @@ export async function makeTransaction(recipients, amount){
   }
 
   const satoshisPerAddress = satoshis / recipients.length
+
+  console.log(satoshisPerAddress)
+  console.log(recipients)
 
   for(var i = 0; i < recipients.length; i++){
     tx.addOutput(recipients[i], satoshisPerAddress)
