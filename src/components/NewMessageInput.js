@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { omit } from 'lodash'
+import moment from 'moment'
 import * as colors from '../colors'
 import { IconButton } from './IconButton'
 import { TextInput } from './TextInput'
@@ -73,8 +74,7 @@ export class NewMessageInput extends React.Component {
   onSetHours = evt => this.setState({ numberOfHours: evt.target.value })
 
   setExpirationDate = num => {
-    var expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + num);
+    const expirationDate = moment().add(num, 'hours')
     //expirationDate.setMinutes(expirationDate.getMinutes() + num);
     this.props.setExpirationDate(expirationDate.toISOString())
     this.closeExpiringMessageModal()
