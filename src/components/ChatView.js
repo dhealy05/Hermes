@@ -212,7 +212,6 @@ export class ChatView extends React.Component {
                                    onAccept={onAcceptConversation}/>
       )
     } else if (composing) {
-      /*messageContents = <Loader/>;*/
       if (!sendingNewConversation) {
         topbar = <AddUserToChat recipients={newMessageRecipients}
                                 onChange={onSetNewMessageRecipients} />

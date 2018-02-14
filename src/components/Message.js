@@ -44,7 +44,7 @@ const MessageContent = ({ contentType, content, direction }) => {
   }
 
   if (contentType === ContentTypes.Image && (!content || content.loading)) {
-    return <Loader/>
+    return <Loader inline/>
   } else if (contentType === ContentTypes.Image) {
     return <ImageMessage direction={direction} src={content.data}/>
   }
