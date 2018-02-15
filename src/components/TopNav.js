@@ -34,6 +34,8 @@ const MenuItem = styled.a`
   text-align: left !important;
   display: flex !important;
   padding: 0.5em 1.5em !important;
+  width: 100px !important;
+  min-width: 100px !important;
   align-items: center;
 `
 
