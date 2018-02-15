@@ -15,7 +15,7 @@ export async function queryName(query){
     }
 
     try {
-      const { results } = resp.json()
+      const { results } = await resp.json()
       return results
     } catch (e) {
       console.warn(`bad JSON from ${url}`)
