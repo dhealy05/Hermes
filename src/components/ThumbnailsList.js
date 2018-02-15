@@ -22,6 +22,12 @@ const ListItem = styled.li`
     cursor: pointer;
     background-color: ${colors.greyLight};
   }
+
+  ${props => props.selected && css`
+    border-left: 3px solid ${colors.blue};
+    background-color: ${colors.greyLight};
+  `}
+
 `
 
 const TextContainer = styled.div`
@@ -61,8 +67,8 @@ const TextPreview = styled.div`
   text-overflow: ellipsis;
 `
 
-export const ThumbnailsList = props => {
-  const items = props.thumbnails.map(t => {
+export const ThumbnailsList = ({ thumbnails, activeConversation, onSelectConversation}) => {
+  const items = thumbnails.map(t => {
     let preview = null
 
     var sender = t.lastSenderName
@@ -78,7 +84,8 @@ export const ThumbnailsList = props => {
 
     return (
       <ListItem key={t.id}
-                onClick={() => props.onSelectConversation(t.id)}>
+                selected={t.id === activeConversation}
+                onClick={() => onSelectConversation(t.id)}>
         <Avatar size={48}
                 image={t.pic}/>
         <TextContainer>
@@ -108,5 +115,6 @@ ThumbnailsList.propTypes = {
     timestamp: PropTypes.string.isRequired,
     trusted: PropTypes.bool
   })).isRequired,
+  activeConversation: PropTypes.string,
   onSelectConversation: PropTypes.func.isRequired
 }

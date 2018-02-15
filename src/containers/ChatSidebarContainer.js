@@ -11,6 +11,7 @@ import { identity } from '../services'
 
 const WithRedux = connect(
   state => ({
+    activeConversation: state.chat.activeConversation,
     conversationsById: state.chat.conversationMetadata,
     contactsById: state.contacts.contactsById
   }),
@@ -21,6 +22,7 @@ const WithRedux = connect(
 )
 
 export const ChatSidebar = ({
+  activeConversation,
   conversationsById,
   contactsById,
   selectActiveConversation,
@@ -62,6 +64,7 @@ export const ChatSidebar = ({
              onComposeMessage={startComposing}>
       <Search />
       <ThumbnailsList thumbnails={thumbnails}
+                      activeConversation={activeConversation}
                       onSelectConversation={selectActiveConversation}/>
     </Sidebar>
   )
