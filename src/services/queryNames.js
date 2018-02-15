@@ -1,21 +1,32 @@
 import * as blockstack from 'blockstack'
-const request = require('request')
+import { fetchWithTimeout } from '../util'
+
+const SEARCH_ENDPOINT_TIMEOUT = 5000
 
 export async function queryName(query){
-  var url = "https://core.blockstack.org/v1/search?query=" + query
-  const requestData = {
-    uri: url,
-    method: 'GET'
+  const url = `https://core.blockstack.org/v1/search?query=${encodeURIComponent(query)}`
+
+  try {
+    const resp = await fetchWithTimeout(url, { timeout: SEARCH_ENDPOINT_TIMEOUT })
+
+    if (resp.statusCode >= 400) {
+      console.warn(`error status from ${url}: ${resp.statusCode}`)
+      return []
+    }
+
+    try {
+      const { results } = resp.json()
+      return results
+    } catch (e) {
+      console.warn(`bad JSON from ${url}`)
+      return []
+    }
+  } catch (e) {
+    if (e.message === fetchWithTimeout.TimedOutError) {
+      console.warn(`request to ${url} timed out`)
+      return []
+    }
+
+    throw e
   }
-  return new Promise((resolve, reject) => {
-    request(requestData, function (error, response, body) {
-      if (response == null) { console.log("Null Response"); resolve([]); }
-      if (response.statusCode != 200) { console.log("Not 200"); resolve([]); }
-      try {
-        resolve(JSON.parse(body))
-      } catch (e) {
-        reject(e)
-      }
-    })
-  })
 }

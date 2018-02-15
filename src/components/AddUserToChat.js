@@ -48,10 +48,14 @@ const EmptyAvatar = styled.div`
 export class AddUserToChat extends Component {
 
   getOptions = async (input, callback) => {
-    const res = await queryName(input);
+    if (input.length < 2) {
+      return []
+    }
+
+    const results = await queryName(input)
     let foundExactMatch = false
 
-    const options = res.results.map(({username, profile}) => {
+    const options = results.map(({username, profile}) => {
       if (!foundExactMatch && username === input || username === `${input}.id`) {
         foundExactMatch = true
       }
@@ -63,6 +67,8 @@ export class AddUserToChat extends Component {
         avatar: avatar && avatar.contentUrl,
       };
     })
+
+    console.info('options', options, 'found match', foundExactMatch)
 
     if (!foundExactMatch) {
       options.unshift({ value: input, label: input })
