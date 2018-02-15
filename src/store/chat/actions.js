@@ -155,10 +155,12 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
     }
   }
 
-  saveConversationById(id, convo)
-  //resave convo sans expired messages
+  convo.wasRead = true
 
-  dispatch(finishLoadingConversationDetails(convo))
+  dispatch(finishLoadingConversationDetails(await saveConversationById(id, convo)))
+
+  //resave convo sans expired messages + mark as read
+  //dispatch(finishLoadingConversationDetails(convo))
 }
 
 export const MARK_CONVERSATION_AS_READ = 'MARK_CONVERSATION_AS_READ'
@@ -177,7 +179,7 @@ function removeMsgAlert(){
 export const markActiveConversationAsRead = () => async (dispatch, getState) => {
   const { chat: { activeConversation } } = getState()
 
-  if (!activeConversation || activeConversation === COMPOSE_CONVERSATION_ID) {
+  if (!activeConversation || activeConversation === COMPOSE_CONVERSATION_ID || activeConversation == "hermesHelper") {
     return
   }
 

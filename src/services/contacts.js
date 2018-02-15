@@ -27,6 +27,7 @@ export async function addContactById(id, trusted = false) {
 }
 
 export async function saveContactDataById(id, contact) {
+  console.log("SAVING CONTACT")
   const { contacts } = await getContacts()
   contacts[id] = contact
   await saveContactsFile(contacts)

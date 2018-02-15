@@ -112,7 +112,6 @@ export async function getPicFromContacts(contacts){
 }
 
 export async function saveConversationById(id, convo) {
-
   if (!id || typeof id !== 'string') {
     throw new TypeError('missing required string parameter `id`')
   }

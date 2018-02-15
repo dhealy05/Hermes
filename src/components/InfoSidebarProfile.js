@@ -64,7 +64,6 @@ export class InfoSidebarProfile extends Component {
                   image={profile.pic}/>
           {profile.name && <Name>{profile.name}</Name>}
           {profile.id && <Id>{profile.id}</Id>}
-          {profile.statusSecret && <StatusSecret>{profile.statusSecret.substring(0, 30)} (TODO)</StatusSecret>}
           {loadedProfile && loadedProfile.description && <Description>{loadedProfile.description}</Description>}
         </ProfileContainer>
       </div>

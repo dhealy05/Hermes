@@ -91,7 +91,7 @@ export class ChatView extends React.Component {
 
     if (next.conversation && !next.conversation.wasRead) {
       const lastRead = next.conversation.readAt
-      this.props.onMarkConversationAsRead()
+      //this.props.onMarkConversationAsRead()
 
       this.setState({ lastRead })
     } else if (!next.conversation
