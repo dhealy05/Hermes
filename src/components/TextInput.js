@@ -7,11 +7,13 @@ import { Paper } from './Paper'
 const Input = styled.input.attrs({
   type: 'text'
 })`
+  background-color: white;
   font-size: 1em;
   border: 1px solid ${colors.grey};
   border-radius: 4px;
   width: 100%;
   padding: 0.5em 1em;
+  flex-grow: 1;
 
   &:focus {
     outline: none;
@@ -24,10 +26,26 @@ const Outer = styled.div`
 `
 
 const Inner = styled(Paper)`
+  background-color: ${colors.white};
   ${props => props.fullWidth && css`
     display: flex;
     box-shadow: none;
   `}
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+  padding: 0.5em 1em;
+  color: ${colors.greyDark};
+  background-color: white;
+  right: 0px;
+  bottom: 0px;
+
+  button {
+    width: 28px;
+  }
 `
 
 const Label = styled.label`
@@ -43,6 +61,7 @@ export const TextInput = ({
   layer,
   label,
   unstyled,
+  buttons,
   ...other
 }) => (
   <Outer className={className} fullWidth={fullWidth}>
@@ -51,6 +70,9 @@ export const TextInput = ({
       <Input type={type}
              fullWidth={fullWidth}
              {...other}/>
+      { buttons
+        ? <ButtonContainer>{buttons}</ButtonContainer>
+        : null }
     </Inner>
   </Outer>
 )
@@ -58,7 +80,8 @@ TextInput.propTypes = {
   type: PropTypes.string,
   layer: Paper.propTypes.layer,
   fullWidth: PropTypes.bool,
-  block: PropTypes.bool
+  block: PropTypes.bool,
+  buttons: PropTypes.element
 }
 TextInput.defaultProps = {
   layer: 1

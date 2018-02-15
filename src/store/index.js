@@ -47,7 +47,9 @@ const FILTERED_ACTIONS = [
   chat.actions.START_POLLING_MESSAGES,
   chat.actions.FINISH_POLLING_MESSAGES,
   chat.actions.START_POLLING_CONVERSATIONS,
-  chat.actions.FINISH_POLLING_CONVERSATIONS
+  chat.actions.FINISH_POLLING_CONVERSATIONS,
+  chat.actions.SET_CONTACT_TYPING,
+  chat.actions.SET_MESSAGE_INPUT_VALUE
 ]
 
 const logger = createLogger({

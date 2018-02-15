@@ -66,7 +66,7 @@ export const ThumbnailsList = props => {
     let preview = null
 
     var sender = t.lastSenderName
-    if(sender == identity().profile.name){sender = "You"}
+    if(sender == identity().profile.name || sender == identity().username){sender = "You"}
 
     if (t.trusted === false) {
       preview = <TextPreview>{t.lastSenderName} wants to connect</TextPreview>

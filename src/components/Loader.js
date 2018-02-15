@@ -1,19 +1,26 @@
 import React from 'react'
-import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import styled, { css } from 'styled-components'
 
 const Wrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -100px;
-  margin-left: -100px;
-  width: 200px;
-  height: 200px;
-  text-align: center;
+  ${props => !props.inline && css`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -100px;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+  `}
 `
 
-export const Loader = () => (
-  <Wrapper>
-    <img src="/LogoAnimatedBig.svg" alt="loading..." />
+export const Loader = ({ ...props }) => (
+  <Wrapper {...props}>
+    <img src="/LogoAnimatedBig.svg"
+         alt="loading..." />
   </Wrapper>
 )
+Loader.propTypes = {
+  inline: PropTypes.bool
+}

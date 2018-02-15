@@ -82,7 +82,6 @@ async function updateContact(contact){
   }
   var outbox = await getJson(filename, {username: contact.id})
   if(outbox == null){return false}
-  console.log(outbox)
   contact.statusPage = decodeText(outbox.statusPage, secret)
   contact.statusSecret = decodeText(outbox.statusSecret, secret)
   saveContactDataById(contact.id, contact)

@@ -41,6 +41,14 @@ const Title = styled.div`
   text-align: center;
 `
 
+const NewConversationIllustration = styled.img.attrs({
+  src: '/contact.png'
+})`
+  margin: 0 auto;
+  margin-top: 3em;
+  width: 33%;
+`
+
 // Simulating a conversation
 const placeholder = (
   <MessagesContainer>
@@ -220,7 +228,10 @@ export class ChatView extends React.Component {
                                    onAccept={onAcceptConversation}/>
       )
     } else if (composing) {
-      /*messageContents = <Loader/>;*/
+      messageContents = (
+        <NewConversationIllustration/>
+      )
+
       if (!sendingNewConversation) {
         topbar = (
           <TopNav title={conversationTitle}

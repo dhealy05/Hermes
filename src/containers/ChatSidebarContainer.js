@@ -28,10 +28,19 @@ export const ChatSidebar = ({
   const thumbnails = chain(conversationsById)
     .map(c => {
       const contacts = c.contacts.map(id => contactsById[id])
-      const contactsArray = contacts.map(c => c.name)
-      const title = (contactsArray.filter(name => name !== identity().profile.name)).join(', ')
+      var contactsArray = contacts.map(c => c.name)
+      var title = (contactsArray.filter(name => name !== identity().profile.name)).join(', ')
+      if(identity().profile.name == '' || identity().profile.name == null){
+        var titleArray = []
+        for(var i = 0; i < contacts.length; i++){
+          if(contacts[i].id !== identity().username){
+            titleArray.push(contacts[i].name)
+          }
+        }
+        title = titleArray.join(', ')
+      }
       const lastSender = contactsById[c.thumbnail.lastSender]
-      const lastSenderName = (lastSender && lastSender.name) || 'Anonymous'
+      const lastSenderName = (lastSender && lastSender.name) || (lastSender && lastSender.id) || 'Anonymous'
 
       return {
         ...Conversation.getDefaultThumbnail(),

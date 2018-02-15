@@ -15,6 +15,17 @@ const ButtonsContainer = styled.div`
   margin: 2em 20%;
 `
 
+const IllustrationContainer = styled.div`
+  text-align: center;
+`
+
+const Illustration = styled.img.attrs({
+  src: '/cheer.png'
+})`
+  margin: 0 auto;
+  width: 33%;
+`
+
 const formatDescription = others => {
   const names = formatListOfNames(map(others, 'name'))
   const verb = others.length === 1
@@ -34,8 +45,11 @@ export const NewConversationInvitation = ({
   <div>
     {formatDescription(others)}
     <ButtonsContainer>
-    <Button onClick={onAccept}>Accept</Button>
+      <Button onClick={onAccept}>Accept</Button>
     </ButtonsContainer>
+    <IllustrationContainer>
+      <Illustration/>
+    </IllustrationContainer>
   </div>
 )
 NewConversationInvitation.propTypes = {
