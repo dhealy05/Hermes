@@ -57,6 +57,7 @@ export async function getPublicFriendsForId(id){
 export async function getStatusPageAndSecretForId(id){
   if(id == 'hermesHelper'){return}
   var contacts = await getContacts()
+  if(contacts == null){return false}
   var contact = contacts.contacts[id]
   if(contact == null){return false}
   if(!contact.trusted){return false}
