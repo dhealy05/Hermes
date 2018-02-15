@@ -159,6 +159,7 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
   convo.wasRead = true
 
   dispatch(finishLoadingConversationDetails(await saveConversationById(id, convo)))
+  dispatch(refreshConversationList())
 
   //resave convo sans expired messages + mark as read
   //dispatch(finishLoadingConversationDetails(convo))

@@ -58,6 +58,7 @@ export async function getStatusPageAndSecretForId(id){
   if(id == 'hermesHelper'){return}
   var contacts = await getContacts()
   var contact = contacts.contacts[id]
+  if(contact == null){return false}
   if(!contact.trusted){return false}
   if(contact.statusPage == '' || contact.statusSecret == ''){
     contact = await updateContact(contact)
@@ -81,7 +82,8 @@ async function updateContact(contact){
     }
   }
   var outbox = await getJson(filename, {username: contact.id})
-  if(outbox == null){return false}
+  console.log(outbox)
+  if(outbox == null || outbox.statusPage == null || outbox.statusSecret == null){return false}
   contact.statusPage = decodeText(outbox.statusPage, secret)
   contact.statusSecret = decodeText(outbox.statusSecret, secret)
   saveContactDataById(contact.id, contact)
