@@ -17,6 +17,7 @@ export * from './queryNames'
 export * from './bitcoin'
 export * from './statusIndicators'
 export * from './helper'
+export * from './notify'
 //*/
 
 //export {resetAll} from './setup'

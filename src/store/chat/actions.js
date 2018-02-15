@@ -1,4 +1,4 @@
-import { map, throttle } from 'lodash'
+import { get, map, last, throttle } from 'lodash'
 import {
   ContentTypes,
   Conversation,
@@ -23,7 +23,8 @@ import {
   setTyping,
   handleHelpMessage,
   getLastSeenForId,
-  getPublicFriendsForId
+  getPublicFriendsForId,
+  notify
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -303,11 +304,12 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
 // cache promise from setTyping to avoid sending multiple simultaneous requests
 let setTypingPromise = null
-export const broadcastTyping = throttle(() => (dispatch, getState) => {
 
+const _broadcastTypingThrottled = throttle((dispatch, getState) => {
   const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
 
   if (setTypingPromise) {
+    console.info('already got a promise')
     return setTypingPromise
   }
 
@@ -327,7 +329,8 @@ export const broadcastTyping = throttle(() => (dispatch, getState) => {
       return x
     })
   return setTypingPromise
-}, 5000) // typing indicator is good for 30 seconds so we don't have to call setTyping very often
+}, 5000)
+export const broadcastTyping = () => _broadcastTypingThrottled
 
 async function checkHermes(newMessageRecipients){
   let usersNotOnHermes = []
@@ -423,6 +426,16 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 
         dispatch(finishLoadingConversationDetails(await getConversationById(id)))
         discoveredNewMessages = true
+
+        const lastMessage = last(newMessages)
+        const notificationContent = lastMessage.type === ContentTypes.Image
+                                  ? 'sent you an image'
+                                  : lastMessage.content
+
+        const { contacts: { contactsById } } = getState()
+        const notificationTitle = get(contactsById, `[${contactId}].name`, contactId)
+
+        notify(notificationTitle, { body: notificationContent })
       }
     }
   }
