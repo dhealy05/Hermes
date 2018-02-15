@@ -9,6 +9,7 @@ export async function getContacts() {
 }
 
 export async function addContactById(id, trusted = false) {
+  if(id == 'hermesHelper'){return returnHermesHelper()}
   const profile = await lookupProfile(id)
   var pic = 'https://www.hihermes.co/images/avatars/' + id[0].toLowerCase() + '.svg'
   if(profile.image != null){pic = profile.image[0].contentUrl}
@@ -26,8 +27,18 @@ export async function addContactById(id, trusted = false) {
   return saveContactDataById(id, contact)
 }
 
+function returnHermesHelper(){
+  return new Contact({
+    id: 'hermesHelper',
+    name: 'Hermes Helper',
+    pic: 'https://www.hihermes.co/images/avatars/HermesHelper.svg',
+    statusPage: '',
+    statusSecret: '',
+    trusted: true
+  })
+}
+
 export async function saveContactDataById(id, contact) {
-  console.log("SAVING CONTACT")
   const { contacts } = await getContacts()
   contacts[id] = contact
   await saveContactsFile(contacts)

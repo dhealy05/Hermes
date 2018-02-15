@@ -1,6 +1,8 @@
 import { Conversation } from '../models/conversation'
 import { getJson, saveJson } from './blockstack'
 import { checkDiscovery } from './onLoad'
+import { enableDiscovery } from './discovery'
+import { initHelper } from './helper'
 import { getLocalPublicIndex, saveLocalPublicIndex } from './identity'
 
 export async function ensureFilesExist() {
@@ -13,6 +15,13 @@ export async function ensureFilesExist() {
   }
 
   await checkDiscovery()
+}
+
+export async function resetAll(){
+  await enableDiscovery()
+  await cleanSlate()
+  await initHelper()
+  window.location.reload()
 }
 
 export async function cleanSlate(){

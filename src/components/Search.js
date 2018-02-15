@@ -17,7 +17,7 @@ export class Search extends Component {
       <SearchInputWrapper>
         <SearchInput
           fullWidth
-          placeholder="Search Hermes"
+          placeholder="Search Conversations"
           {...this.props}
         />
       </SearchInputWrapper>

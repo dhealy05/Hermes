@@ -74,7 +74,7 @@ export class AddUserToChat extends Component {
           multi={true}
           cache={false}
           name="recipients"
-          placeholder="Message to..."
+          placeholder="Find the person you'd like to chat with..."
           loadOptions={this.getOptions}
           optionRenderer={({value, avatar}) => (
             <Option>
