@@ -243,8 +243,6 @@ export const finishSendingNewConversation = payloadAction(FINISH_SENDING_NEW_CON
 
 export const sendRawMessage = message => async (dispatch, getState) => {
 
-  const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
-
   const { chat: { activeConversation,
                   conversationMetadata,
                   newMessageRecipients,
@@ -276,7 +274,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
     return
   }
 
-  if(activeConversation === BOT_CONVERSATION_ID){
+  if(activeConversation.includes('hermesHelper')){
     //await handleHelpMessage(message)
     dispatch(setConversationDetails(await handleHelpMessage(message)))
     dispatch(refreshConversationList())
