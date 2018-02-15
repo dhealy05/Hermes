@@ -19,7 +19,9 @@ export async function ensureFilesExist() {
 
 export async function resetAll(){
   await enableDiscovery()
-  await cleanSlate()
+  //await cleanSlate()
+  await saveJson('conversations.json', { conversations: {} })
+  await saveJson('contacts.json', { contacts: {} })
   await initHelper()
   window.location.reload()
 }
