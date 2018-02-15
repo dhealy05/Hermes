@@ -5,6 +5,10 @@ import * as colors from '../colors'
 import { Icon } from './Icon'
 import { Paper } from './Paper'
 
+const Wrapper = styled(Paper)`
+  box-shadow: none;
+`
+
 export const BaseButton = styled.button`
   display: inline-block;
   font-size: 1em;
@@ -56,14 +60,14 @@ export const Button = ({
   const contents = icon ? <Icon icon={icon}/> : children
 
   return (
-    <Paper unstyled={unstyled}
+    <Wrapper unstyled={unstyled}
            layer={layer}
            popOnHover
            className={className}>
       <ActualButton {...other}>
         {contents}
       </ActualButton>
-    </Paper>
+    </Wrapper>
   )
 }
 Button.propTypes = {
