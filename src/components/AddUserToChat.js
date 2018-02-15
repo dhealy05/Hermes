@@ -49,7 +49,13 @@ export class AddUserToChat extends Component {
 
   getOptions = async (input, callback) => {
     const res = await queryName(input);
+    let foundExactMatch = false
+
     const options = res.results.map(({username, profile}) => {
+      if (!foundExactMatch && username === input || username === `${input}.id`) {
+        foundExactMatch = true
+      }
+
       const avatar = profile.image && profile.image.find(image => image.name === 'avatar')
       return {
         value: username,
@@ -57,6 +63,11 @@ export class AddUserToChat extends Component {
         avatar: avatar && avatar.contentUrl,
       };
     })
+
+    if (!foundExactMatch) {
+      options.unshift({ value: input, label: input })
+    }
+
     callback(null, { options })
   }
 
