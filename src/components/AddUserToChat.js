@@ -4,24 +4,10 @@ import styled from 'styled-components'
 import { Async } from 'react-select';
 import 'react-select/dist/react-select.css';
 import { queryName } from '../services/queryNames'
-import { Paper } from './Paper'
-import * as colors from '../colors'
-import * as layers from '../layers'
 
-const OuterContainer = styled(Paper).attrs({
-  unstyled: true,
-  layer: 1
-})`
-  flex-shrink: 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 24px;
-  padding: 18px;
-  background-color: ${colors.white};
-  color: ${colors.black};
-  z-index: ${layers.TopNav};
-  box-shadow: ${colors.borderLight} 0 1px 2px 0;
+const OuterContainer = styled.div`
+  height: 34px;
+  width: 100%;
 `
 
 const Select = styled(Async)`

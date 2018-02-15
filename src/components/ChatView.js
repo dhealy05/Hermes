@@ -36,6 +36,11 @@ const MessageInputContainer = styled.div`
   margin: 15px;
 `
 
+const Title = styled.div`
+  flex-grow: 10;
+  text-align: center;
+`
+
 // Simulating a conversation
 const placeholder = (
   <MessagesContainer>
@@ -161,7 +166,10 @@ export class ChatView extends React.Component {
     let topbar = (
       <TopNav title={conversationTitle}
               toggleInfoSidebar={showConversationSidebar}
-              onSignOut={onSignOut}/>
+              showProfileSidebar={() => showProfileSidebar(identity && identity.username)}
+              onSignOut={onSignOut}>
+        { conversationTitle ? <Title>{conversationTitle}</Title> : null }
+      </TopNav>
     )
 
     if (conversation && conversation.trusted) {
@@ -214,8 +222,14 @@ export class ChatView extends React.Component {
     } else if (composing) {
       /*messageContents = <Loader/>;*/
       if (!sendingNewConversation) {
-        topbar = <AddUserToChat recipients={newMessageRecipients}
-                                onChange={onSetNewMessageRecipients} />
+        topbar = (
+          <TopNav title={conversationTitle}
+                  toggleInfoSidebar={showConversationSidebar}
+                  onSignOut={onSignOut}>
+            <AddUserToChat recipients={newMessageRecipients}
+                        onChange={onSetNewMessageRecipients} />
+          </TopNav>
+        )
       }
     }
 
