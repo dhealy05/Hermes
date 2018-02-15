@@ -435,7 +435,7 @@ export const pollNewMessages = () => async (dispatch, getState) => {
         const { contacts: { contactsById } } = getState()
         const notificationTitle = get(contactsById, `[${contactId}].name`, contactId)
 
-        notify(notificationTitle, { body: notificationContent })
+        notify(notificationTitle, { body: notificationContent, icon: "https://www.hihermes.co/images/icon.png" })
       }
     }
   }
