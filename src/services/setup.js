@@ -29,9 +29,9 @@ export async function resetAll(){
 export async function cleanSlate(){
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
-  await clearFriendsOnlyContacts()
   const index = await getLocalPublicIndex()
   index.introductions = []
   await saveLocalPublicIndex(index)
+  //clearFriendsOnlyContacts()
   window.location.reload()
 }
