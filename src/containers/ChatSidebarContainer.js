@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { chain } from 'lodash'
@@ -21,53 +21,62 @@ const WithRedux = connect(
   })
 )
 
-export const ChatSidebar = ({
-  activeConversation,
-  conversationsById,
-  contactsById,
-  selectActiveConversation,
-  startComposing
-}) => {
-  const thumbnails = chain(conversationsById)
-    .map(c => {
-      const contacts = c.contacts.map(id => contactsById[id])
-      var contactsArray = contacts.map(c => c.name)
-      var title = (contactsArray.filter(name => name !== identity().profile.name)).join(', ')
-      if(identity().profile.name == '' || identity().profile.name == null){
-        var titleArray = []
-        for(var i = 0; i < contacts.length; i++){
-          if(contacts[i].id !== identity().username){
-            titleArray.push(contacts[i].name)
+export class ChatSidebar extends Component {
+  state = { searchValue: '' }
+  handleSearchChange = evt => this.setState({ searchValue: evt.target.value })
+
+  render() {
+    const {
+      activeConversation,
+      conversationsById,
+      contactsById,
+      selectActiveConversation,
+      startComposing
+    } = this.props;
+    const { searchValue } = this.state;
+    const searchValueUpper = searchValue && searchValue.toUpperCase()
+    const thumbnails = chain(conversationsById)
+      .map(c => {
+        const contacts = c.contacts.map(id => contactsById[id])
+        var contactsArray = contacts.map(c => c.name)
+        var title = (contactsArray.filter(name => name !== identity().profile.name)).join(', ')
+        if(identity().profile.name == '' || identity().profile.name == null){
+          var titleArray = []
+          for(var i = 0; i < contacts.length; i++){
+            if(contacts[i].id !== identity().username){
+              titleArray.push(contacts[i].name)
+            }
           }
+          title = titleArray.join(', ')
         }
-        title = titleArray.join(', ')
-      }
-      const lastSender = contactsById[c.thumbnail.lastSender]
-      const lastSenderName = (lastSender && lastSender.name) || (lastSender && lastSender.id) || 'Anonymous'
+        const lastSender = contactsById[c.thumbnail.lastSender]
+        const lastSenderName = (lastSender && lastSender.name) || (lastSender && lastSender.id) || 'Anonymous'
 
-      return {
-        ...Conversation.getDefaultThumbnail(),
+        return {
+          ...Conversation.getDefaultThumbnail(),
 
-        id: Conversation.getId(c),
-        title,
-        lastSenderName,
+          id: Conversation.getId(c),
+          title,
+          lastSenderName,
 
-        ...c.thumbnail
-      }
-    })
-    .sortBy(c => new Date(c.timestamp))
-    .reverse()
-    .value()
+          ...c.thumbnail
+        }
+      })
+      .filter(c => !searchValue || c.title.toUpperCase().includes(searchValueUpper))
+      .sortBy(c => new Date(c.timestamp))
+      .reverse()
+      .value()
 
-  return (
-    <Sidebar title="hermes"
-             onComposeMessage={startComposing}>
-      <Search />
-      <ThumbnailsList thumbnails={thumbnails}
-                      activeConversation={activeConversation}
-                      onSelectConversation={selectActiveConversation}/>
-    </Sidebar>
-  )
+    return (
+      <Sidebar title="hermes"
+              onComposeMessage={startComposing}>
+        <Search value={searchValue} onChange={this.handleSearchChange} />
+        <ThumbnailsList thumbnails={thumbnails}
+                        activeConversation={activeConversation}
+                        onSelectConversation={selectActiveConversation}/>
+      </Sidebar>
+    )
+  }
 }
 
 export const ChatSidebarContainer = compose(

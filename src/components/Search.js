@@ -1,41 +1,26 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Async } from 'react-select';
-import { Icon } from './Icon'
+import { TextInput } from './TextInput'
 
-const Select = styled(Async)`
+const SearchInputWrapper = styled.div`
   width: 100%;
-  padding: 6px;
+  box-sizing: border-box;
 `
 
-const PlaceHolder = styled.span`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+const SearchInput = styled(TextInput)`
+  margin: 6px;
 `
 
 export class Search extends Component {
-  getOptions = async (input, callback) => {
-    const options = [
-      { value: 'Sample1', label: 'Sample result' },
-      { value: 'Sample2', label: 'Another result' },
-    ];
-    callback(null, { options })
-  }
-
-  handleChange = value => {
-    console.log('Searching', value);
-  }
-
   render() {
     return (
-      <Select
-        cache={false}
-        placeholder={<PlaceHolder><Icon icon="search" />Search Hermes</PlaceHolder>}
-        loadOptions={this.getOptions}
-        onSelectResetsInput={false} // TODO remove this when https://github.com/JedWatson/react-select/issues/2277 is fixed
-        onChange={this.handleSendBtcChange}
-      />
+      <SearchInputWrapper>
+        <SearchInput
+          fullWidth
+          placeholder="Search Hermes"
+          {...this.props}
+        />
+      </SearchInputWrapper>
     )
   }
 }
