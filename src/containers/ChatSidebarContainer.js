@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { chain } from 'lodash'
 import { Sidebar } from '../components/Sidebar'
+import { Search } from '../components/Search'
 import { ThumbnailsList } from '../components/ThumbnailsList'
 import { actions } from '../store'
 import { Conversation } from '../models'
@@ -59,6 +60,7 @@ export const ChatSidebar = ({
   return (
     <Sidebar title="hermes"
              onComposeMessage={startComposing}>
+      <Search />
       <ThumbnailsList thumbnails={thumbnails}
                       onSelectConversation={selectActiveConversation}/>
     </Sidebar>
