@@ -28,7 +28,7 @@ const Input = styled(TextInput).attrs({
   }
 `
 
-export class NewMessageInput extends React.Component {
+export class MessageTextInput extends React.Component {
   state = {
     sendBtcModalOpen: false,
     sendExpiringMessageModalOpen: false,
@@ -132,7 +132,7 @@ export class NewMessageInput extends React.Component {
     )
   }
 }
-NewMessageInput.propTypes = {
+MessageTextInput.propTypes = {
   onToggleEmojiPicker: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,

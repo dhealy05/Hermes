@@ -4,13 +4,6 @@ import styled, { css } from 'styled-components'
 import Dropzone from 'react-dropzone'
 import * as colors from '../colors'
 import { AppView } from './AppView'
-import { NewMessageInput } from './NewMessageInput'
-import { TypingIndicator } from './TypingIndicator'
-
-const MessageInputContainer = styled.div`
-  box-sizing: border-box;
-  margin: 15px;
-`
 
 const DropzoneContainer = styled(Dropzone)`
   width: 100%;
@@ -29,23 +22,11 @@ const DropzoneLayer = styled.div`
   box-sizing: border-box;
   overflow: auto;
   ${props => props.isDragActive && css`
-    border: 4px dashed ${colors.blue};
-  `}
+border: 4px dashed ${colors.blue};
+`}
 `
 
 export class ChatView extends React.Component {
-  state = {
-    lastRead: null,
-    msgInput: ''
-  }
-
-  onMsgInputKeyUp = evt => {
-    if (evt.keyCode === 13) {
-      this.props.onSendMessage(this.props.messageInputValue)
-      this.props.onMessageInputChange('')
-    }
-  }
-
   onDrop = acceptedFiles => {
     if (acceptedFiles && acceptedFiles[0]) {
       this.props.onPickImage(acceptedFiles[0]);
@@ -54,19 +35,12 @@ export class ChatView extends React.Component {
 
   render() {
     const {
-      typing,
-      onPickImage,
-      onTyping,
-      sendBtc,
-      setExpirationDate,
       sidebar,
       infoSidebar,
       emojiPicker,
-      onToggleEmojiPicker,
-      messageInputValue,
-      onMessageInputChange,
       topbar,
-      messageOutlet
+      messageOutlet,
+      sendMessageInput
     } = this.props
 
     return (
@@ -84,35 +58,16 @@ export class ChatView extends React.Component {
             </DropzoneLayer>
           )}
         </DropzoneContainer>
-        <MessageInputContainer>
-          <TypingIndicator names={typing}/>
-          <NewMessageInput onPickImage={onPickImage}
-                           onToggleEmojiPicker={onToggleEmojiPicker}
-                           placeholder="Type your message"
-                           value={messageInputValue}
-                           onTyping={onTyping}
-                           sendBtc={sendBtc}
-                           setExpirationDate={setExpirationDate}
-                           onChange={onMessageInputChange}
-                           onKeyUp={this.onMsgInputKeyUp}/>
-        </MessageInputContainer>
+        {sendMessageInput}
       </AppView>
     )
   }
 }
 ChatView.propTypes = {
-  onMarkConversationAsRead: PropTypes.func.isRequired,
-  onSendMessage: PropTypes.func.isRequired,
-  onPickImage: PropTypes.func.isRequired,
-  onTyping: PropTypes.func.isRequired,
-  sendBtc: PropTypes.func.isRequired,
-  setExpirationDate: PropTypes.func.isRequired,
-  onToggleEmojiPicker: PropTypes.func.isRequired,
-  messageInputValue: PropTypes.string.isRequired,
-  onMessageInputChange: PropTypes.func.isRequired,
   sidebar: PropTypes.element,
   infoSidebar: PropTypes.element,
   emojiPicker: PropTypes.element,
   topbar: PropTypes.element,
   messageOutlet: PropTypes.element,
+  sendMessageInput: PropTypes.element
 }
