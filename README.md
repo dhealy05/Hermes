@@ -166,6 +166,15 @@ term roadmap). The user experience will also likely be very much enhanced when
 the Hermes wallet is not different from the Blockstack wallet. Lastly, using Stacks
 will be an interesting application.
 
+**Disappearing Messages**
+
+A user sending a message may assign a number of hours for it to last. After the
+expiration date has passed, receivers will automatically delete it from their
+private storage, and will not redownload it from their peer's outbox if it has
+not been deleted (as only the sender can do this, and they may be offline when
+the expiration date passes.) Future upgrades will include the ability to set an
+expiration date on a per conversation basis, rather than a per message basis.
+
 **Bots**
 
 Right now, each user is started off with the "Hermes Helper" bot, an extremely basic
