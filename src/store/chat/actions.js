@@ -128,7 +128,11 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   if (!activeConversation
       || !conversationDetails[activeConversation]
       || conversationDetails[activeConversation].loading) {
-    const defaultConvo = Object.keys(conversations)[0] || COMPOSE_CONVERSATION_ID
+
+    const sortedConversation = Object.keys(conversations).sort(function(a,b){
+      return conversations[a].thumbnail.timestamp<conversations[b].thumbnail.timestamp
+    })
+    const defaultConvo = sortedConversation[0] || COMPOSE_CONVERSATION_ID
 
     await dispatch(fetchConversationDetails(defaultConvo))
   }
