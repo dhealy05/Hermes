@@ -11,11 +11,9 @@ import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
 import { MessageGroup } from './MessageGroup'
 import { Message } from './Message'
-import { AddUserToChat } from './AddUserToChat'
 import { NewMessageInput } from './NewMessageInput'
 import { TypingIndicator } from './TypingIndicator'
 import { NewConversationInvitation } from './NewConversationInvitation'
-import { TopNav } from './TopNav'
 
 const MessagesContainer = styled.div`
   // use padding because margin cuts off shadows at the edge
@@ -34,11 +32,6 @@ const MessagesContainer = styled.div`
 const MessageInputContainer = styled.div`
   box-sizing: border-box;
   margin: 15px;
-`
-
-const Title = styled.div`
-  flex-grow: 10;
-  text-align: center;
 `
 
 const NewConversationIllustration = styled.div`
@@ -156,19 +149,14 @@ export class ChatView extends React.Component {
       identity,
       composing,
       conversation,
-      conversationTitle,
       contacts,
       loadingConversation,
       typing,
       fileContents,
-      newMessageRecipients,
-      sendingNewConversation,
-      onSignOut,
       onPickImage,
       onTyping,
       sendBtc,
       setExpirationDate,
-      onSetNewMessageRecipients,
       sidebar,
       infoSidebar,
       emojiPicker,
@@ -176,18 +164,10 @@ export class ChatView extends React.Component {
       messageInputValue,
       onMessageInputChange,
       onAcceptConversation,
-      showConversationSidebar,
-      showProfileSidebar
+      showProfileSidebar,
+      topbar
     } = this.props
     let messageContents = []
-    let topbar = (
-      <TopNav title={conversationTitle}
-              toggleInfoSidebar={showConversationSidebar}
-              showProfileSidebar={() => showProfileSidebar(identity && identity.username)}
-              onSignOut={onSignOut}>
-        { conversationTitle ? <Title>{conversationTitle}</Title> : null }
-      </TopNav>
-    )
 
     if (conversation && conversation.trusted) {
       let lastSender;
@@ -243,17 +223,6 @@ export class ChatView extends React.Component {
           <img src="/contact.png" alt="" />
         </NewConversationIllustration>
       )
-
-      if (!sendingNewConversation) {
-        topbar = (
-          <TopNav title={conversationTitle}
-                  toggleInfoSidebar={showConversationSidebar}
-                  onSignOut={onSignOut}>
-            <AddUserToChat recipients={newMessageRecipients}
-                        onChange={onSetNewMessageRecipients} />
-          </TopNav>
-        )
-      }
     }
 
     return (
@@ -290,27 +259,21 @@ ChatView.propTypes = {
   conversation: PropTypes.object,
   contacts: PropTypes.object.isRequired,
   fileContents: PropTypes.object.isRequired,
-  newMessageRecipients: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sendingNewConversation: PropTypes.bool,
   messagePollInterval: PropTypes.number,
   onMarkConversationAsRead: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
   onPollMessages: PropTypes.func.isRequired,
-  onSignOut: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
   sendBtc: PropTypes.func.isRequired,
   setExpirationDate: PropTypes.func.isRequired,
-  onSetNewMessageRecipients: PropTypes.func.isRequired,
   sidebar: PropTypes.element.isRequired,
   infoSidebar: PropTypes.element.isRequired,
   emojiPicker: PropTypes.element.isRequired,
-  conversationTitle: PropTypes.string.isRequired,
   onToggleEmojiPicker: PropTypes.func.isRequired,
   messageInputValue: PropTypes.string.isRequired,
   onMessageInputChange: PropTypes.func.isRequired,
   onAcceptConversation: PropTypes.func.isRequired,
-  showConversationSidebar: PropTypes.func,
   showProfileSidebar: PropTypes.func
 }
 ChatView.defaultProps = {

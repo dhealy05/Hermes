@@ -10,35 +10,12 @@ import { connect } from 'react-redux'
 import { chain, get } from 'lodash'
 import { ChatView } from '../components/ChatView'
 import { Loader } from '../components/Loader'
-import { identity } from '../services'
 import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
 import { actions } from '../store'
-import { formatListOfNames } from '../util'
 import { ChatSidebarContainer } from './ChatSidebarContainer'
 import { EmojiPickerContainer } from './EmojiPickerContainer'
 import { InfoSidebarContainer } from './InfoSidebarContainer'
-
-function getTitleForConversation(convo, contactsById) {
-  if (!convo) {
-    return ''
-  }
-
-  const myId = identity().username
-
-  const names = convo.contacts
-    .filter(id => id !== myId)
-    .map(id => {
-      const contact = contactsById[id]
-
-      if (!contact) {
-        return id
-      }
-
-      return contact.name
-    })
-
-  return formatListOfNames(['You', ...names])
-}
+import { TopBarContainer } from './TopBarContainer'
 
 const WithRedux = connect(
   state => {
@@ -57,10 +34,6 @@ const WithRedux = connect(
                  || state.contacts.loading
                  || (!conversation && !composing)
     const loadingConversation = conversation && conversation.loading
-    const metadata = state.chat.conversationMetadata[activeConversation]
-    const conversationTitle = (composing || !conversation)
-                            ? 'New Conversation'
-                            : getTitleForConversation(metadata, contacts)
 
     const typing = chain(state.chat.typingIndicators[activeConversation] || {})
       .map((isTyping, contactId) => ({ isTyping, contactId }))
@@ -68,26 +41,17 @@ const WithRedux = connect(
       .map(({ contactId }) => get(contacts, `['${contactId}'].name`, contactId))
       .value()
 
-    let newMessageRecipients = []
-
-    if (composing) {
-      newMessageRecipients = state.chat.newMessageRecipients.map(id => contacts[id])
-    }
-
-    const { sendingNewConversation, messageInputValue, messageExpirationDate } = state.chat
+    const { messageInputValue, messageExpirationDate } = state.chat
 
     return {
       identity,
       composing,
       conversation,
-      conversationTitle,
       loading,
       loadingConversation,
       contacts,
       typing,
       fileContents,
-      newMessageRecipients,
-      sendingNewConversation,
       messageInputValue,
       messageExpirationDate
     }
@@ -110,9 +74,7 @@ const WithRedux = connect(
       dispatch(actions.chat.sendText(text))
     },
     onPickImage: file => dispatch(actions.chat.sendFile(file)),
-    onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids)),
     onToggleEmojiPicker: () => dispatch(actions.emoji.setPickerActive(true)),
-    onSignOut: () => dispatch(actions.auth.signOut()),
     onTyping: () => dispatch(actions.chat.broadcastTyping()),
     sendBtc: amt => dispatch(actions.chat.sendBtc(amt)),
     setExpirationDate: date => dispatch(actions.chat.setExpirationDate(date)),
@@ -123,7 +85,6 @@ const WithRedux = connect(
       dispatch(actions.chat.setMessageInputValue(value))
     },
     onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation()),
-    showConversationSidebar: () => dispatch(actions.sidebar.showActiveConversation(null)),
     showProfileSidebar: contactId => dispatch(actions.sidebar.showProfile(contactId))
   })
 )
@@ -131,7 +92,8 @@ const WithRedux = connect(
 const WithContainerChildren = withProps({
   sidebar: <ChatSidebarContainer/>,
   infoSidebar: <InfoSidebarContainer/>,
-  emojiPicker: <EmojiPickerContainer/>
+  emojiPicker: <EmojiPickerContainer/>,
+  topbar: <TopBarContainer/>
 })
 
 const WithLoader = branch(
