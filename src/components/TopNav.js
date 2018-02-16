@@ -30,6 +30,11 @@ const OuterContainer = styled(Paper).attrs({
   }
 `
 
+const Title = styled.div`
+  flex-grow: 10;
+  text-align: center;
+`
+
 const MenuItem = styled.a`
   text-align: left !important;
   display: flex !important;
@@ -46,12 +51,24 @@ export class TopNav extends Component {
   closeMenu = () => this.setState({ isMenuOpen: false })
 
   render() {
-    const { showingInfoSidebar, toggleInfoSidebar, showProfileSidebar, onSignOut, children, className } = this.props
+    const {
+      showingInfoSidebar,
+      toggleInfoSidebar,
+      showProfileSidebar,
+      onSignOut,
+      children,
+      title,
+      className
+    } = this.props
     const { isMenuOpen } = this.state
+
+    const innerContents = title
+                        ? <Title>{title}</Title>
+                        : children
 
     return (
       <OuterContainer className={className}>
-        { children }
+        {innerContents}
         <Button style={{ color: showingInfoSidebar ? colors.blue : undefined }}
                 onClick={toggleInfoSidebar}
                 icon="info_outline"/>
@@ -72,6 +89,7 @@ TopNav.propTypes = {
   showingInfoSidebar: PropTypes.bool,
   toggleInfoSidebar: PropTypes.func,
   showProfileSidebar: PropTypes.func,
+  title: PropTypes.string
 }
 
 TopNav.defaultProps = {

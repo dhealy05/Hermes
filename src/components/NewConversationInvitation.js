@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { map } from 'lodash'
 import { formatListOfNames } from '../util'
 import { Button } from './Button'
+import { MessagesContainerDiv } from './MessageOutlet'
 
 const Text = styled.p`
   text-align: center;
@@ -42,7 +43,7 @@ export const NewConversationInvitation = ({
   others,
   onAccept = () => {},
 }) => (
-  <div>
+  <MessagesContainerDiv>
     {formatDescription(others)}
     <ButtonsContainer>
       <Button onClick={onAccept}>Accept</Button>
@@ -50,7 +51,7 @@ export const NewConversationInvitation = ({
     <IllustrationContainer>
       <Illustration/>
     </IllustrationContainer>
-  </div>
+  </MessagesContainerDiv>
 )
 NewConversationInvitation.propTypes = {
   others: PropTypes.arrayOf(PropTypes.shape({
