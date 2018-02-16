@@ -16,7 +16,7 @@ import {
   encodeText,
   saveKeysFromDiffieHellman
 } from './keys'
-import { initHelper } from './helper'
+//import { initHelper } from './helper'
 import { saveLocalPublicIndex, identity } from './identity'
 import { checkTyping } from './statusIndicators'
 import { getJson, saveJson } from './blockstack'
@@ -37,7 +37,7 @@ export async function enableDiscovery() {
 
   await saveLocalPublicIndex(discovery)
   localStorage.setItem('discovery', true)
-  initHelper()
+  //initHelper()
   enableStatusPage()
 }
 
