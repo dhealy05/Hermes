@@ -103,10 +103,17 @@ export async function addFriendsOnlyContactById(id){
   await saveJson(info.filename, status, {isPublic: true})
 }
 
+export async function getFriendsOnlyContacts(){
+  const info = await getJson('status.json')
+  var status = await getJson(info.filename, {username: identity().username})
+  return status
+}
+
 export async function clearFriendsOnlyContacts(){
   const info = await getJson('status.json')
   var status = await getJson(info.filename, {username: identity().username})
-  status.statusPage.contacts = []
+  console.log(status)
+  status.contacts = []
   await saveJson(info.filename, status, {isPublic: true})
   return true
 }
