@@ -35,7 +35,7 @@ const WithRedux = connect(
   },
   dispatch => ({
     toggleInfoSidebar: () => dispatch(actions.sidebar.showActiveConversation()),
-    showProfileSidebar: contactId => dispatch(actions.sidebar.showProfile(contactId)),
+    showProfileSidebar: () => dispatch(actions.sidebar.showProfile()),
     onSignOut: () => dispatch(actions.auth.signOut()),
     onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids))
   }),

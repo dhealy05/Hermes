@@ -1,3 +1,4 @@
+import { identity } from '../../services'
 import { payloadAction } from '../util'
 
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR'
@@ -41,7 +42,7 @@ export const showActiveConversation = convoId => (dispatch, getState) => {
   dispatch(sidebarShowConversationInfo(convo))
 }
 
-export const showProfile = contactId => (dispatch, getState) => {
+export const showProfile = (contactId = identity().username) => (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
 
   const { sidebar: { visible,
