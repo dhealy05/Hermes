@@ -9,7 +9,7 @@ const OuterContainer = styled.div`
   flex-shrink: 0;
   background-color: ${colors.white};
   box-shadow: ${colors.border} -1px 0 2px 0;
-  z-index: ${layers.Sidebar};
+  z-index: ${layers.InfoSidebar};
 `
 
 export const InfoSidebar = ({ children }) => {
