@@ -11,7 +11,7 @@ const OuterContainer = styled.div`
 `
 
 const Select = styled(Async)`
-  width: 100%;
+  width: 75%;
 `
 
 const SelectValue = styled.span`

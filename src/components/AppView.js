@@ -25,6 +25,7 @@ const MessageContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  position: relative;
 `
 
 const MainOutlet = styled.div`

@@ -43,6 +43,8 @@ const PaidMessageValue = Content.extend`
 const ExpirationDateText = styled.div`
   font-size: 10px;
   margin-bottom: 2px;
+  clear: both;
+  font-weight: bold;
 
   ${props => (props.direction === 'right') && css`
     text-align: right;
