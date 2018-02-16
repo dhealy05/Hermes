@@ -48,6 +48,7 @@ export async function enableStatusPage(){
   var lastSeen = new Date().toISOString()
   var encoded = encodeText(lastSeen, secret)
   await saveJson(filename, {lastSeen: encoded, posts: [], contacts: []}, {isPublic: true})
+  return true
 }
 
 export async function discoverConversation(userId) {

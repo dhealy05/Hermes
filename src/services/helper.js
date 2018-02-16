@@ -49,7 +49,6 @@ export async function sendHermesMessage(text, convo){
     sentAt: new Date()
   })
   convo.messages.unshift(msg)
-  console.log(convo)
   return await saveConversationById(helperConvoId(), convo)
   //return await saveMessage(msg)
 }

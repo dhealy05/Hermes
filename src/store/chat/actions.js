@@ -161,6 +161,9 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
   }
 
   convo.wasRead = true
+  convo.readAt = new Date().toISOString()
+
+  removeMsgAlert()
 
   dispatch(finishLoadingConversationDetails(await saveConversationById(id, convo)))
   dispatch(refreshConversationList())
@@ -172,7 +175,7 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
 export const MARK_CONVERSATION_AS_READ = 'MARK_CONVERSATION_AS_READ'
 
 function removeMsgAlert() {
-  const alertNumber = parseInt(
+  /*const alertNumber = parseInt(
     get(document.title.match(/\d+/), '[0]'),
     10
   )
@@ -185,7 +188,8 @@ function removeMsgAlert() {
     document.title = 'Hermes'
     return
   }
-  document.title = `(${alertNumber - 1}) Hermes`
+  document.title = `(${alertNumber - 1}) Hermes`*/
+  document.title = 'Hermes'
 }
 
 

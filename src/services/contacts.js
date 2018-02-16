@@ -112,7 +112,6 @@ export async function getFriendsOnlyContacts(){
 export async function clearFriendsOnlyContacts(){
   const info = await getJson('status.json')
   var status = await getJson(info.filename, {username: identity().username})
-  console.log(status)
   status.contacts = []
   await saveJson(info.filename, status, {isPublic: true})
   return true

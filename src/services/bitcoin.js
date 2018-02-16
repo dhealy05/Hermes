@@ -30,10 +30,6 @@ export function getAddress(){
   var hash = bitcoin.crypto.sha256(Buffer.from(privateKey))
   var num = bigi.fromBuffer(hash)
   var keyPair = new bitcoin.ECPair(num)
-
-  var address = keyPair.getAddress()
-  console.log(address)
-
   return keyPair
 }
 
@@ -151,9 +147,7 @@ export async function broadcastTransaction(hex){
 }
 
 export function btcToSatoshis(amountInBtc) {
-  console.log(amountInBtc)
   var final = amountInBtc * SATOSHIS_IN_BTC
-  console.log(final)
   return final
 }
 

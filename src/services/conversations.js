@@ -276,7 +276,10 @@ function msgAlert(){
     return
   }
 
-  let alertNumber = parseInt(
+  document.title = '(*) Hermes'
+  return
+
+  /*let alertNumber = parseInt(
     get(document.title.match(/\d+/), '[0]'),
     10
   )
@@ -284,9 +287,9 @@ function msgAlert(){
   if (!alertNumber) {
     return
   }
-  
+
   alertNumber = alertNumber + 1
-  document.title = `(${alertNumber}) Hermes`
+  document.title = `(${alertNumber}) Hermes`*/
 }
 
 export function saveOutgoingMessages(convo, outbox) {
