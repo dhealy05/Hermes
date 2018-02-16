@@ -1,9 +1,7 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import { compose, branch, renderComponent } from 'recompose'
-import { MessageOutlet, MessagesContainerDiv } from '../components/MessageOutlet'
+import { MessageOutlet } from '../components/MessageOutlet'
 import { ComposeIllustration } from '../components/ComposeIllustration'
-import { Loader } from '../components/Loader'
 import { actions } from '../store'
 import { NewConversationInvitationContainer } from './NewConversationInvitationContainer'
 
@@ -36,23 +34,13 @@ const withComposeIllustration = branch(
   renderComponent(ComposeIllustration)
 )
 
-const withLoader = branch(
-  props => props.conversation.loading,
-  renderComponent(() => (
-    <MessagesContainerDiv>
-      <Loader/>
-    </MessagesContainerDiv>
-  ))
-)
-
 const withNewConversationInvitation = branch(
-  props => !props.conversation.trusted,
+  props => !props.conversation.loading && !props.conversation.trusted,
   renderComponent(NewConversationInvitationContainer)
 )
 
 export const MessageOutletContainer = compose(
   withRedux,
   withComposeIllustration,
-  withLoader,
   withNewConversationInvitation
 )(MessageOutlet)

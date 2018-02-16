@@ -118,7 +118,7 @@ export class MessageOutlet extends React.Component {
 
     let lastSender
 
-    const contents = conversation.messages
+    const contents = (conversation.messages || [])
       .reduce((threads, message) => {
         if (message.sender !== lastSender) {
           // Create thread
