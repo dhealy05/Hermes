@@ -165,7 +165,8 @@ export class ChatView extends React.Component {
       onMessageInputChange,
       onAcceptConversation,
       showProfileSidebar,
-      topbar
+      topbar,
+      fetchImageForMessage,
     } = this.props
     let messageContents = []
 
@@ -187,11 +188,9 @@ export class ChatView extends React.Component {
                         sender={contacts[sender]}
                         onShowSenderProfile={() => showProfileSidebar(sender)}
                         timestamp={sentAt}>
-            { messages && messages.map(({ sender,
-                                          content: rawContent,
-                                          type,
-                                          sentAt,
-                                          ...other }, i) => {
+            { messages && messages.map((message, i) => {
+              const { sender, content: rawContent, type, sentAt, ...other } = message
+              const fetchImage = () => fetchImageForMessage(message, conversation)
               let content = rawContent
               if (type === ContentTypes.Image) {
                 content = fileContents[rawContent]
@@ -201,7 +200,8 @@ export class ChatView extends React.Component {
                          {...other}
                          direction={sender === identity.username ? 'right' : 'left'}
                          contentType={type}
-                         content={content} />
+                         content={content}
+                         fetchImage={fetchImage} />
               );
             })}
           </MessageGroup>

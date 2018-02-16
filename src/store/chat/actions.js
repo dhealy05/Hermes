@@ -149,9 +149,9 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
   const convo = await getConversationById(id)
 
   for (var i = 0; i < convo.messages.length; i++) {
-    if (convo.messages[i].type === ContentTypes.Image) {
-      dispatch(fetchImageForMessage(convo.messages[i], convo))
-    }
+    // if (convo.messages[i].type === ContentTypes.Image) {
+    //   dispatch(fetchImageForMessage(convo.messages[i], convo))
+    // }
     //if msg.expirationDate has passed, remove from array
     if(convo.messages[i].expirationDate !== ''){
       if(new Date(convo.messages[i].expirationDate) < new Date()){

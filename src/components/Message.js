@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import moment from 'moment'
+import VisibilitySensor from 'react-visibility-sensor'
 import * as colors from '../colors'
 import { ContentTypes } from '../models'
 import { Loader } from './Loader'
@@ -59,45 +60,65 @@ const ExpirationDate = ({ date, direction }) => {
   )
 }
 
-const MessageContent = ({ contentType, content, direction }) => {
-  if (contentType === ContentTypes.Text) {
-    return <Content direction={direction}>{content}</Content>
-  }
+class MessageContent extends Component {
+  render() {
+    const { contentType, content, direction } = this.props;
+    if (contentType === ContentTypes.Text) {
+      return <Content direction={direction}>{content}</Content>
+    }
 
-  if (contentType === ContentTypes.Image && (!content || content.loading)) {
-    return <Loader inline/>
-  } else if (contentType === ContentTypes.Image) {
-    return <ImageMessage direction={direction} src={content.data}/>
-  }
+    if (contentType === ContentTypes.Image && (!content || content.loading)) {
+      return <Loader inline/>
+    } else if (contentType === ContentTypes.Image) {
+      return <ImageMessage direction={direction} src={content.data}/>
+    }
 
-  return null
+    return null
+  }
 }
 MessageContent.propTypes = {
   contentType: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
-  direction: PropTypes.oneOf(['left', 'right'])
+  direction: PropTypes.oneOf(['left', 'right']),
+  fetchImage: PropTypes.func,
 }
 
-export const Message = ({
-  direction = 'left',
-  content,
-  contentType,
-  paymentStatus,
-  expirationDate,
-  value
-}) => {
-  return (
-    <div>
-      { paymentStatus === 'unpaid'
-        ? <MessageContent contentType={contentType}
-                          content={content}
-                          direction={direction}/>
-        : <PaidMessageValue>{value} BTC sent</PaidMessageValue> }
-      { expirationDate
-        ? <ExpirationDate direction={direction} date={expirationDate}/>
-        : null }
-    </div>
-  )
+export class Message extends Component {
+  onChange = visible => {
+    const { contentType, content, fetchImage } = this.props;
+    if (visible && fetchImage && contentType === ContentTypes.Image && !content && !this.fetched) {
+      console.log('LAZY LOADING image...')
+      fetchImage()
+      this.fetched = true
+    }
+  }
+
+  render() {
+    const {
+      direction = 'left',
+      content,
+      contentType,
+      paymentStatus,
+      expirationDate,
+      value,
+      fetchImage,
+    } = this.props
+    return (
+      <VisibilitySensor onChange={this.onChange}>
+      <div>
+        { paymentStatus === 'unpaid'
+            ? <MessageContent contentType={contentType}
+                              content={content}
+                              direction={direction}
+                              fetchImage={fetchImage} />
+            : <PaidMessageValue>{value} BTC sent</PaidMessageValue> }
+        { expirationDate
+          ? <ExpirationDate direction={direction} date={expirationDate}/>
+          : null }
+      </div>
+      </VisibilitySensor>
+    )
+  }
 }
 Message.propTypes = {
   direction: PropTypes.oneOf(['left', 'right']),
@@ -105,7 +126,8 @@ Message.propTypes = {
   content: MessageContent.propTypes.content,
   paymentStatus: PropTypes.oneOf(['unpaid', 'paid']).isRequired,
   value: PropTypes.string.isRequired,
-  expirationDate: PropTypes.string
+  expirationDate: PropTypes.string,
+  fetchImage: PropTypes.func,
 }
 Message.defaultProps = {
   direction: 'left'
