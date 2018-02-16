@@ -76,7 +76,7 @@ encrypted by Blockstack and saved only to the user's Gaia. 2 is a two-person con
 in which the private key is generated based on mutual public keys and information encoded
 with it. 3 is a greater-than-two person conversation, in which a group secret is passed,
 encrypted by method (2), on a one-to-one basis with various parties. 4, the subject of
-this paragraph, is a "Friends Only" secret, passed from one user to all of their contacts.
+this section, is a "Friends Only" secret, passed from one user to all of their contacts.
 
 How is this done? On initial login, each user generates a random secret and filename.
 Whenever they accept a friend request or make one, they encrypt this secret and
@@ -165,3 +165,41 @@ we wait for Blockstack.js to expose transaction generation (which is on the near
 term roadmap). The user experience will also likely be very much enhanced when
 the Hermes wallet is not different from the Blockstack wallet. Lastly, using Stacks
 will be an interesting application.
+
+**Bots**
+
+Right now, each user is started off with the "Hermes Helper" bot, an extremely basic
+bot implementation stored locally on Hermes. However, we think that one interesting
+area for future exploration is in the creation of an open bot framework. How would
+this work? Since a bot is a finite automaton and can be represented, more or less,
+by a simple decision tree, we could create a Hermes-readable standard of bot data.
+An example: 'if(text.includes('Hello')){response='Hello!'}else{response='Error'}'
+is an extremely basic bot represented as a string. A user who wanted to use their
+ID as a bot could publicly identify as a bot (because by default, we would assume
+they are a human) by saving their bot-template publicly, and referencing it from
+their public_index. A user wishing to communicate with this bot would download the
+bot-template and receive responses accordingly. This is an interesting way of keeping
+centralized, third party services within the network in a decentralized way that
+still operates wholly within the Blockstack system; for example, Hermes would not
+pull data from a 3rd party weather service to create a centralized weather bot,
+but an enterprising user could; other users would see this only as another ID.
+
+**Mobile Support**
+
+At the time of writing (Feb 16 2018) Blockstack mobile apps are not possible.
+However, it is a near-term goal of the Blockstack team (see https://forum.blockstack.org/t/blockstack-mobile-plans/3621/6?u=larry) and a crucial
+feature in a successful and useful messaging app. The most difficult challenge we
+forsee is maintaining privacy while using the Android or iOS notification systems.
+Both leave records of messaging history with their respective owners (Google and Apple);
+even encrypted or obfuscated notifications (with no more info than "You got a message!")
+would allow timestamped records of conversations to be seen by third parties; additionally, even to establish a notification service, Hermes would need to be monitoring communications. It's possible that we could work around this problem by handling notifications much the same way we do now; the Hermes app would poll for messages in
+the background, and push a local notification (which exist only on a user's phone)
+when it found one. This will likely add to the engineering problem of building
+on Blockstack for mobile.
+
+**Future Goals**
+
+Our immediate goals for the future include obvious and necessary performance improvements,
+feature upgrades like the complete implementation of paid messages and integration
+with Blockstack.js, a bot framework, and one-to-many social features. As a mission, we aim to provide security and privacy while matching the ease of use of centralized systems.
+We look forward to the challenge.
