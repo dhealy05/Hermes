@@ -7,7 +7,7 @@ import { Avatar } from './Avatar'
 import { Paper } from './Paper'
 import { TextInput } from './TextInput'
 import { Button } from './Button'
-import { sendBitcoinToIds } from '../services/bitcoin'
+import { makeTransaction } from '../services/bitcoin'
 
 const Section = styled(Paper).attrs({
   unstyled: true,
@@ -81,7 +81,7 @@ export class InfoSidebarMe extends Component {
     try {
       const amount = +sendBtcAmount
       if (sendBtcTo && amount) {
-        await sendBitcoinToIds([sendBtcTo.value], amount)
+        await makeTransaction([sendBtcTo.value], amount)
         swal('BTC sent')
       }
     } catch(err) {
