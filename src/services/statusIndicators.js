@@ -4,6 +4,7 @@ import { getJson, saveJson} from './blockstack'
 import { encodeText, decodeText } from './keys'
 import { saveContactDataById, getContacts } from './contacts'
 import { getConversations } from './conversations'
+import { enableStatusPage } from './discovery'
 
 export async function setTyping(convo){
   var outbox = await getJson(convo.filename, {username: identity().username})
@@ -22,11 +23,13 @@ export function checkTyping(typing){
 
 export async function updateStatus(){
   const info = await getJson('status.json')
+  if(info == null){await enableStatusPage(); return true;}
   var status = await getJson(info.filename, {username: identity().username})
   var lastSeen = new Date().toISOString()
   var encoded = encodeText(lastSeen, info.secret)
   status.lastSeen = encoded
   await saveJson(info.filename, status, {isPublic: true})
+  return true
 }
 
 export async function getMyStatus(){
