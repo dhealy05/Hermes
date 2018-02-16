@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { chain, get } from 'lodash'
-import ReactPlaceholder from 'react-placeholder';
-import { MediaBlock } from 'react-placeholder/lib/placeholders';
-import "react-placeholder/lib/reactPlaceholder.css";
+import ReactPlaceholder from 'react-placeholder'
+import { MediaBlock } from 'react-placeholder/lib/placeholders'
+import Dropzone from 'react-dropzone'
+import "react-placeholder/lib/reactPlaceholder.css"
 import * as colors from '../colors'
 import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
@@ -56,6 +57,27 @@ const NewConversationIllustration = styled.div`
     width: 500px;
     margin: 10px 100px;
   }
+`
+
+const DropzoneContainer = styled(Dropzone)`
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
+`
+
+const DropzoneLayer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  box-sizing: border-box;
+  overflow: auto;
+  ${props => props.isDragActive && css`
+    border: 4px dashed ${colors.blue};
+  `}
 `
 
 // Simulating a conversation
@@ -150,6 +172,12 @@ export class ChatView extends React.Component {
   }
 
   setMessagesList = el => this.messagesListEl = el
+
+  onDrop = acceptedFiles => {
+    if (acceptedFiles && acceptedFiles[0]) {
+      this.props.onPickImage(acceptedFiles[0]);
+    }
+  }
 
   render() {
     const {
@@ -261,13 +289,22 @@ export class ChatView extends React.Component {
                infoSidebar={infoSidebar}
                emojiPicker={emojiPicker}
                topbar={topbar}>
-        <ReactPlaceholder customPlaceholder={placeholder}
-                          showLoadingAnimation={true}
-                          ready={!loadingConversation}>
-          <MessagesContainer ref={this.setMessagesList}>
-            {messageContents}
-          </MessagesContainer>
-        </ReactPlaceholder>
+        <DropzoneContainer accept="image/gif,image/jpeg,image/png"
+                           onDrop={this.onDrop}
+                           disableClick
+                           multiple={false}>
+          {({ isDragActive, isDragReject }) => (
+            <DropzoneLayer isDragActive={isDragActive} isDragRejected={isDragReject}>
+              <ReactPlaceholder customPlaceholder={placeholder}
+                                showLoadingAnimation={true}
+                                ready={!loadingConversation}>
+                <MessagesContainer ref={this.setMessagesList}>
+                  {messageContents}
+                </MessagesContainer>
+              </ReactPlaceholder>
+            </DropzoneLayer>
+          )}
+        </DropzoneContainer>
         <MessageInputContainer>
           <TypingIndicator names={typing}/>
           <NewMessageInput onPickImage={onPickImage}
