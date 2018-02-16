@@ -17,7 +17,7 @@ const DropzoneContainer = styled(Dropzone)`
   height: 100%;
   border: none;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   overflow: auto;
 `
 
@@ -25,7 +25,7 @@ const DropzoneLayer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   box-sizing: border-box;
   overflow: auto;
   ${props => props.isDragActive && css`
