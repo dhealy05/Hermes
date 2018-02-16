@@ -1,7 +1,7 @@
 import { getJson, saveJson } from './blockstack'
 import { checkDiscovery } from './onLoad'
 import { enableStatusPage } from './discovery'
-import { initHelper } from './helper'
+//import { initHelper } from './helper'
 import { getLocalPublicIndex, saveLocalPublicIndex } from './identity'
 import { clearFriendsOnlyContacts } from './contacts'
 
@@ -22,7 +22,7 @@ export async function resetAll(){
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
   await clearFriendsOnlyContacts()
-  await initHelper()
+  //await initHelper()
   window.location.reload()
 }
 
