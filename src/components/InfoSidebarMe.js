@@ -81,8 +81,8 @@ export class InfoSidebarMe extends Component {
     try {
       const amount = +sendBtcAmount
       if (sendBtcTo && amount) {
-        await makeTransaction([sendBtcTo.value], amount)
-        swal('BTC sent')
+        var success = await makeTransaction([sendBtcTo.value], amount)
+        if(success){swal('BTC sent! Your transaction is on the way.')}else{swal('Oops! Not enough Bitcoin for that.')}
       }
     } catch(err) {
       swal('Error', 'Error trying to send BTC')
