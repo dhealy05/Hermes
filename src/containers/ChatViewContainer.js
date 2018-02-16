@@ -16,11 +16,10 @@ import { ChatSidebarContainer } from './ChatSidebarContainer'
 import { EmojiPickerContainer } from './EmojiPickerContainer'
 import { InfoSidebarContainer } from './InfoSidebarContainer'
 import { TopBarContainer } from './TopBarContainer'
+import { MessageOutletContainer } from './MessageOutletContainer'
 
 const WithRedux = connect(
   state => {
-    const identity = state.auth.identity
-
     const activeConversation = state.chat.activeConversation
 
     const composing = activeConversation === COMPOSE_CONVERSATION_ID
@@ -28,12 +27,10 @@ const WithRedux = connect(
                       && state.chat.conversationDetails[activeConversation]
 
     const contacts = state.contacts.contactsById
-    const fileContents = state.chat.fileContents
 
     const loading = state.chat.loadingConversationMetadata
                  || state.contacts.loading
                  || (!conversation && !composing)
-    const loadingConversation = conversation && conversation.loading
 
     const typing = chain(state.chat.typingIndicators[activeConversation] || {})
       .map((isTyping, contactId) => ({ isTyping, contactId }))
@@ -44,14 +41,9 @@ const WithRedux = connect(
     const { messageInputValue, messageExpirationDate } = state.chat
 
     return {
-      identity,
-      composing,
-      conversation,
       loading,
-      loadingConversation,
       contacts,
       typing,
-      fileContents,
       messageInputValue,
       messageExpirationDate
     }
@@ -64,7 +56,6 @@ const WithRedux = connect(
       await dispatch(actions.chat.fetchConversationList())
     },
     onMarkConversationAsRead: () => dispatch(actions.chat.markActiveConversationAsRead()),
-    onPollMessages: () => dispatch(actions.chat.pollNewMessages()),
     onSendMessage: text => {
       if (text.trim() === '/delete') {
         dispatch(actions.chat.deleteActiveConversation())
@@ -83,9 +74,7 @@ const WithRedux = connect(
                   ? evt
                   : evt.target.value
       dispatch(actions.chat.setMessageInputValue(value))
-    },
-    onAcceptConversation: () => dispatch(actions.chat.acceptActiveConversation()),
-    showProfileSidebar: contactId => dispatch(actions.sidebar.showProfile(contactId))
+    }
   })
 )
 
@@ -93,7 +82,8 @@ const WithContainerChildren = withProps({
   sidebar: <ChatSidebarContainer/>,
   infoSidebar: <InfoSidebarContainer/>,
   emojiPicker: <EmojiPickerContainer/>,
-  topbar: <TopBarContainer/>
+  topbar: <TopBarContainer/>,
+  messageOutlet: <MessageOutletContainer/>
 })
 
 const WithLoader = branch(

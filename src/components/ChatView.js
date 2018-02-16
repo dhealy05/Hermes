@@ -1,138 +1,19 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { chain, get } from 'lodash'
-import ReactPlaceholder from 'react-placeholder';
-import { MediaBlock } from 'react-placeholder/lib/placeholders';
-import "react-placeholder/lib/reactPlaceholder.css";
-import * as colors from '../colors'
-import { ContentTypes, Conversation } from '../models/conversation'
 import { AppView } from './AppView'
-import { MessageGroup } from './MessageGroup'
-import { Message } from './Message'
 import { NewMessageInput } from './NewMessageInput'
 import { TypingIndicator } from './TypingIndicator'
-import { NewConversationInvitation } from './NewConversationInvitation'
-
-const MessagesContainer = styled.div`
-  // use padding because margin cuts off shadows at the edge
-  padding: 24px;
-  display: flex;
-  flex-direction: column-reverse;
-  overflow: auto;
-)
-
-  &::-webkit-scrollbar-track {
-    width: 3px;
-    background-color: ${colors.white};
-  }
-`
 
 const MessageInputContainer = styled.div`
   box-sizing: border-box;
   margin: 15px;
 `
 
-const NewConversationIllustration = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 700px;
-  height: 317px;
-  margin-top: -200px; /* Half the height */
-  margin-left: -350px; /* Half the width */
-  div {
-    text-align: center;
-  }
-  img {
-    width: 500px;
-    margin: 10px 100px;
-  }
-`
-
-// Simulating a conversation
-const placeholder = (
-  <MessagesContainer>
-    <MediaBlock color={colors.greyLight} rows={7} />
-    <MediaBlock color={colors.greyLight} rows={6} />
-    <MediaBlock color={colors.greyLight} rows={8} />
-  </MessagesContainer>
-)
-
 export class ChatView extends React.Component {
   state = {
     lastRead: null,
     msgInput: ''
-  }
-
-  messagesListEl = null
-  justReceivedNewMessage = false
-  pollingTimeout = null
-
-  componentWillMount() {
-    this.pollForMessages()
-  }
-
-  componentWillUnmount() {
-    this.stopPolling()
-  }
-
-  componentWillReceiveProps(next) {
-    const msgsLenPath = 'conversation.messages.length'
-
-    if (get(next, msgsLenPath, 0) !== get(this.props, msgsLenPath, 0)) {
-      /*
-         need to scroll to the bottom of the list when a new message is added,
-         but componentWillReceiveProps is called before the new message is
-         actually rendered. Mark a flag here to run the function in
-         componentDidUpdate
-       */
-      this.justReceivedNewMessage = true
-    }
-
-    if (next.conversation && !next.conversation.wasRead) {
-      const lastRead = next.conversation.readAt
-      //this.props.onMarkConversationAsRead()
-
-      this.setState({ lastRead })
-    } else if (!next.conversation
-               || Conversation.getId(next.conversation) !== (this.props.conversation && Conversation.getId(this.props.conversation))) {
-      this.setState({ lastRead: null })
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.justReceivedNewMessage) {
-      this.scrollToBottom()
-      this.justReceivedNewMessage = false
-    }
-  }
-
-  pollForMessages = () => {
-    this.props.onPollMessages()
-
-    this.pollingTimeout = setTimeout(
-      () => this.pollForMessages(),
-      this.props.messagePollInterval
-    )
-  }
-
-  stopPolling = () => {
-    if (!this.pollingTimeout) {
-      return
-    }
-
-    clearTimeout(this.pollingTimeout)
-  }
-
-  scrollToBottom = () => {
-    if (!this.messagesListEl) {
-      return
-    }
-
-    const node = ReactDOM.findDOMNode(this.messagesListEl)
-    node.scrollTop = node.scrollHeight
   }
 
   onMsgInputKeyUp = evt => {
@@ -142,17 +23,9 @@ export class ChatView extends React.Component {
     }
   }
 
-  setMessagesList = el => this.messagesListEl = el
-
   render() {
     const {
-      identity,
-      composing,
-      conversation,
-      contacts,
-      loadingConversation,
       typing,
-      fileContents,
       onPickImage,
       onTyping,
       sendBtc,
@@ -163,80 +36,16 @@ export class ChatView extends React.Component {
       onToggleEmojiPicker,
       messageInputValue,
       onMessageInputChange,
-      onAcceptConversation,
-      showProfileSidebar,
-      topbar
+      topbar,
+      messageOutlet
     } = this.props
-    let messageContents = []
-
-    if (conversation && conversation.trusted) {
-      let lastSender;
-      messageContents = conversation.messages
-        .reduce((threads, message) => {
-          if (message.sender !== lastSender) {
-            // Create thread
-            threads.push({ sender: message.sender, sentAt: message.sentAt, messages: [] });
-          }
-          threads[threads.length - 1].messages.unshift(message);
-          lastSender = message.sender;
-          return threads;
-        }, [])
-        .map(({ sender, sentAt, messages }, i) => (
-          <MessageGroup key={i}
-                        direction={sender === identity.username ? 'right' : 'left'}
-                        sender={contacts[sender]}
-                        onShowSenderProfile={() => showProfileSidebar(sender)}
-                        timestamp={sentAt}>
-            { messages && messages.map(({ sender,
-                                          content: rawContent,
-                                          type,
-                                          sentAt,
-                                          ...other }, i) => {
-              let content = rawContent
-              if (type === ContentTypes.Image) {
-                content = fileContents[rawContent]
-              }
-              return (
-                <Message key={i}
-                         {...other}
-                         direction={sender === identity.username ? 'right' : 'left'}
-                         contentType={type}
-                         content={content} />
-              );
-            })}
-          </MessageGroup>
-        ))
-    } else if (conversation && !conversation.trusted) {
-      const others = chain(conversation.contacts)
-        .filter(c => c !== identity.username)
-        .map(c => contacts[c])
-        .value()
-
-      messageContents = (
-        <NewConversationInvitation others={others}
-                                   onAccept={onAcceptConversation}/>
-      )
-    } else if (composing) {
-      messageContents = (
-        <NewConversationIllustration>
-          <div>Say hello! Start a conversation with someone to add them to your friends list</div>
-          <img src="/contact.png" alt="" />
-        </NewConversationIllustration>
-      )
-    }
 
     return (
       <AppView sidebar={sidebar}
                infoSidebar={infoSidebar}
                emojiPicker={emojiPicker}
                topbar={topbar}>
-        <ReactPlaceholder customPlaceholder={placeholder}
-                          showLoadingAnimation={true}
-                          ready={!loadingConversation}>
-          <MessagesContainer ref={this.setMessagesList}>
-            {messageContents}
-          </MessagesContainer>
-        </ReactPlaceholder>
+        {messageOutlet}
         <MessageInputContainer>
           <TypingIndicator names={typing}/>
           <NewMessageInput onPickImage={onPickImage}
@@ -254,28 +63,18 @@ export class ChatView extends React.Component {
   }
 }
 ChatView.propTypes = {
-  identity: PropTypes.object.isRequired,
-  composing: PropTypes.bool,
-  conversation: PropTypes.object,
-  contacts: PropTypes.object.isRequired,
-  fileContents: PropTypes.object.isRequired,
-  messagePollInterval: PropTypes.number,
   onMarkConversationAsRead: PropTypes.func.isRequired,
   onSendMessage: PropTypes.func.isRequired,
-  onPollMessages: PropTypes.func.isRequired,
   onPickImage: PropTypes.func.isRequired,
   onTyping: PropTypes.func.isRequired,
   sendBtc: PropTypes.func.isRequired,
   setExpirationDate: PropTypes.func.isRequired,
-  sidebar: PropTypes.element.isRequired,
-  infoSidebar: PropTypes.element.isRequired,
-  emojiPicker: PropTypes.element.isRequired,
   onToggleEmojiPicker: PropTypes.func.isRequired,
   messageInputValue: PropTypes.string.isRequired,
   onMessageInputChange: PropTypes.func.isRequired,
-  onAcceptConversation: PropTypes.func.isRequired,
-  showProfileSidebar: PropTypes.func
-}
-ChatView.defaultProps = {
-  messagePollInterval: 5000
+  sidebar: PropTypes.element,
+  infoSidebar: PropTypes.element,
+  emojiPicker: PropTypes.element,
+  topbar: PropTypes.element,
+  messageOutlet: PropTypes.element,
 }
