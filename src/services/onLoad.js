@@ -1,8 +1,8 @@
-import {saveJson, getJson} from './blockstack'
-import {getConversations} from './conversations'
-import {getContacts} from './contacts'
+import { getJson } from './blockstack'
+import { getConversations } from './conversations'
+import { getContacts } from './contacts'
 import { enableDiscovery } from './discovery'
-import {identity, getLocalPublicIndex, saveLocalPublicIndex} from './identity'
+import { getLocalPublicIndex } from './identity'
 import { updateStatus } from './statusIndicators'
 
 

@@ -1,11 +1,5 @@
 import {
-  Conversation,
-  Message
-} from '../models'
-import {
   createNewConversation,
-  getConversations,
-  saveConversationById,
   saveNewOutbox
 } from './conversations'
 import {
@@ -21,9 +15,6 @@ import {
   saveLocalPublicIndex,
   identity
 } from './identity'
-import {
-  getJson
-} from './blockstack'
 import {
   discoverConversation
 } from './discovery'
@@ -61,7 +52,7 @@ export async function newConversation(text, otherIds) {
     text
   }
 
-  var finalSecret = introduction.groupSecret
+  let finalSecret = introduction.groupSecret
 
   for (const contactId of contacts) {
     if (contactId === identity().username) {
@@ -69,7 +60,9 @@ export async function newConversation(text, otherIds) {
     }
 
     const regularSecret = await addContactAndIntroduction(introduction, contactId)
-    if(contacts.length == 2){finalSecret = regularSecret;}
+    if (contacts.length === 2) {
+      finalSecret = regularSecret
+    }
   }
 
   await saveNewOutbox(introduction.filename, finalSecret)

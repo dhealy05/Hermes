@@ -72,7 +72,12 @@ export const ThumbnailsList = ({ thumbnails, activeConversation, onSelectConvers
     let preview = null
 
     var sender = t.lastSenderName
-    if(sender == identity().profile.name || sender == identity().username){sender = "You"}
+    const myIdentity = identity()
+
+    if (sender === myIdentity.profile.name
+        || sender === myIdentity.myId) {
+      sender = 'You'
+    }
 
     if (t.trusted === false) {
       preview = <TextPreview>{t.lastSenderName} wants to connect</TextPreview>

@@ -1,3 +1,4 @@
+import { HermesHelperId } from '../constants'
 import { identity } from './identity'
 import { getJson, saveJson} from './blockstack'
 import { encodeText, decodeText } from './keys'
@@ -15,10 +16,8 @@ export function checkTyping(typing){
     return false
   }
 
-  var lastTyped = new Date(typing)
-  var thirty_secs = 30 * 1000;
-  if(((new Date) - lastTyped) < thirty_secs){return true}
-  return false
+  const lastTyped = new Date(typing)
+  return (new Date() - lastTyped) < 30000
 }
 
 export async function updateStatus(){
@@ -55,20 +54,37 @@ export async function getPublicFriendsForId(id){
 }
 
 export async function getStatusPageAndSecretForId(id){
-  if(id == 'hermesHelper'){return}
-  var contacts = await getContacts()
-  if(contacts == null){return false}
-  var contact = contacts.contacts[id]
-  if(contact == null){return false}
-  if(!contact.trusted){return false}
-  if(contact.statusPage == '' || contact.statusSecret == ''){
+  if (id === HermesHelperId) {
+    return false
+  }
+
+  const { contacts } = await getContacts()
+  if (!contacts) {
+    return false
+  }
+
+  let contact = contacts[id]
+
+  if (!contact || !contact.trusted) {
+    return false
+  }
+
+  if (!contact.statusPage || !contact.statusSecret) {
     contact = await updateContact(contact)
-    if(!contact){return false}
-    var statusPage = await getJson(contact.statusPage, {username: contact.id})
-    return {statusPage: statusPage, secret: contact.statusSecret}
-  } else {
-    var statusPage = await getJson(contact.statusPage, {username: contact.id})
-    return {statusPage: statusPage, secret: contact.statusSecret}
+    if (!contact) {
+      return false
+    }
+    const statusPage = await getJson(contact.statusPage, { username: contact.id })
+    return {
+      statusPage,
+      secret: contact.statusSecret
+    }
+  }
+
+  const statusPage = await getJson(contact.statusPage, {username: contact.id})
+  return {
+    statusPage,
+    secret: contact.statusSecret
   }
 }
 

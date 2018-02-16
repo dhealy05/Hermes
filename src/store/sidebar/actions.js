@@ -14,19 +14,22 @@ export const sidebarShowProfile = payloadAction(SIDEBAR_SHOW_PROFILE)
 
 export const showActiveConversation = convoId => (dispatch, getState) => {
   var { chat: { activeConversation,
-                  conversationMetadata } } = getState()
+                conversationMetadata },
+        sidebar: { visible,
+                   content } } = getState()
 
-  const { sidebar: { visible,
-                     content } } = getState()
+  if (convoId) {
+    activeConversation = convoId
+  }
 
-  if(convoId != null){activeConversation = convoId}
+  if (convoId && !visible) {
+    dispatch(hideSidebar())
+    return
+  }
 
-  if(visible == false && convoId != null){
-    dispatch(hideSidebar());
-    return;
-  } else {
-    var toggle = handleToggle(content, visible, false, activeConversation)
-    if(toggle){dispatch(toggleSidebar()); return;}
+  if (shouldShowSidebar(content, visible, false, activeConversation)) {
+    dispatch(toggleSidebar())
+    return
   }
 
   const convo = conversationMetadata[activeConversation]
@@ -44,8 +47,10 @@ export const showProfile = contactId => (dispatch, getState) => {
   const { sidebar: { visible,
                      content } } = getState()
 
-  var toggle = handleToggle(content, visible, true, contactId)
-  if(toggle){dispatch(toggleSidebar()); return}
+  if (shouldShowSidebar(content, visible, true, contactId)) {
+    dispatch(toggleSidebar())
+    return
+  }
 
   const contact = contactsById[contactId]
 
@@ -57,25 +62,15 @@ export const showProfile = contactId => (dispatch, getState) => {
   dispatch(sidebarShowProfile(contact))
 }
 
-function handleToggle(content, visible, profile, existingId){
-  if(content == null){
+function shouldShowSidebar(content, visible, profile, existingId) {
+  if (!content || !visible) {
     return false
   }
 
-  if(profile){
-    if(content.profile == null){return false}
-    if(content.profile.id == existingId && visible){
-      return true
-    }
+  if (profile) {
+    return !!(content.profile && content.profile.id === existingId)
   }
 
-  if(!profile){
-    if(existingId == 'compose'){return true}
-    if(content.conversation == null){return false}
-    if(content.conversation.id == existingId && visible){
-      return true
-    }
-  }
-
-  return false
+  return existingId === 'compose'
+       || !!(content.conversation && content.conversation.id === existingId)
 }

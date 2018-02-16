@@ -1,10 +1,8 @@
-import { Conversation } from '../models/conversation'
 import { getJson, saveJson } from './blockstack'
 import { checkDiscovery } from './onLoad'
 import { enableDiscovery } from './discovery'
 import { initHelper } from './helper'
 import { getLocalPublicIndex, saveLocalPublicIndex } from './identity'
-import { clearFriendsOnlyContacts } from './contacts'
 
 export async function ensureFilesExist() {
   if (!(await getJson('conversations.json'))) {

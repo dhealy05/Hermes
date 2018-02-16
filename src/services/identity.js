@@ -1,6 +1,5 @@
 import * as blockstack from 'blockstack'
 import { getJson, saveJson } from './blockstack'
-import { encodeText, decodeText } from './keys'
 
 export const identity = () => blockstack.loadUserData()
 

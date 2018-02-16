@@ -1,7 +1,10 @@
-import { ContentTypes, Conversation, Message, Contact } from '../models'
+import { Conversation, Message } from '../models'
+import { HermesHelperId, HermesHelperContact } from '../constants'
 import { identity } from './identity'
 import { getConversationById, saveConversationById } from './conversations'
 import { saveContactDataById } from './contacts'
+
+const helperConvoId = () => `${identity().username}-${HermesHelperId}`
 
 export async function handleHelpMessage(message){
   if (message.content instanceof File) {
@@ -33,30 +36,29 @@ export async function switchboard(text, convo){
 }
 
 export async function saveUserMessage(text){
-  const convoID = identity().username + '-hermesHelper'
-  const convo = await getConversationById(convoID)
+  const convoId = helperConvoId()
+  const convo = await getConversationById(convoId)
   convo.messages.unshift(text)
   return convo
 }
 
 export async function sendHermesMessage(text, convo){
   const msg = new Message({
-    sender: "hermesHelper",
+    sender: HermesHelperId,
     content: text,
     sentAt: new Date()
   })
-  const convoID = identity().username + '-hermesHelper'
   convo.messages.unshift(msg)
   console.log(convo)
-  return await saveConversationById(convoID, convo)
+  return await saveConversationById(helperConvoId(), convo)
   //return await saveMessage(msg)
 }
 
 export async function saveMessage(message){
-  const convoID = identity().username + '-hermesHelper'
-  const convo = await getConversationById(convoID)
+  const convoId = helperConvoId()
+  const convo = await getConversationById(convoId)
   convo.messages.unshift(message)
-  return await saveConversationById(convoID, convo)
+  return await saveConversationById(convoId, convo)
 }
 
 export async function initHelper(){
@@ -69,36 +71,36 @@ export async function initHelper(){
 
 export async function createBotConversation(){
 
-  const convoID = identity().username + '-hermesHelper'
+  const convoId = helperConvoId()
 
   const msg = new Message({
-    sender: "hermesHelper",
+    sender: HermesHelperId,
     content: "Hi there! I'm the Hermes Help bot. Thanks for trying out Hermes! 😄",
     sentAt: new Date()
   })
 
   const msg1 = new Message({
-    sender: "hermesHelper",
+    sender: HermesHelperId,
     content: "Hermes lets you talk to anyone with Blockstack ID in a way that’s impossible to surveil or censor. Welcome to the future 🚀🚀🚀",
     sentAt: new Date()
   })
 
   const msg2 = new Message({
-    sender: "hermesHelper",
+    sender: HermesHelperId,
     content: "Since the technology that powers us, Blockstack, is brand new, it might not be exactly what you’re used to. That’s why I’m here to help! Ask me questions and I’ll do my best to answer them.",
     sentAt: new Date()
   })
 
   const msg3 = new Message({
-    sender: "hermesHelper",
+    sender: HermesHelperId,
     content: "Suggestions: add a contact, start a conversation, send bitcoin, send a disappearing message, start a group chat, how is my data protected, is Hermes really unstoppable, find other users.",
     sentAt: new Date()
   })
 
   const convo = new Conversation({
-    filename: 'hermesHelper',
-    contacts: [identity().username, 'hermesHelper'],
-    secret: 'hermesHelper',
+    filename: HermesHelperId,
+    contacts: [identity().username, HermesHelperId],
+    secret: HermesHelperId,
     messages: [msg3, msg2, msg1, msg],
     pic: 'https://www.hihermes.co/images/avatars/HermesHelper.svg',
     readAt: '',
@@ -106,18 +108,7 @@ export async function createBotConversation(){
     trusted: true
   })
 
-  saveConversationById(convoID, convo)
+  saveConversationById(convoId, convo)
 }
 
-export async function createBotContact(){
-  var pic = 'https://www.hihermes.co/images/avatars/HermesHelper.svg'
-  const contact = new Contact({
-    id: 'hermesHelper',
-    name: "Hermes Helper",
-    pic,
-    statusPage: '',
-    statusSecret: '',
-    trusted: true
-  })
-  await saveContactDataById("hermesHelper", contact)
-}
+const createBotContact = () => saveContactDataById(HermesHelperId, HermesHelperContact)

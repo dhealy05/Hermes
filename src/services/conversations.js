@@ -1,7 +1,8 @@
 import * as crypto from 'crypto'
-import { ContentTypes, Conversation, Message } from '../models'
+import { get } from 'lodash'
+import { Conversation, Message } from '../models'
 import { identity, lookupProfile } from './identity'
-import { getJson, saveJson, getFile, saveFile, deleteFile } from './blockstack'
+import { getJson, saveJson, getFile, saveFile } from './blockstack'
 import { encodeText, decodeText } from './keys'
 import {
   addContactById,
@@ -70,9 +71,12 @@ export async function createNewConversation(
     sentAt: new Date()
   })
 
-  var readAt = new Date().toISOString()
-  var wasRead = true
-  if(sender != identity().username){readAt = ''; wasRead = false}
+  let readAt = new Date().toISOString()
+  let wasRead = true
+  if (sender !== identity().username) {
+    readAt = ''
+    wasRead = false
+  }
 
   //TODO fix getPic
   var pic = await getPicFromContacts(contacts)
@@ -92,22 +96,29 @@ export async function createNewConversation(
 }
 
 export async function getPicFromContacts(contacts){
+  const myIdentity = identity()
 
-  if(contacts.length == 1){
-    if(identity().profile.image != null){
-      return identity().profile.image[0].contentUrl
-    } else {
-      return ''
+  if (contacts.length === 1) {
+    return get(myIdentity, 'profile.image[0].contentUrl', '')
+  }
+
+  let pic = ''
+
+  for (const contactId of contacts) {
+    if (contactId === myIdentity.username) {
+      continue
+    }
+
+    pic = `https://www.hihermes.co/images/avatars/${contactId[0].toLowerCase()}.svg`
+
+    const profile = await lookupProfile(contactId)
+    const avatar = get(profile, 'image[0].contentUrl')
+
+    if (avatar) {
+      return avatar
     }
   }
 
-  var pic = ''
-  for(var i = 0; i < contacts.length; i++){
-    if(contacts[i] == identity().username){continue;}
-    pic = 'https://www.hihermes.co/images/avatars/' + contacts[i][0].toLowerCase() + '.svg'
-    const profile = await lookupProfile(contacts[i])
-    if(profile.image != null){return profile.image[0].contentUrl; return pic}
-  }
   return pic
 }
 
@@ -138,22 +149,26 @@ export async function sendMessage(convoId, message) {
 
   const convo = await getConversationById(convoId)
 
-  if(message.paymentStatus == 'paid'){
-    var finalValue = parseFloat(message.value)
-    var bitcoinSuccess = await sendBitcoinToIds(convo.contacts, finalValue)
+  if (message.paymentStatus === 'paid') {
+    let finalValue = parseFloat(message.value)
+
+    const bitcoinSuccess = await sendBitcoinToIds(convo.contacts, finalValue)
+
     if(!bitcoinSuccess){
       swal("Oops! You don't have enough bitcoin for that.")
       return saveConversationById(convoId, convo)
-    } else {
-      finalValue = finalValue/(convo.contacts.length-1)
-      message.value = finalValue.toString()
     }
+
+    finalValue = finalValue / (convo.contacts.length-1)
+    message.value = finalValue.toString()
   }
 
-  var boundary = getMessageTimeBoundary(convo.messages)
-  var outbox = await getJson(convo.filename, {username: identity().username})
+  const boundary = getMessageTimeBoundary(convo.messages)
+  const outbox = await getJson(convo.filename, {username: identity().username})
 
-  if(boundary != null){outbox.messages = purgeOutbox(outbox.messages, boundary)}
+  if (!boundary != null) {
+    outbox.messages = purgeOutbox(outbox.messages, boundary)
+  }
   //right now this is naive, and only checks the sender's conversations
   // TODO add read receipts for more efficiency
 
@@ -162,7 +177,10 @@ export async function sendMessage(convoId, message) {
   outbox.messages.push(message)
 
   // TODO is this right?
-  if(convoId != identity().username){await saveOutgoingMessages(convo, outbox)}
+  if (convoId !== identity().username) {
+    await saveOutgoingMessages(convo, outbox)
+  }
+
   //await saveOutgoingMessages(convo, outbox.messages)
   return saveConversationById(convoId, convo)
 }
@@ -201,11 +219,14 @@ function readFileAsDataUrl(file) {
 }
 
 function getMessageTimeBoundary(messages){
-  for(var i = 0; i < messages.length; i++){
-    if(messages[i].sender != identity().username){
-      return messages[i].sentAt
+  const myId = identity().username
+
+  for (const message of messages) {
+    if (message.sender !== myId) {
+      return message.sentAt
     }
   }
+
   return null
 }
 
@@ -219,16 +240,19 @@ function purgeOutbox(messages, boundary){
   return messages
 }
 
-function checkTimestamp(message, messages) {
-    for (var i = 0; i < messages.length; i++) {
-      if (message.sentAt == messages[i].sentAt){return true}
-      if(message.expirationDate != ''){
-        if(new Date(message.expirationDate) < new Date()){
-          return true
-        }
-      }
+function alreadySeenMessageByTimestamp(incomingMessage, messages) {
+  for (const sessage of messages) {
+    if (sessage.sentAt === incomingMessage.sentAt) {
+      return true
     }
-    return false
+
+    if (incomingMessage.expirationDate
+        && new Date(incomingMessage.expirationDate) < new Date()) {
+      return true
+    }
+  }
+
+  return false
 }
 
 export async function recvMessage(convoId, message) {
@@ -237,7 +261,7 @@ export async function recvMessage(convoId, message) {
   }
 
   const convo = await getConversationById(convoId)
-  if (checkTimestamp(message, convo.messages)) {
+  if (alreadySeenMessageByTimestamp(message, convo.messages)) {
     return null
   }
   convo.messages.unshift(message)
@@ -247,15 +271,22 @@ export async function recvMessage(convoId, message) {
 }
 
 function msgAlert(){
-  if(document.title == "Hermes"){
-    document.title = "(1) Hermes"
-  } else {
-    var numArray = document.title.match(/\d+/)
-    if(numArray == null || numArray.length == 0){return;}
-    var num = parseInt(numArray[0])
-    num = num + 1
-    document.title = "(" + num.toString() + ") Hermes"
+  if (document.title === 'Hermes'){
+    document.title = '(1) Hermes'
+    return
   }
+
+  let alertNumber = parseInt(
+    get(document.title.match(/\d+/), '[0]'),
+    10
+  )
+
+  if (!alertNumber) {
+    return
+  }
+  
+  alertNumber = alertNumber + 1
+  document.title = `(${alertNumber}) Hermes`
 }
 
 export function saveOutgoingMessages(convo, outbox) {

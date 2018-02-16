@@ -56,7 +56,7 @@ export class AddUserToChat extends Component {
     let foundExactMatch = false
 
     const options = results.map(({username, profile}) => {
-      if (!foundExactMatch && username === input || username === `${input}.id`) {
+      if (username === input || username === `${input}.id`) {
         foundExactMatch = true
       }
 
@@ -67,8 +67,6 @@ export class AddUserToChat extends Component {
         avatar: avatar && avatar.contentUrl,
       };
     })
-
-    console.info('options', options, 'found match', foundExactMatch)
 
     if (!foundExactMatch) {
       options.unshift({ value: input, label: input })
