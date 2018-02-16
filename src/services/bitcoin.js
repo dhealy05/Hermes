@@ -22,6 +22,8 @@ export async function sendBitcoinToIds(ids, amount){
     return false
   }
 
+  console.log(recipients)
+
   return await makeTransaction(recipients, amount)
 }
 
@@ -87,6 +89,10 @@ export async function makeTransaction(recipients, amount){
   const unspentOutputs = await getUnspentOutputs(address)
   if(unspentOutputs == null){return false}
 
+  console.log(balance)
+  console.log(finalBalance)
+  console.log(unspentOutputs)
+
   var bytes = (unspentOutputs.unspent_outputs.length * 148) + 78
   var fee = await getNetworkFee(bytes)
   //in*148 + out*34 + 10 plus or minus 'in'
@@ -139,6 +145,7 @@ export async function getNetworkFee(bytes) {
 }
 
 export async function broadcastTransaction(hex){
+  console.log(hex)
   request.post({url:'https://blockchain.info/pushtx?cors=true',
   form: {tx:hex}},
   function(err,httpResponse,body){
