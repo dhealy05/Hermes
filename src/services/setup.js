@@ -21,6 +21,7 @@ export async function resetAll(){
   await enableDiscovery()
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
+  await clearFriendsOnlyContacts()
   await initHelper()
   window.location.reload()
 }
