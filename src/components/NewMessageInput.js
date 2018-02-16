@@ -32,7 +32,7 @@ export class NewMessageInput extends React.Component {
   state = {
     sendBtcModalOpen: false,
     sendExpiringMessageModalOpen: false,
-    sendBtcValue: 0.0000001,
+    sendBtcValue: 0.1,
     numberOfHours: 1
   }
 
