@@ -69,6 +69,37 @@ While text is included in the body of any given Message, images and other large
 files are encrypted and saved publicly by the sender. The Message contains not
 the file itself, but the filename (again a randomly generated string).
 
+**One to Many Messages**
+
+In the current build, there are 4 levels of security. 1 is private information,
+encrypted by Blockstack and saved only to the user's Gaia. 2 is a two-person conversation,
+in which the private key is generated based on mutual public keys and information encoded
+with it. 3 is a greater-than-two person conversation, in which a group secret is passed,
+encrypted by method (2), on a one-to-one basis with various parties. 4, the subject of
+this paragraph, is a "Friends Only" secret, passed from one user to all of their contacts.
+
+How is this done? On initial login, each user generates a random secret and filename.
+Whenever they accept a friend request or make one, they encrypt this secret and
+filename using the relevant secret for that friend/conversation, and then attach
+that secret and filename to the relevant outbox. Their friend, already polling their
+outbox for new messages, will find and decrypt the new secret and filename, and
+save it as part of the contact.
+
+Then, when Bob wants to find out something Alice has broadcast to her friends, he
+need only look up her friends-only filename and secret, look up the filename,
+and decrypt its contents with the secret.
+
+In our current build, this technique is only being used to find out A. your friend's
+friends (see Discovery and Scalability) and B. the time you were last online.
+However, it's not hard to see that the social networking applications are potentially large; users could send their friends pictures, videos, and all the accoutrements of
+modern social media, in a dramatically more secure way. The most computationally
+expensive piece of this system is when a user wants to "unfriend" someone; the
+user must generate a new filename and secret, and update all of their other friends.
+
+We note with interest here how Blockstack's architecture naturally tends toward
+a system of user privacy. Rather than "the right to an API key" (Wenger Continuations 96355016855, 2014), users have the ability to issue their own keys, a promising
+development toward decentralization.
+
 **Notes on Security and Robustness of the Hermes Messaging System**
 
 Hermes' goals with respect to security and robustness are threefold. The first two relate to privacy: to keep message content readable only to their intended recipients,
@@ -101,37 +132,20 @@ hihermes.co does not cut off Hermes proper. Our goal is that Hermes can withstan
 any attack that does not completely cut off the internet; and even there, we
 are hopeful for the prospect of better developed mesh networks in the near future.
 
-**Notes on Scalability and Discovery**
 **Discovery and Scalability: The Bottleneck**
 
 We will forthrightly state that the most pressing problem for scaling Hermes
 successfully is in the field of new conversation discovery. New conversation discovery
 boils down to one question: from whence do you draw the set of names to poll for
-introductions? As constructed, Hermes has what we like to think of as an extremely
-strong spam filter; you will only receive messages from contacts you choose to add.
-Within the scope of this bounty we find this to be a reasonable solution. However,
+introductions? Hermes has a two tiered method of discovery. Tier 1
+is two-way introductions, where in order to connect with Alice, Bob must first add
+her as a contact; simultaneously, Alice must add Bob as a contact. This can be thought of as an extremely strong spam filter. However,
 to truly function as messaging for the decentralized web, Hermes may need a larger
-scope. There are several interesting areas for further exploration regarding scalability
-and discovery. These include:
+scope. To that end, for Tier 2 we have implemented "friends-of-friends" discovery, in which all contacts may be viewable by all other contacts, and encrypted to anyone else. In this case, if Alice and Bob are friends, and Bob and Catharine are friends, Alice will discover a conversation from Catharine without explicitly looking for it, thereby achieving one-way introductions. We feel the friends-of-friends approach is a good start to solving the problem of discovery, as it likely will lead to networked clusters by industry, region, interest, and other relevant categories.
 
--Search Indices. Search indices are the likely answer to some Blockstack scalability problems. However, given that any metadata is encrypted, it may be difficult to apply to this problem. Anything that exposed an intro to the wider network would, by definition,
-expose it to surveillance.
-
--Friends of Friends (The Gossip Strategy). Users may choose whether or not to list
-a contact as public or private. Friends could add other friends to their contact
-list, and those friends, etc. This would reduce the set in an organic way, and likely
-account for some use cases; networks would probably group by industry, region, language,
-etc., with a correspondingly higher likelihood of messaging within those networks.
-
--Name Mining. Simply keeping up to date with the names on the network is a challenge
-for any Blockstack application. Name mining could obviate the need for central
-servers and keep name discovery within the Gaia network.
-
--Gradation Strategies. Going from centralized to decentralized is difficult. Going
-from decentralized to centralized is considerably easier. Rather than offering a
-one size fits all solution, Hermes may allow users to use a less secure, more
-centralized offering, with the option of transitioning should the need arise.
-
+There are other strategies to be explored, including more centralized options and
+more computationally intensive options, but we feel that this is the most practical,
+socially scalable solution for the time being.
 
 **Paid Messages and Bitcoin Transactions**
 
@@ -139,18 +153,14 @@ On signing in, users generate a Bitcoin address using their application private
 key. Their public address is stored in their public_index.json file and their
 private key held privately, similar to the configuration for messaging.
 
-Users may earn Bitcoin through reading messages, and pay Bitcoin in order to
-increase their likelihood of receiving a quality response. The technical details
-are as follows: Alice sends a message (in most cases likely an introduction) with a content type signifying a paid Bitcoin transaction, and stating the amount of Bitcoin on offer. However, they do not send any Bitcoin. Bob, reading the message, will see
-the amount of Bitcoin he is being offered and, if he likes what he sees, he will
-respond. On opening Bob's response, Alice will automatically create a transaction
-and send the specified amount to Bob.
+Users may send Bitcoin to other users' Hermes' wallets, sending to a conversation
+directly, or withdraw their Bitcoin to an address.
 
 In the future, the ability to rate paid responses will likely be an interesting
 feature to A. incentivize quality responses and B. create a market for cold emailing.
 
 For this build, we are generating wallets and transactions using bitcoinjs-lib
-and getting and broadcasting transactions via the Blockchain.Info API. Although this is an external server and central point of failure, we feel it is a worthwhile compromise while
+and getting unspent output information and broadcasting transactions via the Blockchain.Info API. Although this is an external server and central point of failure, we feel it is a worthwhile compromise while
 we wait for Blockstack.js to expose transaction generation (which is on the near
 term roadmap). The user experience will also likely be very much enhanced when
 the Hermes wallet is not different from the Blockstack wallet. Lastly, using Stacks
