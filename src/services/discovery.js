@@ -1,12 +1,9 @@
-import { ContentTypes, Conversation, Message } from '../models'
-import { getFile } from './blockstack'
+import { Conversation, Message } from '../models'
 import {
   createNewConversation,
-  getConversations,
   getIncomingMessagesForMeta,
   recvMessage,
   saveNewOutbox,
-  saveConversationById,
   checkIfConversationExists
 } from './conversations'
 import {
@@ -51,6 +48,7 @@ export async function enableStatusPage(){
   var lastSeen = new Date().toISOString()
   var encoded = encodeText(lastSeen, secret)
   await saveJson(filename, {lastSeen: encoded, posts: [], contacts: []}, {isPublic: true})
+  return true
 }
 
 export async function discoverConversation(userId) {
@@ -91,25 +89,22 @@ export async function discoverConversation(userId) {
 
 export async function handleContacts(contacts){
   const existingContacts = await getJson("contacts.json")
-  var trusted = true
+  let trusted = true
 
-  for(var i = 0; i < contacts.length; i++){
-
-    if(contacts[i] == identity().username){
+  for (const contactId of contacts) {
+    if (contactId === identity().username) {
       continue
     }
 
-    var contactEntry = existingContacts.contacts[contacts[i]]
+    const contactEntry = existingContacts.contacts[contactId]
 
-    if(contactEntry == null){
+    if (!contactEntry) {
       trusted = false
-      await addContactById(contacts[i], false)
-      continue;
+      await addContactById(contactId, false)
+      continue
     }
 
-    if(contactEntry.trusted == false){
-      trusted = false
-    }
+    trusted = !!(contactEntry.trusted)
   }
 
   return trusted

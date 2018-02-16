@@ -1,7 +1,6 @@
-import { Conversation } from '../models/conversation'
 import { getJson, saveJson } from './blockstack'
 import { checkDiscovery } from './onLoad'
-import { enableDiscovery } from './discovery'
+import { enableStatusPage } from './discovery'
 import { initHelper } from './helper'
 import { getLocalPublicIndex, saveLocalPublicIndex } from './identity'
 import { clearFriendsOnlyContacts } from './contacts'
@@ -19,9 +18,10 @@ export async function ensureFilesExist() {
 }
 
 export async function resetAll(){
-  await enableDiscovery()
+  await enableStatusPage()
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
+  await clearFriendsOnlyContacts()
   await initHelper()
   window.location.reload()
 }
@@ -29,9 +29,9 @@ export async function resetAll(){
 export async function cleanSlate(){
   await saveJson('conversations.json', { conversations: {} })
   await saveJson('contacts.json', { contacts: {} })
+  await clearFriendsOnlyContacts()
   const index = await getLocalPublicIndex()
   index.introductions = []
   await saveLocalPublicIndex(index)
-  //clearFriendsOnlyContacts()
   window.location.reload()
 }

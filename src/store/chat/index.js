@@ -128,7 +128,6 @@ export const reducer = (state = initialState, action) => {
       }
     case actions.SET_CONTACT_TYPING: {
       const { conversationId, contactId, typing } = action.payload
-      const indicatorForConvo = state.typingIndicators[conversationId]
 
       return {
         ...state,

@@ -15,7 +15,7 @@ export const checkAuth = () => async dispatch => {
   }
 
   if (blockstack.isSignInPending()) {
-    const userData = await blockstack.handlePendingSignIn('https://core.blockstack.org/v1/names')
+    await blockstack.handlePendingSignIn('https://core.blockstack.org/v1/names')
     window.location = origin
     return
   }

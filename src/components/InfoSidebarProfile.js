@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import * as colors from '../colors'
 import { Avatar } from './Avatar'
-import { getPublicAddress, getBalance } from '../services/bitcoin'
 import { lookupProfile } from '../services/identity'
 
 const ProfileContainer = styled.div`
@@ -28,12 +27,6 @@ const Id = styled.div`
   color: ${colors.greyDark};
   font-size: 0.7em;
   font-weight: bold;
-`;
-
-const StatusSecret = styled.div`
-  color: ${colors.greyDark};
-  font-size: 0.6em;
-  margin: 4px 0 10px;
 `;
 
 const Description = styled.div`

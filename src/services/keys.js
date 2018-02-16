@@ -1,4 +1,3 @@
-import * as blockstack from 'blockstack'
 import { getJson, saveJson } from './blockstack'
 
 const crypto = require('crypto')

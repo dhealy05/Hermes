@@ -1,4 +1,3 @@
-import * as blockstack from 'blockstack'
 import { fetchWithTimeout } from '../util'
 
 const SEARCH_ENDPOINT_TIMEOUT = 5000

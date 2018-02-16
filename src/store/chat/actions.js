@@ -1,10 +1,12 @@
 import { get, map, last, throttle } from 'lodash'
+import swal from 'sweetalert'
 import {
   ContentTypes,
   Conversation,
   ConversationMetadata,
   Message
 } from '../../models'
+import { HermesHelperId } from '../../constants'
 import {
   acknowledgeConversation,
   deleteConversation as deleteConversationService,
@@ -22,14 +24,12 @@ import {
   isUserOnHermes,
   setTyping,
   handleHelpMessage,
-  getLastSeenForId,
   getPublicFriendsForId,
   notify
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
 import { hideSidebar, showActiveConversation } from '../sidebar/actions'
-import swal from 'sweetalert'
 
 export const SET_MESSAGE_INPUT_VALUE = 'SET_MESSAGE_INPUT_VALUE'
 export const setMessageInputValue = payloadAction(SET_MESSAGE_INPUT_VALUE)
@@ -128,7 +128,11 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   if (!activeConversation
       || !conversationDetails[activeConversation]
       || conversationDetails[activeConversation].loading) {
-    const defaultConvo = Object.keys(conversations)[0] || COMPOSE_CONVERSATION_ID
+
+    const sortedConversation = Object.keys(conversations).sort(function(a,b){
+      return conversations[a].thumbnail.timestamp<conversations[b].thumbnail.timestamp
+    })
+    const defaultConvo = sortedConversation[0] || COMPOSE_CONVERSATION_ID
 
     await dispatch(fetchConversationDetails(defaultConvo))
   }
@@ -157,6 +161,9 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
   }
 
   convo.wasRead = true
+  convo.readAt = new Date().toISOString()
+
+  removeMsgAlert()
 
   dispatch(finishLoadingConversationDetails(await saveConversationById(id, convo)))
   dispatch(refreshConversationList())
@@ -167,21 +174,31 @@ export const fetchConversationDetails = id => async (dispatch, getState) => {
 
 export const MARK_CONVERSATION_AS_READ = 'MARK_CONVERSATION_AS_READ'
 
-function removeMsgAlert(){
-  var numArray = document.title.match(/\d+/)
-  if(numArray == null || numArray.length == 0){return;}
-  var num = parseInt(numArray[0])
-  if(num == null){return;}
-  if(num == 1){document.title = "Hermes"; return;}
-  num = num - 1
-  document.title = "(" + num.toString() + ") Hermes"
+function removeMsgAlert() {
+  /*const alertNumber = parseInt(
+    get(document.title.match(/\d+/), '[0]'),
+    10
+  )
+
+  if (!alertNumber) {
+    return
+  }
+
+  if (alertNumber === 1) {
+    document.title = 'Hermes'
+    return
+  }
+  document.title = `(${alertNumber - 1}) Hermes`*/
+  document.title = 'Hermes'
 }
 
 
 export const markActiveConversationAsRead = () => async (dispatch, getState) => {
   const { chat: { activeConversation } } = getState()
 
-  if (!activeConversation || activeConversation === COMPOSE_CONVERSATION_ID || activeConversation == "hermesHelper") {
+  if (!activeConversation
+      || activeConversation === COMPOSE_CONVERSATION_ID
+      || activeConversation.includes(HermesHelperId)) {
     return
   }
 
@@ -256,8 +273,12 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   if (activeConversation === COMPOSE_CONVERSATION_ID) {
 
     // show an alert if the user you just messaged hasn't set up hermes yet
-    var errorMessage = await checkHermes(newMessageRecipients)
-    if(errorMessage != ''){swal(errorMessage); dispatch(setNewMessageRecipients([])); return}
+    const errorMessage = await checkHermes(newMessageRecipients)
+    if (errorMessage) {
+      swal(errorMessage)
+      dispatch(setNewMessageRecipients([]))
+      return
+    }
 
     dispatch(startSendingNewConversation())
 
@@ -276,7 +297,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
     return
   }
 
-  if(activeConversation.includes('hermesHelper')){
+  if (activeConversation.includes(HermesHelperId)) {
     //await handleHelpMessage(message)
     dispatch(setConversationDetails(await handleHelpMessage(message)))
     dispatch(refreshConversationList())
@@ -307,7 +328,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 let setTypingPromise = null
 
 const _broadcastTypingThrottled = throttle((dispatch, getState) => {
-  const BOT_CONVERSATION_ID = identity().username + '-hermesHelper'
+  const BOT_CONVERSATION_ID = `${identity().username}-${HermesHelperId}`
 
   if (setTypingPromise) {
     console.info('already got a promise')
@@ -403,7 +424,8 @@ export const pollNewMessages = () => async (dispatch, getState) => {
     const meta = conversationMetadata[id]
 
     for (const contactId of meta.contacts) {
-      if (contactId == identity().username || contactId == 'hermesHelper') {
+      if (contactId === identity().username
+          || contactId === HermesHelperId) {
         continue
       }
 
@@ -462,12 +484,15 @@ export const pollNewConversations = () => async (dispatch, getState) => {
 
   //primary poll for new contacts. this will probably mostly uncover group chats
   for (const contactId in contactsById) {
-    if(contactId == identity().username || contactId == 'hermesHelper'){continue}
+    if (contactId === identity().username
+        || contactId === HermesHelperId) {
+      continue
+    }
 
     previouslyPolledIds.push(contactId)
 
     const profile = await lookupProfile(contactId)
-    if(!await isUserOnHermes(profile)){
+    if (!(await isUserOnHermes(profile))) {
       continue
     }
 
@@ -486,12 +511,20 @@ export const pollNewConversations = () => async (dispatch, getState) => {
 
   //secondary poll for friends of friends
   for (const contactId in contactsById) {
-    if(contactId == identity().username || contactId == 'hermesHelper'){continue}
+    if (contactId === identity().username
+        || contactId === HermesHelperId) {
+      continue
+    }
     var publicFriends = await getPublicFriendsForId(contactId)
-    for(var i = 0; i < publicFriends.length; i++){
-      if(publicFriends[i] == identity().username || publicFriends[i] == 'hermesHelper'){continue}
-      if(previouslyPolledIds.includes(publicFriends[i])){continue}
-      const newConvo = await discoverConversation(publicFriends[i])
+
+    for (const contactId of publicFriends) {
+      if (contactId === identity().username
+          || contactId === HermesHelperId
+          || previouslyPolledIds.includes(contactId)) {
+        continue
+      }
+
+      const newConvo = await discoverConversation(contactId)
       if (!newConvo || conversationDetails[newConvo]) {
         continue
       }

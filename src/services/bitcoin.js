@@ -6,15 +6,23 @@ const request = require('request')
 const SATOSHIS_IN_BTC = 100000000
 
 export async function sendBitcoinToIds(ids, amount){
-  var recipients = []
-  for(var i = 0; i < ids.length; i++){
-    if(ids[i] == identity().username){continue}
-    var public_index = await getPublicIndexForId(ids[i])
-    recipients.push(public_index.bitcoinAddress)
+  const recipients = []
+  const myId = identity().username
+
+  for (const id of ids) {
+    if (id === myId) {
+      continue
+    }
+
+    const index = await getPublicIndexForId(id)
+    recipients.push(index.bitcoinAddress)
   }
-  if(recipients.length < 1){return false}
-  const result = await makeTransaction(recipients, amount)
-  return result
+
+  if (recipients.length < 1) {
+    return false
+  }
+
+  return await makeTransaction(recipients, amount)
 }
 
 export function getAddress(){
@@ -22,10 +30,6 @@ export function getAddress(){
   var hash = bitcoin.crypto.sha256(Buffer.from(privateKey))
   var num = bigi.fromBuffer(hash)
   var keyPair = new bitcoin.ECPair(num)
-
-  var address = keyPair.getAddress()
-  console.log(address)
-
   return keyPair
 }
 
@@ -36,44 +40,37 @@ export function getPublicAddress(){
 }
 
 export async function getUnspentOutputs(address){
-  var url = "https://blockchain.info/unspent?active=" + address + "&cors=true"
-  const requestData = {
-    uri: url,
-    method: 'GET'
+  const url = `https://blockchain.info/unspent?active=${encodeURIComponent(address)}&cors=true`
+  const resp = await fetch(url)
+
+  if (resp.statusCode >= 400) {
+    console.warn(`error response from ${url} with status ${resp.statusCode}`)
+    return null
   }
-  return new Promise(function (resolve, reject) {
-    request(requestData, function (error, response, body) {
-      if(response == null){resolve(null)}
-      if(response.statusCode != 200)resolve(null)
-      try {
-        var resultsJson = JSON.parse(body);
-        resolve(resultsJson)
-      } catch (e) {
-        resolve(null)
-      }
-    })
-  })
+
+  try {
+    return resp.json()
+  } catch (e) {
+    console.warn(`error decoding JSON from ${url}`)
+    return null
+  }
 }
 
 export async function getBalance(address){
-  //var url = "https://blockchain.info/rawaddr/" + address + "?cors=true"
-  var url = "https://blockchain.info/balance?active=" + address + "&cors=true"
-  const requestData = {
-    uri: url,
-    method: 'GET'
+  const url = `https://blockchain.info/balance?active=${encodeURIComponent(address)}&cors=true`
+  const resp = await fetch(url)
+
+  if (resp.statusCode >= 400) {
+    console.warn(`error response from ${url} with status ${resp.statusCode}`)
+    return null
   }
-  return new Promise(function (resolve, reject) {
-    request(requestData, function (error, response, body) {
-      if(response == null){resolve(null)}
-      if(response.statusCode != 200){resolve(null)}
-      try {
-        var resultsJson = JSON.parse(body);
-        resolve(resultsJson)
-      } catch (e) {
-        console.log(e)
-      }
-    })
-  })
+
+  try {
+    return resp.json()
+  } catch (e) {
+    console.warn(`error decoding JSON from ${url}`)
+    return null
+  }
 }
 
 export async function makeTransaction(recipients, amount){
@@ -94,7 +91,7 @@ export async function makeTransaction(recipients, amount){
   var fee = await getNetworkFee(bytes)
   //in*148 + out*34 + 10 plus or minus 'in'
 
-  if(satoshis + fee > finalBalance){
+  if (satoshis + fee > finalBalance) {
     console.log("Insufficient Funds")
     return false
   }
@@ -102,20 +99,20 @@ export async function makeTransaction(recipients, amount){
   var change = finalBalance - satoshis
   change = change - fee
 
-  for(var i = 0; i < unspentOutputs.unspent_outputs.length; i++){
-    tx.addInput(unspentOutputs.unspent_outputs[i].tx_hash_big_endian, unspentOutputs.unspent_outputs[i].tx_output_n)
+  for (const unspentOutput of unspentOutputs.unspent_outputs) {
+    tx.addInput(unspentOutput.tx_hash_big_endian, unspentOutput.tx_output_n)
   }
 
   const satoshisPerAddress = satoshis / recipients.length
 
-  for(var i = 0; i < recipients.length; i++){
-    tx.addOutput(recipients[i], satoshisPerAddress)
+  for (const recipient of recipients) {
+    tx.addOutput(recipient, satoshisPerAddress)
   }
 
   tx.addOutput(address, change)
 
-  for(var j = 0; j < unspentOutputs.unspent_outputs.length; j++){
-    tx.sign(j, me)
+  for (let i = 0; i < unspentOutputs.unspent_outputs.length; i++) {
+    tx.sign(i, me)
   }
 
   // prepare for broadcast to the Bitcoin network, see "can broadcast a Transaction" below
@@ -150,9 +147,7 @@ export async function broadcastTransaction(hex){
 }
 
 export function btcToSatoshis(amountInBtc) {
-  console.log(amountInBtc)
   var final = amountInBtc * SATOSHIS_IN_BTC
-  console.log(final)
   return final
 }
 
