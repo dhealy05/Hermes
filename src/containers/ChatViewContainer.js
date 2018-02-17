@@ -22,6 +22,7 @@ import { SendMessageInputContainer } from './SendMessageInputContainer'
 const WithRedux = connect(
   state => {
     const activeConversation = state.chat.activeConversation
+    const sendingNewConversation = state.chat.sendingNewConversation
 
     const composing = activeConversation === COMPOSE_CONVERSATION_ID
     const conversation = activeConversation
@@ -29,7 +30,7 @@ const WithRedux = connect(
 
     const loading = state.chat.loadingConversationMetadata
                  || state.contacts.loading
-                 || (!conversation && !composing)
+                 || (!conversation && !composing && !sendingNewConversation)
 
     return { loading }
   },
