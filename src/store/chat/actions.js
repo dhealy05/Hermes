@@ -290,7 +290,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
 
     // TODO this timeout is necessary because sometimes it takes some time for
     // the metadata to be properly saved
-    setTimeout(() => dispatch(refreshConversationList()), 200)
+    setTimeout(() => dispatch(refreshConversationList()), 500)
     //dispatch(refreshConversationList())
 
     dispatch(finishSendingNewConversation())
