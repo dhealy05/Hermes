@@ -78,8 +78,8 @@ export class TopNav extends Component {
                       toggle={<Button onClick={this.toggleMenu} icon="settings"/>}
                       align="right">
           <li><MenuItem href="#" onClick={showProfileSidebar}><Icon icon="perm_identity" />Settings</MenuItem></li>
-          <li><MenuItem href="#" onClick={onSignOut}><Icon icon="exit_to_app" />Logout</MenuItem></li>
           <li><MenuItem href="#" onClick={onInitHelper}><Icon icon="help_outline" />Help</MenuItem></li>
+          <li><MenuItem href="#" onClick={onSignOut}><Icon icon="exit_to_app" />Logout</MenuItem></li>
         </DropdownMenu>
       </OuterContainer>
     )
