@@ -25,7 +25,8 @@ import {
   setTyping,
   handleHelpMessage,
   getPublicFriendsForId,
-  notify
+  notify,
+  initHelper
 } from '../../services'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
@@ -252,6 +253,12 @@ export const sendFile = file => async (dispatch, getState) => {
   })
 
   return dispatch(sendRawMessage(message))
+}
+
+export const initHermesHelper = () => async (dispatch, getState) => {
+  await initHelper()
+  setTimeout(() => dispatch(refreshConversationList()), 500)
+  setTimeout(() => dispatch(setActiveConversation(`${identity().username}-${HermesHelperId}`)), 1000)
 }
 
 export const START_SENDING_NEW_CONVERSATION = 'START_SENDING_NEW_CONVERSATION'

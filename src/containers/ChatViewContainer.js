@@ -7,7 +7,6 @@ import {
   withProps
 } from 'recompose'
 import { connect } from 'react-redux'
-import { chain, get } from 'lodash'
 import { ChatView } from '../components/ChatView'
 import { Loader } from '../components/Loader'
 import { COMPOSE_CONVERSATION_ID } from '../store/chat/actions'
