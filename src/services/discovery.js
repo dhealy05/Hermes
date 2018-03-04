@@ -133,8 +133,7 @@ export async function discoverMessages(metadata, username) {
       type: decodeText(msg.type, metadata.secret),
       expirationDate: decodeText(msg.expirationDate, metadata.secret),
       paymentStatus: decodeText(msg.paymentStatus, metadata.secret),
-      value: decodeText(msg.value, metadata.secret),
-      index: decodeText(msg.index, metadata.secret)
+      value: decodeText(msg.value, metadata.secret)
     })
 
     const convo = await recvMessage(convoId, decoded)

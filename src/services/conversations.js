@@ -306,8 +306,7 @@ export function saveOutgoingMessages(convo, outbox) {
     type: encodeText(lastMsg.type, convo.secret),
     expirationDate: encodeText(lastMsg.expirationDate, convo.secret),
     paymentStatus: encodeText(lastMsg.paymentStatus, convo.secret),
-    value: encodeText(lastMsg.value, convo.secret),
-    index: encodeText(lastMsg.index, convo.secret)
+    value: encodeText(lastMsg.value, convo.secret)
   })
   return saveJson(
     convo.filename,
