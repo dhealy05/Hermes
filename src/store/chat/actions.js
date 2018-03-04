@@ -324,6 +324,10 @@ export const sendRawMessage = message => async (dispatch, getState) => {
     await dispatch(acceptActiveConversation())
   }
 
+  const fullConvo = await getConversationById(activeConversation)
+  const index = fullConvo.messages.length
+  message.index = index.toString()
+
   if (message.content instanceof File) {
     // kind of hacky, but it works for now
     message.content = await uploadFileForOutbox(activeConversation, message.content)

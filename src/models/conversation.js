@@ -138,5 +138,7 @@ export const Message = Model('Message', {
 
   paymentStatus: 'unpaid',
 
-  value: '0.00'
+  value: '0.00',
+
+  index: '0'
 })
