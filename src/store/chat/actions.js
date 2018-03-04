@@ -141,6 +141,9 @@ export const fetchConversationList = () => async (dispatch, getState) => {
   dispatch(finishLoadingConversationList(conversations))
 }
 
+export const downloadFile = timestamp => async (dispatch, getState) => {
+}
+
 export const fetchConversationDetails = id => async (dispatch, getState) => {
   if (!id || id === COMPOSE_CONVERSATION_ID) {
     return

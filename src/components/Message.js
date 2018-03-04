@@ -5,7 +5,7 @@ import moment from 'moment'
 import * as colors from '../colors'
 import { ContentTypes } from '../models'
 import { Loader } from './Loader'
-import { FileMessage } from './FileMessage'
+//import { FileMessage } from './FileMessage'
 
 const Content = styled.div`
   text-align: justify;
@@ -20,6 +20,22 @@ const Content = styled.div`
     border-radius: 6px 0 0 6px;
     background-color: ${colors.greyLight};
     color: black;
+`)}
+`
+
+const FileMessage = styled.img`
+  max-width: 66%;
+  padding: 2px;
+  margin-top: 3px;
+  border-radius: 2px 8px 8px 2px;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 1px 0;
+  float: left;
+  cursor: pointer;
+
+  ${props => ((props.direction === 'right') && css`
+border-radius: 8px 2px 2px 8px;
+float: right;
 `)}
 `
 
@@ -60,7 +76,7 @@ const ExpirationDate = ({ date, direction }) => {
   )
 }
 
-const MessageContent = ({ contentType, content, direction }) => {
+const MessageContent = ({ contentType, content, direction, sentAt, onDownloadFile }) => {
   if (contentType === ContentTypes.Text) {
     return <Content direction={direction}>{content}</Content>
   }
@@ -72,7 +88,7 @@ const MessageContent = ({ contentType, content, direction }) => {
   }
 
   if (contentType === ContentTypes.File) {
-    return <FileMessage direction={direction} src={'/FileImage.png'}/>
+    return <FileMessage direction={direction} src={'/FileImage.png'} onClick={() => onDownloadFile(sentAt)}/>
   }
 
   return null
@@ -80,7 +96,9 @@ const MessageContent = ({ contentType, content, direction }) => {
 MessageContent.propTypes = {
   contentType: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
-  direction: PropTypes.oneOf(['left', 'right'])
+  direction: PropTypes.oneOf(['left', 'right']),
+  sentAt: PropTypes.string.isRequired,
+  onDownloadFile: PropTypes.func.isRequired
 }
 
 export const Message = ({
@@ -89,6 +107,8 @@ export const Message = ({
   contentType,
   paymentStatus,
   expirationDate,
+  sentAt,
+  onDownloadFile,
   value
 }) => {
   return (
@@ -96,7 +116,9 @@ export const Message = ({
       { paymentStatus === 'unpaid'
         ? <MessageContent contentType={contentType}
                           content={content}
-                          direction={direction}/>
+                          direction={direction}
+                          sentAt={sentAt}
+                          onDownloadFile={onDownloadFile}/>
         : <PaidMessageValue>{value} BTC sent</PaidMessageValue> }
       { expirationDate
         ? <ExpirationDate direction={direction} date={expirationDate}/>
@@ -110,7 +132,9 @@ Message.propTypes = {
   content: MessageContent.propTypes.content,
   paymentStatus: PropTypes.oneOf(['unpaid', 'paid']).isRequired,
   value: PropTypes.string.isRequired,
-  expirationDate: PropTypes.string
+  expirationDate: PropTypes.string,
+  sentAt: MessageContent.propTypes.sentAt,
+  onDownloadFile: PropTypes.func.isRequired
 }
 Message.defaultProps = {
   direction: 'left'

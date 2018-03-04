@@ -113,6 +113,7 @@ export class MessageOutlet extends React.Component {
       conversation,
       fileContentsById,
       showProfileSidebar,
+      onDownloadFile,
       identity
     } = this.props
 
@@ -144,7 +145,9 @@ export class MessageOutlet extends React.Component {
                          {...other}
                          direction={sender === identity.username ? 'right' : 'left'}
                          contentType={type}
-                         content={content} />
+                         content={content}
+                         sentAt={sentAt}
+                         onDownloadFile={() => onDownloadFile(sentAt)}/>
               )
           })}
         </MessageGroup>
@@ -165,6 +168,7 @@ MessageOutlet.propTypes = {
   conversation: PropTypes.object.isRequired,
   fileContentsById: PropTypes.object.isRequired,
   showProfileSidebar: PropTypes.func.isRequired,
+  onDownloadFile: PropTypes.func.isRequired,
   onPollMessages: PropTypes.func.isRequired,
   messagePollInterval: PropTypes.number
 }

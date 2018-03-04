@@ -25,7 +25,8 @@ const withRedux = connect(
   },
   dispatch => ({
     onPollMessages: () => dispatch(actions.chat.pollNewMessages()),
-    showProfileSidebar: contactId => dispatch(actions.sidebar.showProfile(contactId))
+    showProfileSidebar: contactId => dispatch(actions.sidebar.showProfile(contactId)),
+    onDownloadFile: timestamp => dispatch(actions.chat.downloadFile(timestamp))
   })
 )
 

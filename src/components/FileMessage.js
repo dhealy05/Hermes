@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 
-export const FileMessage = styled.img`
+const FileImage = styled.img`
   max-width: 66%;
   padding: 2px;
   margin-top: 3px;
@@ -16,3 +16,19 @@ border-radius: 8px 2px 2px 8px;
 float: right;
 `)}
 `
+
+export const FileMessage = ({
+  onDowloadFile = () => {},
+  ...other
+}) => {
+  return (
+    <div>
+      <FileImage
+              onClick={onDownloadFile}
+              {...other}/>
+    </div>
+  )
+}
+FileMessage.propTypes = {
+  onDownloadFile: PropTypes.func
+}
