@@ -33,12 +33,15 @@ export class MessageTextInput extends React.Component {
     sendBtcModalOpen: false,
     sendExpiringMessageModalOpen: false,
     sendBtcValue: 0.1,
-    numberOfHours: 1
+    numberOfHours: 1,
+    isImage: true
   }
 
   fileInputEl = null
 
   pickImage = () => this.fileInputEl.click()
+
+  pickFile = () => {this.setState({ isImage: false }); this.fileInputEl.click()}
 
   onFileInputChange = evt => {
     const [file] = evt.target.files
@@ -46,8 +49,9 @@ export class MessageTextInput extends React.Component {
     if (!file) {
       return
     }
+    console.log(this.state.isImage)
 
-    this.props.onPickImage(file)
+    this.props.onPickImage(file, this.state.isImage)
     evt.target.value = null
   }
 
@@ -99,6 +103,8 @@ export class MessageTextInput extends React.Component {
                   onClick={onToggleEmojiPicker}/>
       <IconButton icon="insert_photo"
                   onClick={this.pickImage}/>
+      <IconButton icon="attach_file"
+                  onClick={this.pickFile}/>
       <IconButton onClick={this.openBtcModal}>
         <img src="/Bitcoin.svg" alt="bitcoins" />
       </IconButton>
@@ -109,7 +115,7 @@ export class MessageTextInput extends React.Component {
     return (
       <Container>
         <input type="file"
-               accept="image/*"
+               accept="*"
                style={{display: 'none'}}
                onChange={this.onFileInputChange}
                ref={this.setFileInputEl}/>

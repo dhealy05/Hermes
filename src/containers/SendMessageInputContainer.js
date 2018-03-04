@@ -31,7 +31,7 @@ const withRedux = connect(
 
       dispatch(actions.chat.sendText(text))
     },
-    onPickImage: file => dispatch(actions.chat.sendFile(file)),
+    onPickImage: (file, isImage) => dispatch(actions.chat.sendFile(file, isImage)),
     onToggleEmojiPicker: () => dispatch(actions.emoji.setPickerActive(true)),
     onTyping: () => dispatch(actions.chat.broadcastTyping()),
     sendBtc: amt => dispatch(actions.chat.sendBtc(amt)),

@@ -4,7 +4,8 @@ export const CURRENT_THUMBNAIL_VERSION = 1
 
 export const ContentTypes = {
   Text: 'Text',
-  Image: 'Image'
+  Image: 'Image',
+  File: 'File'
 }
 
 export const ConversationMetadata = Model('ConversationMetadata', {

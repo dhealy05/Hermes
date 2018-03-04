@@ -85,6 +85,8 @@ export const ThumbnailsList = ({ thumbnails, activeConversation, onSelectConvers
       preview = <TextPreview>{sender}: {t.content}</TextPreview>
     } else if (t.contentType === ContentTypes.Image) {
       preview = <TextPreview>{sender} sent an image</TextPreview>
+    } else if (t.contentType === ContentTypes.File) {
+      preview = <TextPreview>{sender} sent a file</TextPreview>
     }
 
     return (

@@ -244,11 +244,12 @@ export const sendBtc = amt => async (dispatch, getState) => {
   return dispatch(sendRawMessage(message))
 }
 
-export const sendFile = file => async (dispatch, getState) => {
+export const sendFile = (file, isImage) => async (dispatch, getState) => {
+  const type = isImage ? ContentTypes.Image : ContentTypes.File
   const message = new Message({
     sender: identity().username,
     timestamp: new Date().toISOString(),
-    type: ContentTypes.Image,
+    type: type,
     content: file
   })
 
@@ -460,9 +461,10 @@ export const pollNewMessages = () => async (dispatch, getState) => {
         discoveredNewMessages = true
 
         const lastMessage = last(newMessages)
-        const notificationContent = lastMessage.type === ContentTypes.Image
-                                  ? 'sent you an image'
-                                  : lastMessage.content
+        var notificationContent = 'sent you an image'
+        if(lastMessage.type === ContentTypes.Text){notificationContent = lastMessage.content}
+        if(lastMessage.type === ContentTypes.File){notificationContent = 'sent you a file'}
+
 
         const { contacts: { contactsById } } = getState()
         const notificationTitle = get(contactsById, `[${contactId}].name`, contactId)
