@@ -32,6 +32,8 @@ import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
 import { hideSidebar, showActiveConversation } from '../sidebar/actions'
 
+const FileSaver = require('file-saver');
+
 export const SET_MESSAGE_INPUT_VALUE = 'SET_MESSAGE_INPUT_VALUE'
 export const setMessageInputValue = payloadAction(SET_MESSAGE_INPUT_VALUE)
 
@@ -142,6 +144,21 @@ export const fetchConversationList = () => async (dispatch, getState) => {
 }
 
 export const downloadFile = timestamp => async (dispatch, getState) => {
+  const { chat: { activeConversation } } = getState()
+  const convo = await getConversationById(activeConversation)
+  const index = convo.messages.map(function(msg) { return msg.sentAt; }).indexOf(timestamp);
+  const data = await retrieveFileContentForMessage(convo.messages[index], Conversation.getMetadata(convo))
+  const file = dataURLtoFile(data, 'download.pdf')
+  FileSaver.saveAs(file)
+}
+
+function dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
 }
 
 export const fetchConversationDetails = id => async (dispatch, getState) => {
@@ -487,7 +504,7 @@ export const pollNewMessages = () => async (dispatch, getState) => {
 export const pollNewConversations = () => async (dispatch, getState) => {
   dispatch(startPollingConversations())
 
-  console.log("POLLING NEW CONVOS --ME")
+  console.log("POLLING NEW CONVOS")
 
   const { contacts: { contactsById },
           chat: { conversationDetails } } = getState()
