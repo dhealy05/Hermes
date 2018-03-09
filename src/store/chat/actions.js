@@ -89,14 +89,22 @@ export const SET_NEW_MESSAGE_RECIPIENTS = 'SET_NEW_MESSAGE_RECIPIENTS'
 export const setNewMessageRecipients = ids => (dispatch, getState) => {
   const { contacts: { contactsById } } = getState()
 
+  var finalIDs = []
+  console.log(ids)
+
   //TODO: should have ".id" on entry
   for(var i = 0; i < ids.length; i++){
-    if(!ids[i].includes('.id')){
-      ids[i] = ids[i] + '.id'
+    var finalID = ids[i]
+    if(!finalID.includes('.id')){
+      finalID = ids[i] + '.id'
     }
+    if(finalID === identity().username){
+      continue
+    }
+    finalIDs.push(finalID)
   }
 
-  for (var id of ids) {
+  for (var id of finalIDs) {
     if (!contactsById[id]) {
       dispatch(contactActions.fetchContactById(id))
     }
@@ -104,7 +112,7 @@ export const setNewMessageRecipients = ids => (dispatch, getState) => {
 
   dispatch({
     type: SET_NEW_MESSAGE_RECIPIENTS,
-    payload: ids
+    payload: finalIDs
   })
 }
 
