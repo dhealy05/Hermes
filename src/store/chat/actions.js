@@ -20,7 +20,6 @@ import {
   uploadFileForOutbox,
   retrieveFileContentForMessage,
   identity,
-  lookupProfile,
   isUserOnHermes,
   setTyping,
   handleHelpMessage,
@@ -28,6 +27,7 @@ import {
   notify,
   initHelper
 } from '../../services'
+import { lookupProfile } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
 import { payloadAction } from '../util'
 import { hideSidebar, showActiveConversation } from '../sidebar/actions'
@@ -386,13 +386,27 @@ export const broadcastTyping = () => _broadcastTypingThrottled
 
 async function checkHermes(newMessageRecipients){
   let usersNotOnHermes = []
+  let nullProfiles = []
 
   for (const id of newMessageRecipients) {
+
     const profile = await lookupProfile(id)
+
+    if(profile == null){
+      nullProfiles.push(id)
+      continue
+    }
 
     if (!(await isUserOnHermes(profile))) {
       usersNotOnHermes.push(profile)
     }
+  }
+
+  if(nullProfiles.length > 0){
+    const ids = nullProfiles.join(', ')
+    const message = `Oops! ${ids} hasn't signed on to Hermes yet. We'll let you know when they do :)`
+    // TODO show a notification, not an alert
+    return message
   }
 
   if (usersNotOnHermes.length > 0) {

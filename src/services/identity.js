@@ -15,10 +15,18 @@ export const saveLocalPublicIndex = data => saveJson(
 )
 
 export async function lookupProfile(id){
-  return await blockstack.lookupProfile(id, "https://core.blockstack.org/v1/names/")
+  try {
+    const profile = await blockstack.lookupProfile(id, "https://core.blockstack.org/v1/names/")
+    return profile
+  } catch (error) {
+    return null
+  }
 }
 
 export async function isUserOnHermes(idOrProfile) {
+
+  if(idOrProfile == null){return false}
+
   const profile = typeof idOrProfile === 'string'
                 ? await lookupProfile(idOrProfile)
                 : idOrProfile

@@ -32,6 +32,9 @@ export async function addContactById(id, trusted = false) {
     statusSecret: '',
     trusted: trusted
   })
+
+  if(profile == null){return contact}
+
   return saveContactDataById(id, contact)
 }
 
