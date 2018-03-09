@@ -7,6 +7,7 @@ export const setIdentity = payloadAction(SET_IDENTITY)
 
 export const CHECK_AUTH = 'CHECK_AUTH'
 export const checkAuth = () => async dispatch => {
+
   const origin = window.location.origin
 
   if (blockstack.isUserSignedIn()) {
@@ -19,7 +20,7 @@ export const checkAuth = () => async dispatch => {
     window.location = origin
     return
   }
-  
+
   blockstack.redirectToSignIn(origin, `${origin}/manifest.json`, ['store_write', 'publish_data'])
 
   // get rid of this window to avoid duplicating hermes

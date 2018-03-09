@@ -2,11 +2,18 @@ import { getJson } from './blockstack'
 import { getConversations } from './conversations'
 import { getContacts, getFriendsOnlyContacts } from './contacts'
 import { enableDiscovery } from './discovery'
-import { getLocalPublicIndex } from './identity'
+import { getLocalPublicIndex, identity } from './identity'
 import { updateStatus } from './statusIndicators'
+import swal from 'sweetalert'
 
 
 export async function checkDiscovery(){
+
+  if(identity().username == null){
+    swal("Hi there! It looks like you haven't bought a Blockstack ID yet. You'll need one to use Hermes :)")
+    return;
+  }
+  
   updateStatus()
   const discovery = localStorage.getItem("discovery");
   if (discovery) {

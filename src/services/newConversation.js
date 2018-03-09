@@ -18,6 +18,7 @@ import {
 import {
   discoverConversation
 } from './discovery'
+import swal from 'sweetalert'
 
 const crypto = require('crypto')
 
@@ -60,6 +61,13 @@ export async function newConversation(text, otherIds) {
     }
 
     const regularSecret = await addContactAndIntroduction(introduction, contactId)
+
+    if(regularSecret == null){
+      const message = `Oops! ${contactId} hasn't signed on to Hermes yet. We'll let you know when they do :)`
+      swal(message)
+      return;
+    }
+
     if (contacts.length === 2) {
       finalSecret = regularSecret
     }

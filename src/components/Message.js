@@ -76,6 +76,14 @@ const ExpirationDate = ({ date, direction }) => {
   )
 }
 
+const DownloadInstructions = ({ direction }) => {
+  return (
+    <ExpirationDateText direction={direction}>
+      Click to download this file
+    </ExpirationDateText>
+  )
+}
+
 const MessageContent = ({ contentType, content, direction, sentAt, onDownloadFile }) => {
   if (contentType === ContentTypes.Text) {
     return <Content direction={direction}>{content}</Content>
@@ -122,6 +130,9 @@ export const Message = ({
         : <PaidMessageValue>{value} BTC sent</PaidMessageValue> }
       { expirationDate
         ? <ExpirationDate direction={direction} date={expirationDate}/>
+        : null }
+      { contentType === ContentTypes.File && !expirationDate
+        ? <DownloadInstructions direction={direction}/>
         : null }
     </div>
   )

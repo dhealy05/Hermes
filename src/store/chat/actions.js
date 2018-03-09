@@ -347,7 +347,7 @@ export const sendRawMessage = message => async (dispatch, getState) => {
   if (message.content instanceof File) {
     // kind of hacky, but it works for now
     message.content = await uploadFileForOutbox(activeConversation, message.content)
-    dispatch(fetchImageForMessage(message, convo))
+    if(message.type === ContentTypes.Image){dispatch(fetchImageForMessage(message, convo))}
   }
 
   dispatch(setConversationDetails(await saveMessageToJson(Conversation.getId(convo), message)))
