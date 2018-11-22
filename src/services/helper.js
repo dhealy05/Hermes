@@ -4,7 +4,7 @@ import { identity } from './identity'
 import { getConversationById, saveConversationById } from './conversations'
 import { saveContactDataById } from './contacts'
 
-const helperConvoId = () => `${identity().username}-${HermesHelperId}`
+const helperConvoId = () => `${HermesHelperId}-${identity().username}`
 
 export async function handleHelpMessage(message){
   if (message.content instanceof File) {
@@ -21,7 +21,7 @@ export async function switchboard(text, convo){
   } else if(text.includes("conversation")){
     return await sendHermesMessage("To start a conversation, click the + in the top left of the screen. Search their name and click it. Type your message and hit return to send!", convo)
   } else if(text.includes("bitcoin")){
-    return await sendHermesMessage("Send and withdraw Bitcoin: You get a built in Bitcoin wallet, derived from you Blockstack application private key, right here on Hermes. You can send Bitcoin to people you’re chatting with by hitting the Bitcoin symbol in the button of your screen. For group chats, your Bitcoin will be divided evenly among the group. To withdraw Bitcoin to another address, click the settings button on the top right of the screen. You’ll see your balance on the right slide panel. Click the Bitcoin symbol, enter the address, and withdraw!", convo)
+    return await sendHermesMessage("Send and withdraw Bitcoin: You get a built in Bitcoin wallet, derived from your Blockstack application private key, right here on Hermes. To find your address and to withdraw, click the gear on the top right of your screen, and then select 'Settings'.  You can send Bitcoin to people you’re chatting with by hitting the Bitcoin symbol in the button of your screen. For group chats, your Bitcoin will be divided evenly among the group.", convo)
   } else if(text.includes("group")){
     return await sendHermesMessage("To start a group chat, click the plus on the top left of your screen. Search for IDs and add all the ones you want. Then send your message!", convo)
   } else if(text.includes("dissappearing") || text.includes("disappearing") || text.includes("dissapearing")){
@@ -107,7 +107,7 @@ export async function createBotConversation(){
 
   const convo = new Conversation({
     filename: HermesHelperId,
-    contacts: [identity().username, HermesHelperId],
+    contacts: [HermesHelperId, identity().username],
     secret: HermesHelperId,
     messages: [msg4, msg3, msg2, msg1, msg],
     pic: 'https://www.hihermes.co/images/avatars/HermesHelper.svg',

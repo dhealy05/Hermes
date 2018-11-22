@@ -8,6 +8,7 @@ import { enableStatusPage } from './discovery'
 import { getPublicAddress } from './bitcoin'
 
 export async function setTyping(convo){
+  if(convo.id.includes(HermesHelperId)){return}
   var outbox = await getJson(convo.filename, {username: identity().username})
   outbox.typing = encodeText(new Date().toISOString(), convo.secret)
   return await saveJson(convo.filename, outbox, { isPublic: true } )

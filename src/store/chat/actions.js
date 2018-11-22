@@ -46,6 +46,8 @@ export const SET_ACTIVE_CONVERSATION = 'SET_ACTIVE_CONVERSATION'
 export const setActiveConversation = id => async (dispatch, getState) => {
   const { chat: { conversationDetails } } = getState()
 
+  if(id.includes(HermesHelperId)){id=`${HermesHelperId}-${identity().username}`}
+
   dispatch(showActiveConversation(id))
 
   if (id && id !== COMPOSE_CONVERSATION_ID && !conversationDetails[id]) {
