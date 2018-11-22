@@ -25,7 +25,8 @@ import {
   handleHelpMessage,
   getPublicFriendsForId,
   notify,
-  initHelper
+  initHelper,
+  cleanSlate
 } from '../../services'
 import { lookupProfile } from '../../services/identity'
 import * as contactActions from '../contacts/actions'
@@ -290,6 +291,10 @@ export const initHermesHelper = () => async (dispatch, getState) => {
   await initHelper()
   setTimeout(() => dispatch(refreshConversationList()), 500)
   setTimeout(() => dispatch(setActiveConversation(`${identity().username}-${HermesHelperId}`)), 1000)
+}
+
+export const cleanSlateAction = () => async (dispatch, getState) => {
+  await cleanSlate()
 }
 
 export const START_SENDING_NEW_CONVERSATION = 'START_SENDING_NEW_CONVERSATION'

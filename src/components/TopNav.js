@@ -56,6 +56,7 @@ export class TopNav extends Component {
       toggleInfoSidebar,
       showProfileSidebar,
       onSignOut,
+      onCleanSlate,
       onInitHelper,
       children,
       title,
@@ -79,6 +80,7 @@ export class TopNav extends Component {
                       align="right">
           <li><MenuItem href="#" onClick={showProfileSidebar}><Icon icon="perm_identity" />Settings</MenuItem></li>
           <li><MenuItem href="#" onClick={onInitHelper}><Icon icon="help_outline" />Help</MenuItem></li>
+          <li><MenuItem href="#" onClick={onCleanSlate}><Icon icon="warning" />Clear History</MenuItem></li>
           <li><MenuItem href="#" onClick={onSignOut}><Icon icon="exit_to_app" />Logout</MenuItem></li>
         </DropdownMenu>
       </OuterContainer>
@@ -88,6 +90,7 @@ export class TopNav extends Component {
 
 TopNav.propTypes = {
   onSignOut: PropTypes.func,
+  onCleanSlate: PropTypes.func,
   onInitHelper: PropTypes.func,
   showingInfoSidebar: PropTypes.bool,
   toggleInfoSidebar: PropTypes.func,
@@ -97,6 +100,7 @@ TopNav.propTypes = {
 
 TopNav.defaultProps = {
   onSignOut: () => {},
+  onCleanSlate: () => {},
   onInitHelper: () => {},
   showingInfoSidebar: false,
   toggleInfoSidebar: () => {},

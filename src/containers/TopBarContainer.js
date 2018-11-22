@@ -37,6 +37,7 @@ const WithRedux = connect(
     toggleInfoSidebar: () => dispatch(actions.sidebar.showActiveConversation()),
     showProfileSidebar: () => dispatch(actions.sidebar.showProfile()),
     onSignOut: () => dispatch(actions.auth.signOut()),
+    onCleanSlate: () => dispatch(actions.chat.cleanSlateAction()),
     onInitHelper: () => dispatch(actions.chat.initHermesHelper()),
     onSetNewMessageRecipients: ids => dispatch(actions.chat.setNewMessageRecipients(ids))
   }),
